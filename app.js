@@ -365,6 +365,22 @@
     }
   }
 
+  // ---------- 움직이는 예시(GIF) ----------
+  function hasGif(g) { return g.items.some(function (it) { return it.gif; }); }
+  function motionInner(g) {
+    var it = g.items[state.sel[g.key]];
+    if (!it || !it.gif) return '<p class="motion-h">위에서 고르면 <b>움직이는 예시</b>가 여기에 나와요</p>';
+    return '<p class="motion-h">움직이는 예시: 「' + esc(it.label) + '」</p>' +
+      '<div class="motion-box"><img src="' + IMG + encodeURI(it.gif) + '" alt="' + esc(it.label) + ' 움직이는 예시 (AI로 만든 그림)"></div>' +
+      '<p class="motion-note">AI로 만든 예시예요. 만들 때마다 모습이 조금씩 달라요.</p>';
+  }
+  function updateMotion(card, key) {
+    var box = document.getElementById("motion-" + key);
+    if (!box) return;
+    var g = card.groups.filter(function (x) { return x.key === key; })[0];
+    if (g) box.innerHTML = motionInner(g);
+  }
+
   function typeBox(g) {
     return '<p class="or">원하는 것이 없으면 직접 쓰세요</p>' +
       '<input class="field" type="text" data-input="' + esc(g.key) + '" placeholder="직접 쓰기" value="' + esc(state.custom[g.key] || "") + '" aria-label="' + esc(g.q) + ' 직접 쓰기">';
@@ -411,7 +427,8 @@
             '<div class="' + cls.replace(/ n\d+/, " n" + extra.length) + '">' + extra.join("") + "</div></details>"
           : "") +
         (g === compareGroup(card) && (card.before || card.picNote) ? noteHtml(card) : "") +
-        (g.mode === "그림+직접입력" ? typeBox(g) : "");
+        (g.mode === "그림+직접입력" ? typeBox(g) : "") +
+        (hasGif(g) ? '<div class="motion" id="motion-' + esc(g.key) + '">' + motionInner(g) + "</div>" : "");
     } else {
       body = '<div class="opts btns">' + g.items.map(function (it, i) {
         return '<button type="button" class="opt" data-g="' + esc(g.key) + '" data-i="' + i + '" aria-pressed="' + (state.sel[g.key] === i) + '">' + esc(it.label) + "</button>";
@@ -544,6 +561,7 @@
       updateMoreNow(card);
       var cg = compareGroup(card);
       if (card.before && cg && cg.key === key) updateCompare(card);
+      updateMotion(card, key);
       saveState();
     };
     view.oninput = function (e) {

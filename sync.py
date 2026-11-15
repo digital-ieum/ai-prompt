@@ -89,6 +89,11 @@ for r in rows("선택지"):
         "desc": s(col(r, "설명")),
         "extra": s(col(r, "구분")) == "더 보기",
     })
+    _img = g["items"][-1]["img"]
+    if _img and "/" not in _img:
+        _gif = "gif/" + _img.rsplit(".", 1)[0] + ".gif"  # 같은 이름의 움직이는 그림이 있으면 함께 보여 줌
+        if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(out)), "img", _gif)):
+            g["items"][-1]["gif"] = _gif
     if g["mode"] in ("직접입력", "긴글입력") and g["items"][0]["text"]:
         g["optional"] = True  # 비우면 '문장에 들어갈 말'이 대신 들어감
 
