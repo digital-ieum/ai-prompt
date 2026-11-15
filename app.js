@@ -472,6 +472,7 @@
     $("#view").innerHTML =
       '<a class="back" href="#/tab/' + t.id + '">' + esc(t.title) + " 목록으로</a>" +
       '<h1 class="lead">' + esc(card.title) + "</h1>" +
+      (card.banner ? '<p class="banner">' + esc(card.banner) + "</p>" : "") +
       '<ul class="chips">' + chips + "</ul>" +
       (card.note ? '<p class="tip">' + esc(card.note) + "</p>" : "") +
       (hasChoice
@@ -481,7 +482,12 @@
       qs +
       '<section class="result" aria-labelledby="rh"><h2 id="rh">완성된 문장</h2>' +
       '<p class="sentence" id="sentence"></p>' +
-      '<p class="how">' + how + "</p></section>" +
+      '<p class="how">' + how + "</p>" +
+      (card.after && card.after.length
+        ? '<div class="after-box"><h3>붙여넣은 다음</h3><ol class="after-steps">' +
+          card.after.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ol></div>"
+        : "") +
+      "</section>" +
       flowBox(card) +
       '<nav class="card-end" aria-label="다른 곳으로 가기">' +
       '<a class="end-btn" href="#/tab/' + t.id + '">' + esc(t.title) + ' 목록으로</a>' +
@@ -619,7 +625,8 @@
     copyText(state.plain).then(function () {
       btn.textContent = "복사했어요";
       btn.classList.add("done");
-      toast("복사했어요. 앱을 열고 붙여넣으세요. 다 쓰면 휴대폰 [뒤로] 버튼으로 여기로 돌아와요.", null, null, 5000);
+      var cc = SITE.cards.filter(function (c) { return c.id === state.card; })[0];
+      toast(cc && cc.copyMsg ? cc.copyMsg + " 다 쓰면 휴대폰 [뒤로] 버튼으로 여기로 돌아와요." : "복사했어요. 앱을 열고 붙여넣으세요. 다 쓰면 휴대폰 [뒤로] 버튼으로 여기로 돌아와요.", null, null, cc && cc.copyMsg ? 6500 : 5000);
       setTimeout(function () { btn.textContent = "문장 복사하기"; btn.classList.remove("done"); }, 2600);
     }, function () {
       toast("복사가 안 됐어요. 완성된 문장을 꾹 눌러 직접 복사하세요.");
@@ -652,6 +659,7 @@
 
   function route() {
     var zd = $("#zoom"); if (zd && zd.open) zd.close();
+    var tt = $("#toast"); if (tt) { clearTimeout(toastTimer); tt.classList.remove("show"); }
     var key = location.hash || "#/";
     var h = location.hash.replace(/^#\/?/, "").split("/");
     var isCard = h[0] === "card";

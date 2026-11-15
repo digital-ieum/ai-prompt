@@ -134,6 +134,9 @@ for r in rows("카드"):
         "picNote": s(col(r, "그림 아래 설명")),
         "followup": s(col(r, "이어서 쓰기")) == "예",
         "flowSet": s(col(r, "Flow 설정")),
+        "banner": s(col(r, "맨 위 안내")),
+        "after": [x.strip() for x in s(col(r, "붙여넣은 뒤 할 일")).split("|") if x.strip()],
+        "copyMsg": s(col(r, "복사 후 알림")),
         "groups": groups,
     })
 tab_rank = {t["id"]: i for i, t in enumerate(tabs)}

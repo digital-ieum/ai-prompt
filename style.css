@@ -420,3 +420,11 @@ body.typing.has-dock { padding-bottom: 0; }
 .card-end { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 24px 0 8px; }
 .end-btn { display: flex; align-items: center; justify-content: center; min-height: 56px; padding: 8px 12px; border-radius: var(--r-md); background: var(--paper); box-shadow: var(--shadow); color: var(--blue); font-size: 17px; font-weight: 700; text-align: center; text-decoration: none; }
 .end-btn.home { background: var(--navy); color: #fff; }
+
+/* v0.6.4 맨 위 안내 · 붙여넣은 다음 */
+.banner { margin: 0 0 14px; padding: 14px 16px; border-radius: var(--r-sm); background: var(--sky); border-left: 6px solid var(--blue); color: var(--navy); font-size: 18px; font-weight: 700; line-height: 1.5; }
+.after-box { margin-top: 14px; padding: 14px 16px; border-radius: var(--r-sm); background: var(--paper); border: 2px solid var(--sky-2); }
+.after-box h3 { margin: 0 0 8px; font-size: 18px; font-weight: 800; color: var(--navy); }
+.after-steps { margin: 0; padding: 0; list-style: none; counter-reset: st; }
+.after-steps li { position: relative; padding-left: 38px; margin: 8px 0; font-size: 17px; line-height: 1.55; color: var(--ink); counter-increment: st; }
+.after-steps li::before { content: counter(st); position: absolute; left: 0; top: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--blue); color: #fff; font-weight: 800; font-size: 16px; display: grid; place-items: center; }
