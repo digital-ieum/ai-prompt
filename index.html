@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 프롬프트 체험관</title>
+<meta name="description" content="고르기만 하면 AI에게 부탁할 문장이 완성됩니다. 복사해서 제미나이, 챗GPT, Flow에 붙여넣으세요.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="디지털이음">
+<meta property="og:title" content="AI 프롬프트 체험관">
+<meta property="og:description" content="고르기만 하면 AI에게 보낼 문장이 완성돼요. 복사해서 제미나이·챗GPT·Flow에 붙여넣으세요.">
+<meta property="og:image" content="https://digital-ieum.github.io/ai-prompt/og.png">
+<meta property="og:image:width" content="800">
+<meta property="og:image:height" content="400">
+<meta property="og:url" content="https://digital-ieum.github.io/ai-prompt/">
+<meta name="theme-color" content="#1b2a40">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="inapp" id="inapp" hidden>
+  <div class="wrap inapp-row">
+    <p>카카오톡 안에서 열렸어요. <b>앱 열기</b>가 안 되면 다른 브라우저로 여세요.</p>
+    <a class="inapp-btn" id="inappBtn" href="#">다른 브라우저로 열기</a>
+    <button type="button" class="inapp-close" id="inappClose" aria-label="안내 닫기">닫기</button>
+  </div>
+  <p class="wrap inapp-help" id="inappHelp"></p>
+</div>
+<header class="top">
+  <div class="wrap top-row">
+    <a class="brand" href="#/"><img src="img/brand/logo_navy.png" alt="디지털이음" width="103" height="26"><span>AI 프롬프트 체험관</span></a>
+    <a class="menu-btn" id="menuBtn" href="#/" hidden>전체 메뉴</a>
+  </div>
+  <nav class="wrap crumb" id="crumb" aria-label="현재 위치" hidden></nav>
+</header>
+
+<main class="wrap" id="view" tabindex="-1"></main>
+
+<footer class="foot">
+  <div class="wrap">
+    <section class="brag" id="brag" hidden aria-labelledby="bragH">
+      <h2 id="bragH">작품 자랑방</h2>
+      <p id="bragText"></p>
+      <a class="brag-btn" id="bragBtn" href="#" target="_blank" rel="noopener">작품 자랑방 열기</a>
+    </section>
+    <h2>꼭 알아 두세요</h2>
+    <ul id="notices"></ul>
+  </div>
+  <div class="foot-band">
+    <div class="wrap">
+      <img class="foot-logo" src="img/brand/logo_white.png" alt="디지털이음" width="111" height="28">
+      <p class="foot-who" id="footWho"></p>
+      <p class="credit" id="credit"></p>
+    </div>
+  </div>
+</footer>
+
+<div class="dock" id="dock" hidden>
+  <div class="wrap dock-row">
+    <button type="button" class="btn-copy" id="copyBtn">문장 복사하기</button>
+    <div class="dock-apps" id="dockApps"></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<dialog class="zoom" id="zoom" aria-labelledby="zoomH">
+  <div class="zoom-head">
+    <h2 id="zoomH">크게 보기</h2>
+    <button type="button" class="zoom-close" id="zoomClose">닫기</button>
+  </div>
+  <div class="zoom-body" id="zoomBody"></div>
+</dialog>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
