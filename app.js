@@ -614,19 +614,29 @@
     toastTimer = setTimeout(function () { t.classList.remove("show"); }, ms || (action ? 6000 : 3500));
   }
 
-  function copyText(text) {
-    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
-    return new Promise(function (ok, fail) {
-      var ta = document.createElement("textarea");
-      ta.value = text;
-      ta.setAttribute("readonly", "");
-      ta.style.position = "fixed";
-      ta.style.opacity = "0";
-      document.body.appendChild(ta);
+  // 예전 방식(execCommand)을 먼저 누른 순간에 바로 시도하고, 안 되면 새 방식(Clipboard API)을 시도한다.
+  // 카카오톡 같은 앱 안 브라우저는 새 방식을 막는 경우가 많아서, 새 방식만 쓰면 복사가 실패한다.
+  function legacyCopy(text) {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.cssText = "position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;font-size:16px";
+    document.body.appendChild(ta);
+    var ok = false;
+    try {
+      ta.focus({ preventScroll: true });
       ta.select();
-      try { document.execCommand("copy") ? ok() : fail(); } catch (e) { fail(e); }
-      document.body.removeChild(ta);
-    });
+      ta.setSelectionRange(0, text.length);
+      ok = document.execCommand("copy");
+    } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    var btn = $("#copyBtn"); if (btn) btn.focus({ preventScroll: true });
+    return ok;
+  }
+  function copyText(text) {
+    if (legacyCopy(text)) return Promise.resolve();
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    return Promise.reject(new Error("copy failed"));
   }
 
   $("#copyBtn").addEventListener("click", function () {
