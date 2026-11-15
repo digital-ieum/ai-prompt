@@ -178,7 +178,7 @@
       '<nav class="next" aria-label="다음 순서">' +
       (next
         ? '<a href="#/tab/' + next.id + '"><span>다음 순서</span><b>' + esc(next.title) + "</b></a>"
-        : '<a href="#/"><span>다 둘러보셨어요</span><b>전체 메뉴로</b></a>') +
+        : '<a href="#/"><span>다 둘러보셨어요</span><b>처음 화면으로</b></a>') +
       "</nav>";
   }
 
@@ -358,6 +358,7 @@
       noteHtml(card);
     if (typeof dlg.showModal === "function") {
       dlg.showModal();
+      try { history.pushState({ zoom: 1 }, ""); } catch (e) {}
       $("#zoomClose").focus();
     } else {
       window.open(src(a.file), "_blank");
@@ -481,7 +482,10 @@
       '<section class="result" aria-labelledby="rh"><h2 id="rh">완성된 문장</h2>' +
       '<p class="sentence" id="sentence"></p>' +
       '<p class="how">' + how + "</p></section>" +
-      flowBox(card);
+      flowBox(card) +
+      '<nav class="card-end" aria-label="다른 곳으로 가기">' +
+      '<a class="end-btn" href="#/tab/' + t.id + '">' + esc(t.title) + ' 목록으로</a>' +
+      '<a class="end-btn home" href="#/">처음 화면으로</a></nav>';
     showDock(apps, card);
     applyRules(card);
     updateSentence(card);
@@ -569,7 +573,7 @@
   }
 
   var toastTimer;
-  function toast(msg, actionLabel, action) {
+  function toast(msg, actionLabel, action, ms) {
     var t = $("#toast");
     t.textContent = msg;
     t.classList.toggle("has-action", !!action);
@@ -583,7 +587,7 @@
     }
     t.classList.add("show");
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { t.classList.remove("show"); }, action ? 6000 : 2600);
+    toastTimer = setTimeout(function () { t.classList.remove("show"); }, ms || (action ? 6000 : 3500));
   }
 
   function copyText(text) {
@@ -615,7 +619,7 @@
     copyText(state.plain).then(function () {
       btn.textContent = "복사했어요";
       btn.classList.add("done");
-      toast("복사했어요. 앱을 열고 붙여넣으세요.");
+      toast("복사했어요. 앱을 열고 붙여넣으세요. 다 쓰면 휴대폰 [뒤로] 버튼으로 여기로 돌아와요.", null, null, 5000);
       setTimeout(function () { btn.textContent = "문장 복사하기"; btn.classList.remove("done"); }, 2600);
     }, function () {
       toast("복사가 안 됐어요. 완성된 문장을 꾹 눌러 직접 복사하세요.");
@@ -623,8 +627,36 @@
   });
 
   // ---------- 주소 이동 ----------
+  // 목록·처음 화면에서 보던 자리를 기억했다가, 카드에서 돌아오면 그 자리로
+  var listPos = {}, lastWasCard = false, routing = false, curKey = "#/";
+  try { history.scrollRestoration = "manual"; } catch (e) {}
+  window.addEventListener("scroll", function () {
+    if (!routing && !lastWasCard) listPos[curKey] = window.scrollY;
+  }, { passive: true });
+  // 키보드가 올라와 있을 때만 아래 고정 막대를 숨겨 글자 칸을 가리지 않게.
+  // 키보드를 내리면(휴대폰 [뒤로]) 글자 칸에 커서가 남아 있어도 막대가 다시 보인다.
+  var fullH = 0, fullW = 0;
+  function viewH() { return window.visualViewport ? window.visualViewport.height : window.innerHeight; }
+  function checkKeyboard() {
+    if (window.innerWidth !== fullW) { fullW = window.innerWidth; fullH = 0; }
+    fullH = Math.max(fullH, window.innerHeight, viewH());
+    var a = document.activeElement;
+    var inField = !!(a && a.matches && a.matches("input.field, textarea.field"));
+    document.body.classList.toggle("typing", inField && viewH() < fullH - 150);
+  }
+  document.addEventListener("focusin", function () { setTimeout(checkKeyboard, 300); });
+  document.addEventListener("focusout", function () { setTimeout(checkKeyboard, 50); });
+  window.addEventListener("resize", checkKeyboard);
+  if (window.visualViewport) window.visualViewport.addEventListener("resize", checkKeyboard);
+  checkKeyboard();
+
   function route() {
+    var zd = $("#zoom"); if (zd && zd.open) zd.close();
+    var key = location.hash || "#/";
     var h = location.hash.replace(/^#\/?/, "").split("/");
+    var isCard = h[0] === "card";
+    var y = !isCard && lastWasCard && listPos[key] ? listPos[key] : 0;
+    routing = true;
     if (h[0] === "card" && h[1]) {
       renderCard(decodeURIComponent(h[1]));
     } else if (h[0] === "tab" && h[1]) {
@@ -634,7 +666,10 @@
       state = null;
       renderHome();
     }
-    window.scrollTo(0, 0);
+    window.scrollTo(0, y);
+    requestAnimationFrame(function () { if (y) window.scrollTo(0, y); routing = false; });
+    lastWasCard = isCard;
+    curKey = key;
     $("#view").focus({ preventScroll: true });
   }
 
@@ -666,8 +701,15 @@
 
   // ---------- 크게 보기 닫기 ----------
   var zoom = $("#zoom");
-  $("#zoomClose").addEventListener("click", function () { zoom.close(); });
-  zoom.addEventListener("click", function (e) { if (e.target === zoom) zoom.close(); });
+  // 크게 보기는 기록을 하나 남겨서, 휴대폰 [뒤로]를 누르면 그림부터 닫히게 한다
+  function closeZoom() {
+    if (!zoom.open) return;
+    if (history.state && history.state.zoom) history.back(); else zoom.close();
+  }
+  $("#zoomClose").addEventListener("click", closeZoom);
+  zoom.addEventListener("click", function (e) { if (e.target === zoom) closeZoom(); });
+  zoom.addEventListener("cancel", function (e) { e.preventDefault(); closeZoom(); });
+  window.addEventListener("popstate", function () { if (zoom.open) zoom.close(); });
 
   // ---------- 바닥 ----------
   $("#notices").innerHTML = SITE.notices.map(function (n) { return "<li>" + esc(n) + "</li>"; }).join("");
