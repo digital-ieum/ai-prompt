@@ -5,6 +5,7 @@
 - 상태가 '보관'인 탭과 카드는 사이트에 넣지 않는다.
 - 보관한 탭의 카드도 함께 빠진다.
 """
+import datetime
 import json
 import re
 import os
@@ -21,6 +22,9 @@ wb = load_workbook(src, data_only=True)
 def s(v):
     if v is None:
         return ""
+    if isinstance(v, (datetime.datetime, datetime.date)):
+        # 구글 시트가 '1-1' 같은 카드번호를 날짜(1월 1일)로 바꿔 저장해도 원래 글자로 되돌린다
+        return f"{v.month}-{v.day}"
     if isinstance(v, float) and v.is_integer():
         v = int(v)
     return str(v).strip()
