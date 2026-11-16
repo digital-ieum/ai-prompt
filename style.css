@@ -519,3 +519,10 @@ body.typing.has-dock { padding-bottom: 0; }
 .hero-v2 .hero-photo figcaption { position: absolute; left: 22px; bottom: 12px; font-size: 14px; color: rgba(255,255,255,.72); }
 .hero-v2:has(.hero-photo) { background: #131d31; }
 @media (min-width: 640px) { .hero.hero-v2:has(.hero-photo) { display: block; } .hero-v2 .hero-photo { margin: 18px -36px -32px; } }
+/* v0.8.2: 대표 그림을 제목 아래로, 순서 안내와 시작 단추를 그 아래로 */
+.hero-v2 .hero-photo { margin: 4px -22px 0; }
+.hero-v2 .hero-photo img { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 20%, #000 82%, transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 20%, #000 82%, transparent 100%); }
+.hero-v2 .hero-photo figcaption { left: auto; right: 22px; bottom: 6px; }
+.hero-v2:has(.hero-photo) .hero-sub { margin-bottom: 0; }
+.hero-v2:has(.hero-photo) .how3 { margin-top: 6px; }
+@media (min-width: 640px) { .hero-v2 .hero-photo { margin: 4px -36px 0; } }

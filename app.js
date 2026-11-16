@@ -152,9 +152,9 @@
       '<section class="hero hero-v2' + (photo ? "" : " hero-plain") + '" aria-labelledby="heroH">' +
       '<h1 class="lead" id="heroH">고르기만 하면 AI에게 보낼 문장이 완성돼요</h1>' +
       '<p class="hero-sub">질문에 답하듯 고르기만 하세요.</p>' +
+      photo +
       '<ol class="how3"><li><b>1</b>고르기</li><li><b>2</b>복사하기</li><li><b>3</b>붙여넣기</li></ol>' +
       '<a class="hero-start" href="#/tab/' + SITE.tabs[0].id + '">체험 시작하기</a>' +
-      photo +
       "</section>";
     stages.forEach(function (s) {
       html += '<section class="stage" aria-labelledby="st' + s.stage + '">' +
