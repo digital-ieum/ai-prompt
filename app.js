@@ -171,6 +171,12 @@
       '<img class="page-art" src="img/brand/mark_navy.png" alt="">' +
       '<h1 class="lead">' + esc(t.title) + "</h1>" +
       '<p class="sub">' + esc(t.desc) + "</p>" +
+      ((t.guide || (t.steps && t.steps.length))
+        ? '<section class="after-box tab-guide"><h3>만드는 순서</h3>' +
+          (t.guide ? '<p class="tab-guide-lead">' + esc(t.guide) + "</p>" : "") +
+          (t.steps && t.steps.length ? '<ol class="after-steps">' + t.steps.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ol>" : "") +
+          "</section>"
+        : "") +
       '<ul class="cards' + (list.length === 6 ? " six" : "") + '">' + list.map(function (c) {
         return '<li><a class="card-link" href="#/card/' + c.id + '">' +
           thumb(c.img, c.icon || t.icon) +

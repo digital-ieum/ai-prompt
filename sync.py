@@ -63,6 +63,8 @@ for r in rows("탭"):
         "order": int(s(col(r, "단계 안 순서")) or 99),
         "desc": s(col(r, "한 줄 설명")),
         "icon": s(col(r, "아이콘")) or "chat",
+        "guide": s(col(r, "탭 안내")),
+        "steps": [x.strip() for x in s(col(r, "탭 순서")).split("|") if x.strip()],
     })
 tabs.sort(key=lambda t: (t["stage"], t["order"]))
 tab_by_key = {t["key"]: t for t in tabs}
