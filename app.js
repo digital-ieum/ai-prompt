@@ -143,20 +143,21 @@
     var works = SITE.homeWorks || [];
     var photo = works.length
       ? '<figure class="hero-works"><ul>' + works.map(function (w) {
-          return '<li><img src="' + src(w[1], true) + '" alt="' + esc(w[0]) + ' 예시. AI로 만든 그림입니다."><span>' + esc(w[0]) + "</span></li>";
+          return '<li><span class="hw-pic"><img src="' + src(w[1], true) + '" alt="' + esc(w[0]) + ' 예시. AI로 만든 그림입니다."></span><span class="hw-name">' + esc(w[0]) + "</span></li>";
         }).join("") + "</ul><figcaption>체험관에서 만들 수 있는 것들 · AI로 만든 예시</figcaption></figure>"
       : (SITE.hero
         ? '<figure class="hero-photo"><img src="' + src(SITE.hero) + '" alt="두 사람이 함께 휴대폰으로 AI를 써 보는 모습. AI로 만든 그림입니다." width="1200" height="800"></figure>'
         : "");
     var apps = Object.keys(SITE.links || {}).filter(function (k) { return SITE.links[k]; });
     var html =
-      '<section class="hero" aria-labelledby="heroH">' + HERO_ART +
+      '<section class="hero hero-v2" aria-labelledby="heroH">' +
       '<img class="hero-mark" src="img/brand/mark_white.png" alt="">' +
       '<p class="eyebrow">디지털이음 AI 실습</p>' +
       '<h1 class="lead" id="heroH">고르기만 하면 AI에게 보낼 문장이 완성돼요</h1>' +
-      '<p class="hero-sub">글을 쓰지 않아도 됩니다. 질문에 답하듯 고르면 제미나이·챗GPT·Flow에 넣을 문장이 만들어집니다.</p>' +
-      photo +
+      '<p class="hero-sub">글을 쓰지 않아도 돼요. 질문에 답하듯 고르기만 하세요.</p>' +
       '<ol class="how3"><li><b>1</b>고르기</li><li><b>2</b>복사하기</li><li><b>3</b>붙여넣기</li></ol>' +
+      '<a class="hero-start" href="#/tab/' + SITE.tabs[0].id + '">체험 시작하기</a>' +
+      photo +
       "</section>" +
       '<ul class="facts" aria-label="체험관 한눈에 보기">' +
       "<li><b>" + SITE.cards.length + "</b><span>실습 카드</span></li>" +
