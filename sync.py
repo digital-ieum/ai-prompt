@@ -188,6 +188,16 @@ with open(out, "w", encoding="utf-8") as f:
     f.write("window.SITE = ")
     json.dump(site, f, ensure_ascii=False, separators=(",", ":"))
     f.write(";\n")
+# index.html의 파일 주소에 버전을 붙여, 휴대폰이 예전 파일을 붙잡고 있지 않게 한다
+_idx = os.path.join(os.path.dirname(os.path.abspath(out)), "index.html")
+if version and os.path.exists(_idx):
+    _v = version.lstrip("v").split()[0]
+    with open(_idx, encoding="utf-8") as f:
+        _h = f.read()
+    _h2 = re.sub(r'(href="style\.css|src="data\.js|src="app\.js)(\?v=[^"]*)?"', lambda m: m.group(1) + "?v=" + _v + '"', _h)
+    if _h2 != _h:
+        with open(_idx, "w", encoding="utf-8") as f:
+            f.write(_h2)
 print(f"탭 {len(tabs)}개, 카드 {len(cards)}개, 선택지 묶음 {sum(len(c['groups']) for c in cards)}개 -> {out}")
 for w in warnings:
     print("확인 필요:", w)
