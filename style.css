@@ -435,3 +435,6 @@ body.typing.has-dock { padding-bottom: 0; }
 .motion-box { max-width: 300px; margin: 0 auto; border-radius: var(--r-sm); overflow: hidden; background: #fff; }
 .motion-box img { display: block; width: 100%; height: auto; }
 .motion-note { margin: 10px 0 0; font-size: 15px; color: var(--muted); }
+
+/* v0.7.3 앱으로 하려면 안내 */
+.how-app { display: block; margin-top: 8px; padding: 10px 12px; border-radius: var(--r-sm); background: var(--paper); border: 1px solid var(--line); color: var(--ink); font-size: 16px; }

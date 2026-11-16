@@ -472,10 +472,15 @@
     var how = card.followup
       ? "<strong>복사하기</strong>를 누른 다음, <strong>답을 받았던 대화</strong>로 돌아가 글자 칸을 꾹 눌러 <strong>붙여넣기</strong> 하세요. 새 대화를 열면 앞의 답이 없어요."
       : card.photo && card.flowSet === "영상"
-      ? "<strong>복사하기</strong>를 누르고 Flow를 연 다음, 글자 칸 위의 <strong>시작</strong> 칸을 눌러 사진을 고르고(휴대폰 사진은 오른쪽 위 <strong>올리기</strong> 버튼) 글자 칸을 꾹 눌러 <strong>붙여넣기</strong> 하세요."
+      ? "<strong>복사하기</strong>를 누르고 아래 <strong>Flow 사이트 열기</strong>를 누른 다음, 글자 칸 위의 <strong>시작</strong> 칸을 눌러 사진을 고르고(휴대폰 사진은 오른쪽 위 <strong>올리기</strong> 버튼) 글자 칸을 꾹 눌러 <strong>붙여넣기</strong> 하세요."
       : card.photo
-      ? "<strong>복사하기</strong>를 누르고 앱을 연 다음, 먼저 <strong>+</strong>를 눌러 사진을 넣고 글자 칸을 꾹 눌러 <strong>붙여넣기</strong> 하세요."
-      : "<strong>복사하기</strong>를 누르고 앱을 연 다음, 글자 칸을 꾹 눌러 <strong>붙여넣기</strong> 하세요.";
+      ? "<strong>복사하기</strong>를 누르고 아래 <strong>사이트 열기</strong>를 누른 다음, 먼저 <strong>+</strong>를 눌러 사진을 넣고 글자 칸을 꾹 눌러 <strong>붙여넣기</strong> 하세요."
+      : "<strong>복사하기</strong>를 누르고 아래 <strong>사이트 열기</strong>를 누른 다음, 글자 칸을 꾹 눌러 <strong>붙여넣기</strong> 하세요.";
+    // 사이트 단추로는 휴대폰 앱이 열리지 않는다(2026-11-16 S25·크롬 시험). 앱은 직접 열도록 안내. Flow 앱 화면은 확인 전이라 안내하지 않음
+    if (!card.followup && card.app.indexOf("Flow") < 0) {
+      how += '<span class="how-app">앱으로 하려면: 휴대폰 화면에서 앱을 직접 눌러 열고, ' +
+        (card.photo ? "<strong>+</strong>로 사진을 넣은 뒤 " : "") + '글자 칸을 꾹 눌러 <strong>붙여넣기</strong> 하세요.</span>';
+    }
     var main = card.groups.filter(function (g) { return !g.more; });
     var more = card.groups.filter(function (g) { return g.more; });
     var n = 0;
@@ -588,12 +593,7 @@
       return;
     }
     $("#dockApps").innerHTML = apps.map(function (a) {
-      var url = SITE.links[a] || "#";
-      var intent = androidApp(url);
-      // 안드로이드: 앱이 있으면 앱으로, 없으면 웹 주소로 (새 탭 없이)
-      return intent
-        ? '<a class="btn-app" href="' + esc(intent) + '">' + esc(a) + "<br>열기</a>"
-        : '<a class="btn-app" href="' + esc(appHref(url)) + '" target="_blank" rel="noopener">' + esc(a) + "<br>열기</a>";
+      return '<a class="btn-app" href="' + esc(appHref(SITE.links[a] || "#")) + '" target="_blank" rel="noopener">' + esc(a) + "<br>사이트 열기</a>";
     }).join("");
   }
   function hideDock() {
@@ -659,7 +659,7 @@
       btn.textContent = "복사했어요";
       btn.classList.add("done");
       var cc = SITE.cards.filter(function (c) { return c.id === state.card; })[0];
-      toast(cc && cc.copyMsg ? cc.copyMsg + " 다 쓰면 휴대폰 [뒤로] 버튼으로 여기로 돌아와요." : "복사했어요. 앱을 열고 붙여넣으세요. 다 쓰면 휴대폰 [뒤로] 버튼으로 여기로 돌아와요.", null, null, cc && cc.copyMsg ? 6500 : 5000);
+      toast(cc && cc.copyMsg ? cc.copyMsg + " 다 쓰면 휴대폰 [뒤로] 버튼으로 여기로 돌아와요." : "복사했어요. 사이트나 앱을 열고 붙여넣으세요. 다 쓰면 휴대폰 [뒤로] 버튼으로 여기로 돌아와요.", null, null, cc && cc.copyMsg ? 6500 : 5000);
       setTimeout(function () { btn.textContent = "문장 복사하기"; btn.classList.remove("done"); }, 2600);
     }, function () {
       toast("복사가 안 됐어요. 완성된 문장을 꾹 눌러 직접 복사하세요.");
@@ -721,21 +721,6 @@
   var IN_KAKAO = UA.indexOf("kakaotalk") > -1;
   var IS_IOS = /iphone|ipad|ipod/.test(UA);
   function openExternal(url) { return "kakaotalk://web/openExternal?url=" + encodeURIComponent(url); }
-  // 안드로이드 휴대폰에서 바로 앱으로 여는 주소. 앱이 없으면 browser_fallback_url(웹 주소)로 간다.
-    var IS_ANDROID = UA.indexOf("android") > -1;
-  // 각 사이트의 assetlinks.json에 등록된 공식 앱 (2026-11-16 확인)
-  var ANDROID_APPS = {
-    "flow.google.com": "com.google.android.apps.labs.whisk", // Google Flow
-    "chatgpt.com": "com.openai.chatgpt",                     // ChatGPT
-    "gemini.google.com": "com.google.android.apps.bard"      // Google Gemini
-  };
-  function androidApp(url) {
-    var m = /^https:\/\/([^\/?#]+)(.*)$/.exec(url || "");
-    if (!IS_ANDROID || !m || !ANDROID_APPS[m[1]]) return "";
-    var rest = m[2] || "/";
-    return "intent://" + m[1] + rest + "#Intent;scheme=https;package=" + ANDROID_APPS[m[1]] +
-      ";S.browser_fallback_url=" + encodeURIComponent(url) + ";end";
-  }
   function appHref(url) { return IN_KAKAO && /^https?:/.test(url) ? openExternal(url) : url; }
 
   if (IN_KAKAO) {
