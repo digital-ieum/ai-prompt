@@ -172,6 +172,10 @@ site = {
     "makerTitle": common.get("만든 사람 소개", ""),
     "hero": web_names(common.get("홈 대표 그림", "")),
     "picCaption": common.get("그림 아래 공통 설명", ""),
+    "homeWorks": [[x.split(":", 1)[0].strip(), web_names(x.split(":", 1)[1].strip())] for x in common.get("홈 결과물 그림", "").split("|") if ":" in x],
+    "homeOrgs": [x.strip() for x in common.get("홈 출강 기관", "").split("|") if x.strip()],
+    "homeOrgsTitle": common.get("홈 출강 제목", ""),
+    "homeOrgsNote": common.get("홈 출강 안내", ""),
     "brag": {"url": common.get("작품 자랑방 링크", ""), "text": common.get("작품 자랑방 안내", "")},
     "flow": {
         kind: {
