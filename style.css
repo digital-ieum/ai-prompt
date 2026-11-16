@@ -514,3 +514,8 @@ body.typing.has-dock { padding-bottom: 0; }
 @media (min-width: 640px) { .hero.hero-plain { display: block; padding: 40px 40px 36px; } .hero-plain .how3, .hero-plain .hero-start { max-width: 460px; } }
 @media (max-width: 380px) { .hero-v2 .how3 li { font-size: 15.5px; gap: 5px; } .hero-v2 .lead { font-size: 27px; } }
 .hero-v2 .hero-photo { margin: 22px 0 0; border-radius: 14px; box-shadow: none; }
+.hero-v2 .hero-photo { position: relative; margin: 18px -22px -24px; border-radius: 0; background: none; box-shadow: none; }
+.hero-v2 .hero-photo img { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22%, #000 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 22%, #000 100%); }
+.hero-v2 .hero-photo figcaption { position: absolute; left: 22px; bottom: 12px; font-size: 14px; color: rgba(255,255,255,.72); }
+.hero-v2:has(.hero-photo) { background: #131d31; }
+@media (min-width: 640px) { .hero.hero-v2:has(.hero-photo) { display: block; } .hero-v2 .hero-photo { margin: 18px -36px -32px; } }
