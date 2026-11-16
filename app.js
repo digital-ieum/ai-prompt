@@ -49,8 +49,14 @@
   function src(file, small) { return (small ? SMALL : IMG) + encodeURI(file); }
   // 그림이 있으면 그림, 없거나 불러오지 못하면 아이콘. 그림은 잘리지 않게 전체를 보여 준다.
   function thumb(file, icon, alt) {
-    var img = file ? '<img src="' + src(file, true) + '" alt="' + esc(alt || "") + '" loading="lazy" onerror="this.remove()">' : "";
+    var img = file ? '<img src="' + src(file, true) + '" alt="' + esc(alt || "") + '" loading="lazy" onerror="this.remove()" onload="if(this.naturalHeight>this.naturalWidth*1.2)this.classList.add(\'tall\')">' : "";
     return '<div class="thumb"><span class="ico">' + svg(icon) + "</span>" + img + "</div>";
+  }
+  // 제목 앞의 ①~⑨는 작은 숫자 동그라미로 그림
+  function titleHtml(t) {
+    var m = /^([\u2460-\u2468])\s*/.exec(t || "");
+    if (!m) return esc(t);
+    return '<span class="no">' + (m[1].charCodeAt(0) - 0x245F) + "</span>" + esc(t.slice(m[0].length));
   }
   function picThumb(file) {
     var img = file ? '<img src="' + src(file, true) + '" alt="" loading="lazy" onerror="this.remove()">' : "";
@@ -180,7 +186,7 @@
       '<ul class="cards' + (list.length === 6 ? " six" : "") + '">' + list.map(function (c) {
         return '<li><a class="card-link" href="#/card/' + c.id + '">' +
           thumb(c.img, c.icon || t.icon) +
-          "<h3>" + esc(c.title) + "</h3><p>" + esc(c.desc) + "</p></a></li>";
+          "<h3>" + titleHtml(c.title) + "</h3><p>" + esc(c.desc) + "</p></a></li>";
       }).join("") + "</ul>" +
       (list.length ? "" : '<p class="sub">아직 준비 중인 카드예요.</p>') +
       '<nav class="next" aria-label="다음 순서">' +
@@ -512,7 +518,7 @@
     var hasChoice = card.groups.length > 0;
     $("#view").innerHTML =
       '<a class="back" href="#/tab/' + t.id + '">' + esc(t.title) + " 목록으로</a>" +
-      '<h1 class="lead">' + esc(card.title) + "</h1>" +
+      '<h1 class="lead">' + titleHtml(card.title) + "</h1>" +
       (card.banner ? '<p class="banner">' + esc(card.banner) + "</p>" : "") +
       '<ul class="chips">' + chips + "</ul>" +
       (card.note ? '<p class="tip">' + esc(card.note) + "</p>" : "") +
