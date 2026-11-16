@@ -145,7 +145,7 @@
       ? '<figure class="hero-works"><ul>' + works.map(function (w) {
           return '<li><span class="hw-pic"><img src="' + src(w[1], true) + '" alt="' + esc(w[0]) + ' 예시. AI로 만든 그림입니다."></span><span class="hw-name">' + esc(w[0]) + "</span></li>";
         }).join("") + "</ul><figcaption>체험관에서 만들 수 있는 것들 · AI로 만든 예시</figcaption></figure>"
-      : (SITE.hero && SITE.homeHeroPhoto
+      : (SITE.hero
         ? '<figure class="hero-photo"><img src="' + src(SITE.hero) + '" alt="휴대폰 화면을 손가락으로 누르는 어르신의 옆모습. AI로 만든 그림입니다." width="1200" height="800"><figcaption>AI로 만든 그림</figcaption></figure>'
         : "");
     var html =
