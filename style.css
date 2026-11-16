@@ -6,11 +6,11 @@
   --navy-deep: #132033;
   --blue: #24477a;
   --blue-2: #2e5c9a;
-  --sky: #e6f0fb;
-  --sky-2: #d9e8f8;
-  --bg: #f3f6fa;
+  --sky: #ece7dc;
+  --sky-2: #e2dbcc;
+  --bg: #f7f3ec;
   --paper: #ffffff;
-  --line: #e0e7ef;
+  --line: #e9e2d5;
   --warn-bg: #fff6e6;
   --warn-ink: #7a4b00;
   --shadow: 0 2px 12px rgba(27, 42, 64, 0.07);
@@ -123,7 +123,7 @@ main:focus, main:focus-visible { outline: none; }
 /* 그림 칸: 그림 전체를 보여 준다(아래쪽 AI 표시가 잘리지 않게) */
 .thumb {
   position: relative; aspect-ratio: 1 / 1; overflow: hidden;
-  background: linear-gradient(160deg, var(--sky) 0%, #f6f9fd 100%);
+  background: linear-gradient(160deg, var(--sky) 0%, #faf7f1 100%);
   display: flex; align-items: center; justify-content: center;
 }
 .thumb.wide { aspect-ratio: 3 / 2; }
@@ -147,7 +147,7 @@ main:focus, main:focus-visible { outline: none; }
 /* 내가 고른 것: 위에 붙어 있는 줄 */
 .picked {
   position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 8px;
-  margin: 0 -16px 12px; padding: 10px 16px; background: rgba(243,246,250,.96);
+  margin: 0 -16px 12px; padding: 10px 16px; background: rgba(247,243,236,.96);
   -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); font-size: 15px;
 }
 .picked b { flex: none; color: var(--blue); }
