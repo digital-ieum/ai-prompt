@@ -490,3 +490,27 @@ body.typing.has-dock { padding-bottom: 0; }
 
 .chips li.fresh { background: #e3efe2; color: #23543a; }
 .typed-note { margin: 10px 0 0; padding: 10px 14px; border-radius: var(--r-sm); background: var(--warn-bg); color: var(--warn-ink); font-size: 16px; font-weight: 700; line-height: 1.5; }
+
+/* ---------- v0.8.1 첫 화면 정돈: 덜어내고 틀 맞추기 ---------- */
+.hero-v2 { box-shadow: 0 6px 18px rgba(27, 42, 64, 0.12); padding: 30px 22px 24px; }
+.hero-v2 .lead { font-size: 29px; max-width: 10.5em; }
+.hero-v2 .hero-sub { margin: 14px 0 22px; font-size: 18px; }
+.hero-v2 .how3 { gap: 0; margin-bottom: 22px; padding: 14px 0; border-top: 1px solid rgba(255,255,255,.22); border-bottom: 1px solid rgba(255,255,255,.22); }
+.hero-v2 .how3 li { min-height: 0; padding: 0 2px; border-radius: 0; background: none; box-shadow: none; color: #fff; font-size: 17px; gap: 7px; }
+.hero-v2 .how3 li + li { border-left: 1px solid rgba(255,255,255,.22); }
+.hero-v2 .how3 b { width: 24px; height: 24px; background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.5); font-size: 14.5px; }
+.hero-v2 .hero-start { min-height: 60px; border-radius: 14px; box-shadow: 0 4px 12px rgba(5,12,28,.28); }
+.stage { margin-top: 32px; }
+.stage h2 { font-size: 22px; margin-bottom: 14px; padding-left: 2px; }
+.stage h2::before { content: none; }
+.tiles { gap: 12px; }
+.tile { min-height: 96px; padding: 16px; border: 1px solid var(--edge); box-shadow: none; border-radius: 16px; }
+.tile:hover { box-shadow: 0 0 0 2px var(--sky-2); }
+.tile-ico { width: 64px; height: 64px; border-radius: 12px; border: 1px solid var(--edge); background: var(--bg); }
+.tile-txt { flex: 1; }
+.tile-txt b { font-size: 20.5px; }
+.tile-txt span { font-size: 16.5px; line-height: 1.45; }
+.tile-go { flex: none; width: 10px; height: 10px; margin: 0 4px 0 2px; border-top: 2.5px solid var(--blue); border-right: 2.5px solid var(--blue); transform: rotate(45deg); }
+@media (min-width: 640px) { .hero.hero-plain { display: block; padding: 40px 40px 36px; } .hero-plain .how3, .hero-plain .hero-start { max-width: 460px; } }
+@media (max-width: 380px) { .hero-v2 .how3 li { font-size: 15.5px; gap: 5px; } .hero-v2 .lead { font-size: 27px; } }
+.hero-v2 .hero-photo { margin: 22px 0 0; border-radius: 14px; box-shadow: none; }
