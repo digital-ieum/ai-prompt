@@ -64,7 +64,7 @@
   // ---------- 고른 것 기억하기 (이 창을 닫기 전까지) ----------
   function storeKey(id) { return "ap-card-" + id; }
   function freshState(card) {
-    var st = { card: card.id, sel: {}, custom: {}, gender: "여", moreOpen: false, plain: "", missing: [] };
+    var st = { card: card.id, sel: {}, custom: {}, gender: "여", moreOpen: false, plain: "", missing: [], edited: null };
     card.groups.forEach(function (g) { st.sel[g.key] = 0; });
     return st;
   }
@@ -80,6 +80,7 @@
         });
         if (saved.gender === "남") st.gender = "남";
         st.moreOpen = !!saved.moreOpen;
+        if (typeof saved.edited === "string") st.edited = saved.edited;
       }
     } catch (e) {}
     return st;
@@ -87,7 +88,7 @@
   function saveState() {
     if (!state) return;
     try {
-      sessionStorage.setItem(storeKey(state.card), JSON.stringify({ sel: state.sel, custom: state.custom, gender: state.gender, moreOpen: state.moreOpen }));
+      sessionStorage.setItem(storeKey(state.card), JSON.stringify({ sel: state.sel, custom: state.custom, gender: state.gender, moreOpen: state.moreOpen, edited: state.edited }));
     } catch (e) {}
   }
   function clearState(id) { try { sessionStorage.removeItem(storeKey(id)); } catch (e) {} }
@@ -263,8 +264,12 @@
     state.plain = s.plain;
     state.missing = s.missing;
     var box = $("#sentence");
-    box.innerHTML = s.html;
-    if (changedKey && !REDUCE) {
+    var edited = state.edited !== null && state.edited !== undefined;
+    box.classList.toggle("edited", edited);
+    box.innerHTML = edited ? esc(state.edited).replace(/\n/g, "<br>") : s.html;
+    var eb = $("#editBtn"); if (eb) eb.textContent = edited ? "✏️ 고친 문장 다시 고치기" : "✏️ 문장 직접 고치기";
+    var en = $("#editNote"); if (en) en.hidden = !edited;
+    if (changedKey && !REDUCE && !edited) {
       box.querySelectorAll('mark[data-k="' + changedKey + '"]').forEach(function (mk) { mk.classList.add("flash"); });
     }
   }
@@ -363,6 +368,13 @@
     } else {
       window.open(src(a.file), "_blank");
     }
+  }
+
+  // 고친 문장이 있는데 고른 것을 바꾸면: 고친 문장은 그대로 두고 알려 준다
+  function editedNotice(card) {
+    toast("고른 것은 바뀌었지만, 직접 고친 문장은 그대로예요.", "새 문장으로", function () {
+      state.edited = null; updateSentence(card); saveState();
+    });
   }
 
   // ---------- 움직이는 예시(GIF) ----------
@@ -504,6 +516,13 @@
       qs +
       '<section class="result" aria-labelledby="rh"><h2 id="rh">완성된 문장</h2>' +
       '<p class="sentence" id="sentence"></p>' +
+      '<p class="edit-note" id="editNote" hidden>직접 고친 문장이에요. 복사하면 이 문장이 복사돼요.</p>' +
+      '<div class="edit-row" id="editRow"><button type="button" class="edit-btn" id="editBtn">✏️ 문장 직접 고치기</button></div>' +
+      '<div class="edit-box" id="editBox" hidden>' +
+      '<label class="edit-label" for="editArea">문장을 손가락으로 눌러 고치세요</label>' +
+      '<textarea class="field area edit-area" id="editArea" rows="7"></textarea>' +
+      '<div class="edit-actions"><button type="button" class="edit-done" id="editDone">다 고쳤어요</button>' +
+      '<button type="button" class="edit-undo" id="editUndo">처음 문장으로</button></div></div>' +
       '<p class="how">' + how + "</p>" +
       (card.after && card.after.length
         ? '<div class="after-box"><h3>붙여넣은 다음</h3><ol class="after-steps">' +
@@ -525,6 +544,27 @@
 
     var view = $("#view");
     view.onclick = function (e) {
+      if (e.target.closest("#editBtn")) {
+        $("#editArea").value = state.edited !== null && state.edited !== undefined ? state.edited : state.plain;
+        $("#editBox").hidden = false; $("#editRow").hidden = true;
+        $("#editArea").focus();
+        return;
+      }
+      if (e.target.closest("#editDone")) {
+        var v = $("#editArea").value.trim();
+        state.edited = v && v !== state.plain ? v : null;
+        $("#editBox").hidden = true; $("#editRow").hidden = false;
+        updateSentence(card); saveState();
+        if (state.edited !== null) toast("고친 문장을 저장했어요. 복사하면 고친 문장이 복사돼요.");
+        return;
+      }
+      if (e.target.closest("#editUndo")) {
+        state.edited = null;
+        $("#editBox").hidden = true; $("#editRow").hidden = false;
+        updateSentence(card); saveState();
+        toast("처음 문장으로 돌렸어요.");
+        return;
+      }
       if (e.target.closest("#resetBtn")) {
         var before = JSON.parse(JSON.stringify(state));
         clearState(card.id);
@@ -567,9 +607,16 @@
       var cg = compareGroup(card);
       if (card.before && cg && cg.key === key) updateCompare(card);
       updateMotion(card, key);
+      if (state.edited !== null && state.edited !== undefined) editedNotice(card);
       saveState();
     };
     view.oninput = function (e) {
+      if (e.target.id === "editArea") {
+        var ev = e.target.value.trim();
+        state.edited = ev && ev !== state.plain ? ev : null;
+        saveState();
+        return;
+      }
       var k = e.target.getAttribute("data-input");
       if (!k) return;
       state.custom[k] = e.target.value;
@@ -646,7 +693,8 @@
 
   $("#copyBtn").addEventListener("click", function () {
     var btn = this;
-    if (state.missing && state.missing.length) {
+    var useEdited = state.edited !== null && state.edited !== undefined && state.edited !== "";
+    if (!useEdited && state.missing && state.missing.length) {
       var f = document.querySelector('[data-input="' + state.missing[0] + '"]');
       toast("빈칸을 먼저 채워 주세요.");
       if (f) {
@@ -655,7 +703,7 @@
       }
       return;
     }
-    copyText(state.plain).then(function () {
+    copyText(useEdited ? state.edited : state.plain).then(function () {
       btn.textContent = "복사했어요";
       btn.classList.add("done");
       var cc = SITE.cards.filter(function (c) { return c.id === state.card; })[0];

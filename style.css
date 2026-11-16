@@ -438,3 +438,16 @@ body.typing.has-dock { padding-bottom: 0; }
 
 /* v0.7.3 앱으로 하려면 안내 */
 .how-app { display: block; margin-top: 8px; padding: 10px 12px; border-radius: var(--r-sm); background: var(--paper); border: 1px solid var(--line); color: var(--ink); font-size: 16px; }
+
+/* v0.7.3 문장 직접 고치기 */
+.edit-row { margin-top: 10px; }
+.edit-btn { min-height: 48px; padding: 10px 16px; border-radius: 999px; border: 2px solid var(--sky-2); background: var(--paper); color: var(--navy); font-size: 17px; font-weight: 700; }
+.edit-box { margin-top: 10px; padding: 12px; border-radius: var(--r-sm); background: var(--paper); border: 2px solid var(--blue); }
+.edit-label { display: block; margin-bottom: 8px; font-size: 16px; font-weight: 700; color: var(--navy); }
+.edit-area { width: 100%; font-size: 18px; line-height: 1.6; }
+.edit-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+.edit-done, .edit-undo { min-height: 52px; border-radius: var(--r-sm); font-size: 17px; font-weight: 700; }
+.edit-done { background: var(--navy); color: #fff; border: 0; }
+.edit-undo { background: var(--paper); color: var(--navy); border: 2px solid var(--sky-2); }
+.sentence.edited { border-left-color: #c0841a; }
+.edit-note { margin: 8px 0 0; font-size: 15px; color: var(--warn-ink); font-weight: 700; }
