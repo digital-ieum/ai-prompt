@@ -588,7 +588,12 @@
       return;
     }
     $("#dockApps").innerHTML = apps.map(function (a) {
-      return '<a class="btn-app" href="' + esc(appHref(SITE.links[a] || "#")) + '" target="_blank" rel="noopener">' + esc(a) + "<br>열기</a>";
+      var url = SITE.links[a] || "#";
+      var intent = androidApp(url);
+      // 안드로이드: 앱이 있으면 앱으로, 없으면 웹 주소로 (새 탭 없이)
+      return intent
+        ? '<a class="btn-app" href="' + esc(intent) + '">' + esc(a) + "<br>열기</a>"
+        : '<a class="btn-app" href="' + esc(appHref(url)) + '" target="_blank" rel="noopener">' + esc(a) + "<br>열기</a>";
     }).join("");
   }
   function hideDock() {
@@ -716,6 +721,17 @@
   var IN_KAKAO = UA.indexOf("kakaotalk") > -1;
   var IS_IOS = /iphone|ipad|ipod/.test(UA);
   function openExternal(url) { return "kakaotalk://web/openExternal?url=" + encodeURIComponent(url); }
+  // 안드로이드 휴대폰에서 바로 앱으로 여는 주소. 앱이 없으면 browser_fallback_url(웹 주소)로 간다.
+  // Flow 앱(Google Flow, Google Labs)은 flow.google.com 주소를 앱으로 열도록 등록되어 있다.
+  var IS_ANDROID = UA.indexOf("android") > -1;
+  var ANDROID_APPS = { "flow.google.com": "com.google.android.apps.labs.whisk" };
+  function androidApp(url) {
+    var m = /^https:\/\/([^\/?#]+)(.*)$/.exec(url || "");
+    if (!IS_ANDROID || !m || !ANDROID_APPS[m[1]]) return "";
+    var rest = m[2] || "/";
+    return "intent://" + m[1] + rest + "#Intent;scheme=https;package=" + ANDROID_APPS[m[1]] +
+      ";S.browser_fallback_url=" + encodeURIComponent(url) + ";end";
+  }
   function appHref(url) { return IN_KAKAO && /^https?:/.test(url) ? openExternal(url) : url; }
 
   if (IN_KAKAO) {
