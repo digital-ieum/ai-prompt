@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex"><title>앱 열기 시험</title>
+<style>
+body{font-family:system-ui,sans-serif;margin:0;padding:16px;background:#f3f6fa;color:#1b2533}
+h1{font-size:22px;margin:4px 0 6px}p{font-size:16px;margin:0 0 14px;line-height:1.5}
+h2{font-size:19px;margin:22px 0 8px;color:#1b2a40}
+a{display:block;margin:8px 0;padding:16px;border-radius:12px;background:#fff;border:2px solid #d9e8f8;color:#1b2a40;font-size:18px;font-weight:700;text-decoration:none}
+a small{display:block;font-weight:400;font-size:14px;color:#556170;margin-top:4px}
+</style></head><body>
+<h1>앱 열기 시험 페이지</h1>
+<p>단추를 하나씩 누르고, <b>앱이 열린 번호</b>를 알려 주세요. 하나 누를 때마다 휴대폰 [뒤로]로 돌아오세요.</p>
+<div id="list"></div>
+<script>
+var apps=[["Flow","https://flow.google.com","com.google.android.apps.labs.whisk"],
+["챗GPT","https://chatgpt.com","com.openai.chatgpt"],
+["제미나이","https://gemini.google.com","com.google.android.apps.bard"]];
+var h="";
+apps.forEach(function(a){
+ var n=a[0],u=a[1],p=a[2],host=u.replace("https://","");
+ var fb=";S.browser_fallback_url="+encodeURIComponent(u)+";end";
+ h+="<h2>"+n+"</h2>"+
+ '<a href="intent://'+host+'/#Intent;scheme=https;package='+p+fb+'">'+n+' 1<small>지금 사이트 방식</small></a>'+
+ '<a href="market://launch?id='+p+'">'+n+' 2<small>플레이스토어를 거쳐 열기</small></a>'+
+ '<a href="intent://launch?id='+p+'#Intent;scheme=market;package=com.android.vending'+fb+'">'+n+' 3<small>플레이스토어를 거쳐 열기(다른 형식)</small></a>'+
+ '<a href="intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package='+p+fb+'">'+n+' 4<small>앱 첫 화면 바로 열기</small></a>';
+});
+document.getElementById("list").innerHTML=h;
+</script></body></html>
