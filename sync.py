@@ -176,6 +176,8 @@ site = {
     "homeOrgs": [x.strip() for x in common.get("홈 출강 기관", "").split("|") if x.strip()],
     "homeOrgsTitle": common.get("홈 출강 제목", ""),
     "homeOrgsNote": common.get("홈 출강 안내", ""),
+    "afterDefault": [x.strip() for x in common.get("기본 붙여넣은 뒤 할 일", "").split("|") if x.strip()],
+    "typedNote": common.get("직접 쓴 내용 확인 안내", ""),
     "brag": {"url": common.get("작품 자랑방 링크", ""), "text": common.get("작품 자랑방 안내", "")},
     "flow": {
         kind: {

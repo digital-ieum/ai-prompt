@@ -486,3 +486,6 @@ body.typing.has-dock { padding-bottom: 0; }
 .orgs li { padding: 7px 12px; border-radius: 999px; background: var(--sky); color: var(--navy); font-size: 15px; font-weight: 700; }
 .orgs p { margin: 12px 0 0; font-size: 13.5px; color: var(--muted); line-height: 1.5; }
 @media (min-width: 640px) { .hero-works { grid-column: 2; grid-row: 1 / span 4; margin: 0; } .hero-works ul { grid-template-columns: repeat(2, 1fr); } }
+
+.chips li.fresh { background: #e3efe2; color: #23543a; }
+.typed-note { margin: 10px 0 0; padding: 10px 14px; border-radius: var(--r-sm); background: var(--warn-bg); color: var(--warn-ink); font-size: 16px; font-weight: 700; line-height: 1.5; }

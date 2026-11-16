@@ -514,6 +514,11 @@
     var apps = appsOf(card);
     var chips = apps.map(function (a) { return "<li>" + esc(a) + "에 붙여넣기</li>"; }).join("");
     if (card.photo) chips += '<li class="need">사진 넣기 필요</li>';
+    chips += card.followup ? '<li class="need">앞 대화에 이어서</li>' : '<li class="fresh">새 대화에서 시작</li>';
+    var after = (card.after && card.after.length) ? card.after
+      : ((!card.photo && !card.followup && card.app.indexOf("Flow") < 0) ? (SITE.afterDefault || []) : []);
+    var typedNote = (SITE.typedNote && card.groups.some(function (g) { return isInput(g) || hasTyping(g); }))
+      ? '<p class="typed-note">' + esc(SITE.typedNote) + "</p>" : "";
     var how = card.followup
       ? "<strong>복사하기</strong>를 누른 다음, <strong>답을 받았던 대화</strong>로 돌아가 글자 칸을 꾹 눌러 <strong>붙여넣기</strong> 하세요. 새 대화를 열면 앞의 답이 없어요."
       : card.photo && card.flowSet === "영상"
@@ -556,10 +561,10 @@
       '<textarea class="field area edit-area" id="editArea" rows="7"></textarea>' +
       '<div class="edit-actions"><button type="button" class="edit-done" id="editDone">다 고쳤어요</button>' +
       '<button type="button" class="edit-undo" id="editUndo">처음 문장으로</button></div></div>' +
-      '<p class="how">' + how + "</p>" +
-      (card.after && card.after.length
+      typedNote + '<p class="how">' + how + "</p>" +
+      (after.length
         ? '<div class="after-box"><h3>붙여넣은 다음</h3><ol class="after-steps">' +
-          card.after.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ol></div>"
+          after.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ol></div>"
         : "") +
       "</section>" +
       flowBox(card) +
