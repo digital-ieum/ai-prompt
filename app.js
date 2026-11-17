@@ -519,7 +519,7 @@
       '<div class="compare-row">' +
       '<figure class="panel before"><button type="button" class="panel-btn" data-zoom="1" aria-label="원본 예시와 변환 예시를 크게 보기">' +
       '<span class="tag">원본 예시</span>' +
-      '<div class="thumb"><img src="' + src(before, true) + '" alt="원본 예시 사진 (AI로 만든 가상 사진)"></div></button>' +
+      '<div class="thumb"><img id="beforeImg" src="' + src(before, true) + '" alt="원본 예시 사진 (AI로 만든 가상 사진)"></div></button>' +
       "<figcaption>바꾸기 전</figcaption></figure>" +
       ARROW +
       '<figure class="panel after"><button type="button" class="panel-btn" data-zoom="1" aria-label="원본 예시와 변환 예시를 크게 보기">' +
@@ -536,6 +536,7 @@
     var a = afterOf(card);
     var cap = $("#afterCap");
     img.src = src(a.file, true);
+    var bi = $("#beforeImg"); if (bi) bi.src = src(pickFile(card.before, a.g || state.gender), true);
     img.alt = "변환 예시: " + a.label + " (AI로 만든 가상 사진)";
     cap.textContent = a.label;
     if (!REDUCE) {
