@@ -554,3 +554,19 @@ body.typing.has-dock { padding-bottom: 0; }
 .tile-txt b { font-size: 21.5px; }
 /* 첫 화면: 큰 갈래 이름을 크게 */
 .stage h2 { font-size: 25px; padding-bottom: 6px; border-bottom: 2px solid var(--edge); }
+/* ---------- v0.9.1 첫 화면 밝게 ---------- */
+.hero.hero-v2, .hero-v2:has(.hero-photo) { background: var(--bg); color: var(--navy); border: 1.5px solid var(--navy); box-shadow: none; }
+.hero-v2 .lead { color: var(--navy); }
+.hero-v2 .hero-sub { color: #465366; }
+.hero-v2 .how3 { border-top-color: var(--edge); border-bottom-color: var(--edge); }
+.hero-v2 .how3 li { color: var(--navy); }
+.hero-v2 .how3 li + li { border-left-color: var(--edge); }
+.hero-v2 .how3 b { background: none; border: 1.5px solid var(--navy); color: var(--navy); }
+.hero-v2 .hero-start { background: var(--navy); color: #fff; box-shadow: none; }
+.hero-v2 .hero-photo { margin: 6px -22px 0; }
+.hero-v2 .hero-photo img { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 10%, #000 90%, transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 10%, #000 90%, transparent 100%); }
+.hero-v2 .hero-photo figcaption { color: var(--muted); right: 22px; bottom: 4px; }
+.hero-v2.hero-real .hero-photo { margin: 16px 0 6px; border-radius: 14px; overflow: hidden; }
+.hero-v2.hero-real .hero-photo img { -webkit-mask-image: none; mask-image: none; }
+.hero-v2.hero-real .hero-photo figcaption { position: static; text-align: right; padding: 4px 2px 0; }
+@media (min-width: 640px) { .hero-v2 .hero-photo { margin: 6px -36px 0; } }

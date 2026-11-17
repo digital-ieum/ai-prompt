@@ -149,7 +149,7 @@
         ? '<figure class="hero-photo"><img src="' + src(SITE.hero) + '" alt="휴대폰 화면을 손가락으로 누르는 어르신의 옆모습. AI로 만든 그림입니다." width="1200" height="800"><figcaption>AI로 만든 그림</figcaption></figure>'
         : "");
     var html =
-      '<section class="hero hero-v2' + (photo ? "" : " hero-plain") + '" aria-labelledby="heroH">' +
+      '<section class="hero hero-v2' + (photo ? "" : " hero-plain") + (SITE.heroReal ? " hero-real" : "") + '" aria-labelledby="heroH">' +
       '<h1 class="lead" id="heroH">고르기만 하면 AI에게 보낼 문장이 완성돼요</h1>' +
       '<p class="hero-sub">질문에 답하듯 고르기만 하세요.</p>' +
       photo +
