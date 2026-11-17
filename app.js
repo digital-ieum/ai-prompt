@@ -52,6 +52,7 @@
       if (MENU.rename && MENU.rename[c.id]) c.title = MENU.rename[c.id];
       else c.title = c.title.replace(/^[①-⑨]\s*/, "").replace(/^추가 · /, "");
       if (MENU.desc && MENU.desc[c.id]) c.desc = MENU.desc[c.id];
+      if (MENU.template && MENU.template[c.id]) c.template = MENU.template[c.id];
       var o = MENU.options && MENU.options[c.id];
       if (o) c.groups.forEach(function (g) {
         if (g.key !== o.key) return;
