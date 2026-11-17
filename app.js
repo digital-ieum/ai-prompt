@@ -175,7 +175,7 @@
             (pic
               ? '<span class="tile-ico tile-pic"><img src="' + src(pic, true) + '" alt="" loading="lazy" onerror="this.remove()"></span>'
               : '<span class="tile-ico">' + svg(t.icon) + "</span>") +
-            '<span class="tile-txt"><b>' + esc(t.title) + "</b></span>" + '<span class="tile-go" aria-hidden="true"></span></a></li>';
+            '<span class="tile-txt"><b>' + esc(t.title) + "</b><span>" + esc(t.desc) + "</span></span>" + '<span class="tile-go" aria-hidden="true"></span></a></li>';
         }).join("") + "</ul></section>";
     });
     if (SITE.homeOrgs && SITE.homeOrgs.length) {
