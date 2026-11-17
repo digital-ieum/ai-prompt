@@ -526,3 +526,20 @@ body.typing.has-dock { padding-bottom: 0; }
 .hero-v2:has(.hero-photo) .hero-sub { margin-bottom: 0; }
 .hero-v2:has(.hero-photo) .how3 { margin-top: 6px; }
 @media (min-width: 640px) { .hero-v2 .hero-photo { margin: 4px -36px 0; } }
+/* ---------- v0.9.0 쉬운 화면: 순서 3줄, 번호 단추, 접어 두기 ---------- */
+.how { margin: 14px 0 0; padding: 14px 16px; border-radius: var(--r-sm); background: var(--sky); color: var(--ink); font-size: 17px; }
+.how h3 { margin: 0 0 8px; font-size: 18px; font-weight: 800; color: var(--navy); }
+.how-steps { margin: 0; padding: 0; list-style: none; counter-reset: hs; }
+.how-steps li { position: relative; padding-left: 36px; margin: 8px 0; line-height: 1.5; counter-increment: hs; }
+.how-steps li::before { content: counter(hs); position: absolute; left: 0; top: 1px; width: 26px; height: 26px; border-radius: 50%; background: var(--navy); color: #fff; font-weight: 800; font-size: 15px; display: grid; place-items: center; }
+.how-more, .after-more, .fs-more { margin-top: 10px; }
+.how-more summary, .after-more summary, .fs-more summary { min-height: 44px; display: flex; align-items: center; font-size: 16.5px; font-weight: 700; color: var(--blue); cursor: pointer; }
+.how-more p { margin: 4px 0 0; font-size: 16.5px; }
+.after-more ul { margin: 4px 0 0; padding-left: 20px; font-size: 16.5px; line-height: 1.6; }
+.after-more li + li { margin-top: 6px; }
+.fs-more .fs-tips { margin-top: 4px; }
+.app-no { font-weight: 800; }
+.dock.copied .btn-copy { background: var(--sky-2); color: var(--navy); }
+.dock.copied .btn-app { background: #f3d9a4; color: #1b2a40; box-shadow: 0 0 0 3px rgba(243,217,164,.55); animation: nextPulse 1.3s ease-in-out infinite; }
+@keyframes nextPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(214,170,80,.75); } 50% { box-shadow: 0 0 0 7px rgba(214,170,80,0); } }
+@media (prefers-reduced-motion: reduce) { .dock.copied .btn-app { animation: none; } }

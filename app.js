@@ -286,6 +286,8 @@
   }
 
   function updateSentence(card, changedKey) {
+    var dk = $("#dock"), cb = $("#copyBtn");
+    if (dk && dk.classList.contains("copied")) { dk.classList.remove("copied"); if (cb) { cb.textContent = "① 문장 복사하기"; cb.classList.remove("done"); } }
     var s = buildSentence(card);
     state.plain = s.plain;
     state.missing = s.missing;
@@ -485,12 +487,12 @@
     }).join("");
     var note = f.note ? esc(f.note).replace(/(\d+크레딧)/, "<b>$1</b>") : "";
     var tips = video && SITE.flowTips && SITE.flowTips.length
-      ? '<h3 class="fs-sub">무료로 쓰는 팁</h3><ul class="fs-tips">' +
-        SITE.flowTips.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>"
+      ? '<details class="fs-more"><summary>무료로 쓰는 팁 보기</summary><ul class="fs-tips">' +
+        SITE.flowTips.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></details>"
       : "";
     return '<section class="flowset" aria-labelledby="fsh">' +
       '<h2 id="fsh">Flow에서 이렇게 맞추세요</h2>' +
-      '<p class="fs-lead">붙여넣은 다음, 생성 버튼을 누르기 전에 아래 설정과 같은지 확인하세요.</p>' +
+      '<p class="fs-lead">만들기 전에 아래와 같은지 확인하세요.</p>' +
       '<dl class="fs-grid">' + grid + "</dl>" +
       (note ? '<p class="fs-note">' + note + "</p>" : "") +
       tips +
@@ -505,24 +507,29 @@
     renderTop(t, card);
     if (!state || state.card !== card.id) state = loadState(card);
     var apps = appsOf(card);
-    var chips = apps.map(function (a) { return "<li>" + esc(a) + "에 붙여넣기</li>"; }).join("");
+    var chips = "<li>사용할 AI: " + esc(apps.join(" 또는 ")) + "</li>";
     if (card.photo) chips += '<li class="need">사진 넣기 필요</li>';
     chips += card.followup ? '<li class="need">앞 대화에 이어서</li>' : '<li class="fresh">새 대화에서 시작</li>';
     var after = (card.after && card.after.length) ? card.after
       : ((!card.photo && !card.followup && card.app.indexOf("Flow") < 0) ? (SITE.afterDefault || []) : []);
     var typedNote = (SITE.typedNote && card.groups.some(function (g) { return isInput(g) || hasTyping(g); }))
       ? '<p class="typed-note">' + esc(SITE.typedNote) + "</p>" : "";
-    var how = card.followup
-      ? "<strong>복사하기</strong>를 누른 다음, <strong>답을 받았던 대화</strong>로 돌아가 글자 칸을 꾹 눌러 <strong>붙여넣기</strong> 하세요. 새 대화를 열면 앞의 답이 없어요."
-      : card.photo && card.flowSet === "영상"
-      ? "<strong>복사하기</strong>를 누르고 아래 <strong>Flow 사이트 열기</strong>를 누른 다음, 글자 칸 위의 <strong>시작</strong> 칸을 눌러 사진을 고르고(휴대폰 사진은 오른쪽 위 <strong>올리기</strong> 버튼) 글자 칸을 꾹 눌러 <strong>붙여넣기</strong> 하세요."
+    var openName = card.followup ? "" : (apps.length > 1 ? "AI 사이트 열기" : apps[0] + " 사이트 열기");
+    var step3 = card.photo && card.flowSet === "영상"
+      ? "글자 칸 위 <strong>시작</strong> 칸을 눌러 사진을 고르고, 글자 칸을 꾹 눌러 <strong>붙여넣기</strong>"
       : card.photo
-      ? "<strong>복사하기</strong>를 누르고 아래 <strong>사이트 열기</strong>를 누른 다음, 먼저 <strong>+</strong>를 눌러 사진을 넣고 글자 칸을 꾹 눌러 <strong>붙여넣기</strong> 하세요."
-      : "<strong>복사하기</strong>를 누르고 아래 <strong>사이트 열기</strong>를 누른 다음, 글자 칸을 꾹 눌러 <strong>붙여넣기</strong> 하세요.";
+      ? "<strong>+</strong>를 눌러 사진을 넣고, 글자 칸을 꾹 눌러 <strong>붙여넣기</strong>"
+      : "글자 칸을 꾹 눌러 <strong>붙여넣기</strong>";
+    var how = '<ol class="how-steps">' +
+      "<li>아래 <strong>① 문장 복사하기</strong>를 눌러요</li>" +
+      (card.followup
+        ? "<li><strong>답을 받았던 대화</strong>로 돌아가요 (새 대화 아님)</li>"
+        : "<li>그 옆 <strong>② " + esc(openName) + "</strong>를 눌러요</li>") +
+      "<li>" + step3 + " → 보내기(↑)</li></ol>";
     // 사이트 단추로는 휴대폰 앱이 열리지 않는다(2026-11-16 S25·크롬 시험). 앱은 직접 열도록 안내. Flow 앱 화면은 확인 전이라 안내하지 않음
     if (!card.followup && card.app.indexOf("Flow") < 0) {
-      how += '<span class="how-app">앱으로 하려면: 휴대폰 화면에서 앱을 직접 눌러 열고, ' +
-        (card.photo ? "<strong>+</strong>로 사진을 넣은 뒤 " : "") + '글자 칸을 꾹 눌러 <strong>붙여넣기</strong> 하세요.</span>';
+      how += '<details class="how-more"><summary>앱으로 하려면</summary><p>휴대폰 화면에서 앱을 직접 눌러 열고, ' +
+        (card.photo ? "<strong>+</strong>로 사진을 넣은 뒤 " : "") + '글자 칸을 꾹 눌러 <strong>붙여넣기</strong> 하세요.</p></details>';
     }
     var main = card.groups.filter(function (g) { return !g.more; });
     var more = card.groups.filter(function (g) { return g.more; });
@@ -554,10 +561,14 @@
       '<textarea class="field area edit-area" id="editArea" rows="7"></textarea>' +
       '<div class="edit-actions"><button type="button" class="edit-done" id="editDone">다 고쳤어요</button>' +
       '<button type="button" class="edit-undo" id="editUndo">처음 문장으로</button></div></div>' +
-      typedNote + '<p class="how">' + how + "</p>" +
+      typedNote + '<div class="how"><h3>이렇게 하세요</h3>' + how + "</div>" +
       (after.length
         ? '<div class="after-box"><h3>붙여넣은 다음</h3><ol class="after-steps">' +
-          after.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ol></div>"
+          after.slice(0, after.length > 3 ? 2 : 3).map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ol>" +
+          (after.length > 3
+            ? '<details class="after-more"><summary>잘 안 될 때 · 더 보기</summary><ul>' +
+              after.slice(2).map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></details>"
+            : "") + "</div>"
         : "") +
       "</section>" +
       flowBox(card) +
@@ -664,14 +675,15 @@
     $("#dock").hidden = false;
     document.body.classList.add("has-dock");
     var btn = $("#copyBtn");
-    btn.textContent = "문장 복사하기";
+    btn.textContent = "① 문장 복사하기";
     btn.classList.remove("done");
+    $("#dock").classList.remove("copied");
     if (card && card.followup) {
       $("#dockApps").innerHTML = '<span class="btn-app follow">앞 대화에<br>붙여넣기</span>';
       return;
     }
     $("#dockApps").innerHTML = apps.map(function (a) {
-      return '<a class="btn-app" href="' + esc(appHref(SITE.links[a] || "#")) + '" target="_blank" rel="noopener">' + esc(a) + "<br>사이트 열기</a>";
+      return '<a class="btn-app" href="' + esc(appHref(SITE.links[a] || "#")) + '" target="_blank" rel="noopener"><span class="app-no">②</span> ' + esc(a) + "<br>사이트 열기</a>";
     }).join("");
   }
   function hideDock() {
@@ -737,9 +749,10 @@
     copyText(useEdited ? state.edited : state.plain).then(function () {
       btn.textContent = "복사했어요";
       btn.classList.add("done");
+      $("#dock").classList.add("copied");
       var cc = SITE.cards.filter(function (c) { return c.id === state.card; })[0];
-      toast(cc && cc.copyMsg ? cc.copyMsg + " 다 쓰면 휴대폰 [뒤로] 버튼으로 여기로 돌아와요." : "복사했어요. 사이트나 앱을 열고 붙여넣으세요. 다 쓰면 휴대폰 [뒤로] 버튼으로 여기로 돌아와요.", null, null, cc && cc.copyMsg ? 6500 : 5000);
-      setTimeout(function () { btn.textContent = "문장 복사하기"; btn.classList.remove("done"); }, 2600);
+      var nextMsg = cc && cc.followup ? "복사했어요. 답을 받았던 대화로 돌아가 붙여넣으세요." : "복사했어요. 이제 ② 단추를 눌러 AI를 여세요";
+      toast(cc && cc.copyMsg ? cc.copyMsg : nextMsg, null, null, 6000);
     }, function () {
       toast("복사가 안 됐어요. 완성된 문장을 꾹 눌러 직접 복사하세요.");
     });
