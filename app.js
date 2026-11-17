@@ -54,6 +54,8 @@
       if (MENU.desc && MENU.desc[c.id]) c.desc = MENU.desc[c.id];
       if (MENU.template && MENU.template[c.id]) c.template = MENU.template[c.id];
       if (MENU.app && MENU.app[c.id]) c.app = MENU.app[c.id];
+      var ot = MENU.optText && MENU.optText[c.id];
+      if (ot) c.groups.forEach(function (g) { var m = ot[g.key]; if (m) g.items.forEach(function (it) { if (m[it.label] !== undefined) it.text = m[it.label]; }); });
       var o = MENU.options && MENU.options[c.id];
       if (o) c.groups.forEach(function (g) {
         if (g.key !== o.key) return;
