@@ -625,3 +625,9 @@ body.typing.has-dock { padding-bottom: 0; }
 .start-steps b { font-size: 19.5px; color: var(--navy); }
 .start-steps span { font-size: 17px; color: var(--ink); line-height: 1.55; }
 .start-go { margin-bottom: 8px; }
+
+/* v1.0 미리보기: 메뉴 그림 */
+.mrow.has-ico { padding-left: 12px; min-height: 84px; }
+.mrow-ico { flex: none; width: 56px; height: 56px; border-radius: 14px; display: grid; place-items: center; background: #eef2f7; color: var(--navy); }
+.mrow-ico svg { width: 32px; height: 32px; }
+.learn-row .mrow-ico { background: rgba(255,255,255,.12); color: #f3d9a4; }

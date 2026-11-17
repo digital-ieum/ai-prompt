@@ -12,7 +12,7 @@ window.MENU = {
       more: [{ text: "사진 속 글을 읽고 싶으면", cat: "ask" }] },
     { id: "song", title: "노래 만들기", hint: "바로 만들기 · 가사부터 · 사진으로", kind: "song",
       sections: [{ name: "", cards: ["3-5", "3-1", "3-2", "3-4", "3-3"] }] },
-    { id: "video", title: "영상 만들기", hint: "글로 만들기 · 사진이 움직이고 말해요", kind: "video",
+    { id: "video", title: "영상 만들기", hint: "글로 만들기 · 사진으로 만들기", kind: "video",
       sections: [
         { name: "사진 없이", cards: ["4-7"] },
         { name: "사진으로", cards: ["4-3", "4-5", "11-2", "4-2", "4-6"] }

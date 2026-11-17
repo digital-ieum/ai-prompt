@@ -242,8 +242,20 @@
       '<button type="button" class="fix-copy" id="fixCopy">이 문장 복사하기</button>' +
       '<p class="fix-note">결과를 받은 같은 대화에 붙여넣어 보내세요. 다시 해도 꼭 고쳐지는 것은 아니에요.</p></div></details>';
   }
-  function rowHtml(href, title, hint, extra) {
-    return '<li><a class="mrow" href="' + href + '"><span class="mrow-txt"><b>' + title + "</b>" +
+  var ICONS = {
+    draw: '<path d="M5 27l3-9L22 4l5 5-14 14-8 4z"/><path d="M18 8l5 5"/>',
+    photo: '<rect x="4" y="6" width="24" height="20" rx="3"/><circle cx="11" cy="13" r="2.5"/><path d="M4 23l7-6 5 4 5-5 7 6"/>',
+    song: '<path d="M12 23V7l14-3v16"/><circle cx="8.5" cy="23" r="3.5"/><circle cx="22.5" cy="20" r="3.5"/>',
+    video: '<rect x="4" y="6" width="24" height="20" rx="3"/><path d="M13 11.5v9l8-4.5z"/>',
+    write: '<path d="M8 4h12l6 6v18H8z"/><path d="M20 4v6h6"/><path d="M12 16h10M12 21h10"/>',
+    ask: '<path d="M5 6h22v16H15l-6 5v-5H5z"/><path d="M13 12a3 3 0 1 1 4.5 2.6c-1 .6-1.5 1.1-1.5 2.1"/><path d="M16 19.6v.2"/>',
+    learn: '<path d="M11 21a8 8 0 1 1 10 0v3H11z"/><path d="M12 28h8"/><path d="M16 24v-6"/>'
+  };
+  function iconHtml(id) {
+    return ICONS[id] ? '<span class="mrow-ico" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + ICONS[id] + "</svg></span>" : "";
+  }
+  function rowHtml(href, title, hint, extra, ico) {
+    return '<li><a class="mrow' + (ico ? " has-ico" : "") + '" href="' + href + '">' + iconHtml(ico) + '<span class="mrow-txt"><b>' + title + "</b>" +
       (hint ? "<span>" + esc(hint) + "</span>" : "") + "</span>" + (extra || "") + '<span class="tile-go" aria-hidden="true"></span></a></li>';
   }
   function renderHomeMenu() {
@@ -251,8 +263,8 @@
     hideDock();
     var last = cardById(ss("lastCard"));
     var html = '<h1 class="lead home-q">' + esc(MENU.title) + "</h1>" +
-      '<ul class="mlist">' + MENU.cats.map(function (c) { return rowHtml("#/cat/" + c.id, esc(c.title), c.hint); }).join("") + "</ul>" +
-      '<ul class="mlist learn-row">' + rowHtml("#/cat/learn", esc(MENU.learn.title), MENU.learn.hint) + "</ul>" +
+      '<ul class="mlist">' + MENU.cats.map(function (c) { return rowHtml("#/cat/" + c.id, esc(c.title), c.hint, "", c.id); }).join("") + "</ul>" +
+      '<ul class="mlist learn-row">' + rowHtml("#/cat/learn", esc(MENU.learn.title), MENU.learn.hint, "", "learn") + "</ul>" +
       '<a class="first-time" href="#/start">처음 사용해요 · 사용 방법 보기</a>';
     $("#view").innerHTML = html;
   }
