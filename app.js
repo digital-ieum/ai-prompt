@@ -49,7 +49,7 @@
         g.q = o.q;
         g.items = o.items.map(function (it) {
           var base = typeof it.keep === "number" && old[it.keep] ? old[it.keep] : {};
-          return { label: it.label, text: it.text, img: base.img || "", bubble: "", desc: "", extra: false };
+          return { label: it.label, text: it.text, img: it.img || base.img || "", bubble: "", desc: "", extra: false };
         });
       });
     });
