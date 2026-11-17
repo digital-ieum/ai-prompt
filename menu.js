@@ -83,11 +83,11 @@ window.MENU = {
   /* 11-1을 옷 갈아입히기로 넓힌 선택지 (미리보기용) */
   options: {
     "11-1": { key: "명절", q: "어떤 옷을 입혀 볼까요?", items: [
-      { label: "한복", text: "파스텔톤의 고급스러운 한복을 입고", keep: 0 },
-      { label: "멋진 슈트", text: "몸에 잘 맞는 멋진 슈트를 입고", img: "11_ot_syuteu.jpg" },
-      { label: "우아한 드레스", text: "우아한 드레스를 입고", img: "11_ot_deureseu.jpg" },
-      { label: "단정한 재킷", text: "단정한 재킷 차림으로", img: "11_ot_jaekit.jpg" },
-      { label: "크리스마스 옷", text: "따뜻한 빨간 니트와 목도리 차림으로", keep: 2 },
+      { label: "한복", text: "파스텔톤의 고급스러운 한복을 입고", img: "11_ot_hanbok.jpg", g: "남" },
+      { label: "멋진 슈트", text: "몸에 잘 맞는 멋진 슈트를 입고", img: "11_ot_syuteu.jpg", g: "남" },
+      { label: "우아한 드레스", text: "우아한 드레스를 입고", img: "11_ot_deureseu.jpg", g: "여" },
+      { label: "단정한 재킷", text: "단정한 재킷 차림으로", img: "11_ot_jaekit.jpg", g: "여" },
+      { label: "크리스마스 옷", text: "따뜻한 빨간 니트와 목도리 차림으로", img: "11_ot_keuriseumaseu.jpg", g: "남" },
       { label: "봄옷", text: "화사한 봄옷을 입고", keep: 3 }
     ] }
   },

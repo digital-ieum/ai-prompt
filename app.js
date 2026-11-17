@@ -60,7 +60,7 @@
         g.q = o.q;
         g.items = o.items.map(function (it) {
           var base = typeof it.keep === "number" && old[it.keep] ? old[it.keep] : {};
-          return { label: it.label, text: it.text, img: it.img || base.img || "", bubble: "", desc: "", extra: false };
+          return { label: it.label, text: it.text, img: it.img || base.img || "", bubble: "", desc: "", extra: false, g: it.g };
         });
       });
     });
@@ -504,7 +504,7 @@
   function afterOf(card) {
     var g = compareGroup(card);
     var it = g.items[state.sel[g.key]] || g.items[0];
-    return { file: pickFile(it.img, state.gender), label: it.label };
+    return { file: pickFile(it.img, state.gender), label: it.label, g: it.g };
   }
   function noteHtml(card) {
     var common = SITE.picCaption ? "<b>" + esc(SITE.picCaption) + "</b>" : "";
@@ -513,8 +513,8 @@
   }
   var ARROW = '<span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>';
   function renderCompare(card) {
-    var before = pickFile(card.before, state.gender);
     var a = afterOf(card);
+    var before = pickFile(card.before, a.g || state.gender);
     return '<div class="compare" id="compare">' +
       '<div class="compare-row">' +
       '<figure class="panel before"><button type="button" class="panel-btn" data-zoom="1" aria-label="원본 예시와 변환 예시를 크게 보기">' +
@@ -545,8 +545,8 @@
 
   function openZoom(card) {
     var dlg = $("#zoom");
-    var before = pickFile(card.before, state.gender);
     var a = afterOf(card);
+    var before = pickFile(card.before, a.g || state.gender);
     $("#zoomH").textContent = card.title + " 예시 크게 보기";
     $("#zoomBody").className = "zoom-body";
     $("#zoomBody").innerHTML =
