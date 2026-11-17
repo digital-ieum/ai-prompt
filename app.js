@@ -53,6 +53,7 @@
       else c.title = c.title.replace(/^[①-⑨]\s*/, "").replace(/^추가 · /, "");
       if (MENU.desc && MENU.desc[c.id]) c.desc = MENU.desc[c.id];
       if (MENU.template && MENU.template[c.id]) c.template = MENU.template[c.id];
+      if (MENU.app && MENU.app[c.id]) c.app = MENU.app[c.id];
       var o = MENU.options && MENU.options[c.id];
       if (o) c.groups.forEach(function (g) {
         if (g.key !== o.key) return;
@@ -742,7 +743,7 @@
         : "") +
       fixBox(card, t) +
       "</section>" +
-      flowBox(card) +
+      (MENU && apps.length > 1 && aiPick(apps) !== "Flow" ? "" : flowBox(card)) +
       '<nav class="card-end" aria-label="다른 곳으로 가기">' +
       '<a class="end-btn" href="' + listHref(t) + '">' + esc(t.title) + ' 목록으로</a>' +
       '<a class="end-btn home" href="#/">처음 화면으로</a></nav>';
