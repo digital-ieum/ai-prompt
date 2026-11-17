@@ -552,3 +552,5 @@ body.typing.has-dock { padding-bottom: 0; }
 .today-btn .no { background: #f3d9a4; color: #1b2a40; }
 .tile { min-height: 84px; padding: 10px 16px 10px 10px; }
 .tile-txt b { font-size: 21.5px; }
+/* 첫 화면: 큰 갈래 이름을 크게 */
+.stage h2 { font-size: 25px; padding-bottom: 6px; border-bottom: 2px solid var(--edge); }
