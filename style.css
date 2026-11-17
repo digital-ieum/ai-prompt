@@ -543,3 +543,12 @@ body.typing.has-dock { padding-bottom: 0; }
 .dock.copied .btn-app { background: #f3d9a4; color: #1b2a40; box-shadow: 0 0 0 3px rgba(243,217,164,.55); animation: nextPulse 1.3s ease-in-out infinite; }
 @keyframes nextPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(214,170,80,.75); } 50% { box-shadow: 0 0 0 7px rgba(214,170,80,0); } }
 @media (prefers-reduced-motion: reduce) { .dock.copied .btn-app { animation: none; } }
+/* v0.9.0: 오늘 수업 바로가기, 첫 화면 목록 간단히 */
+.today { margin: 22px 0 0; padding: 16px; border-radius: 16px; background: #fff6df; border: 2px solid #e6c98a; }
+.today h2 { margin: 0 0 10px; font-size: 20px; font-weight: 800; color: var(--navy); }
+.today ul { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.today-btn { display: flex; align-items: center; min-height: 64px; padding: 10px 18px; border-radius: 14px; background: var(--navy); color: #fff; font-size: 21px; font-weight: 800; text-decoration: none; }
+.today-btn::after { content: ""; margin-left: auto; width: 11px; height: 11px; border-top: 3px solid #f3d9a4; border-right: 3px solid #f3d9a4; transform: rotate(45deg); flex: none; }
+.today-btn .no { background: #f3d9a4; color: #1b2a40; }
+.tile { min-height: 84px; padding: 10px 16px 10px 10px; }
+.tile-txt b { font-size: 21.5px; }

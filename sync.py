@@ -178,6 +178,7 @@ site = {
     "homeOrgsNote": common.get("홈 출강 안내", ""),
     "afterDefault": [x.strip() for x in common.get("기본 붙여넣은 뒤 할 일", "").split("|") if x.strip()],
     "typedNote": common.get("직접 쓴 내용 확인 안내", ""),
+    "today": [x.strip() for x in common.get("오늘 수업 바로가기", "").replace("|", ",").split(",") if x.strip()],
     "brag": {"url": common.get("작품 자랑방 링크", ""), "text": common.get("작품 자랑방 안내", "")},
     "flow": {
         kind: {

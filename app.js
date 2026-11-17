@@ -38,7 +38,7 @@
 
   function tabById(id) { return SITE.tabs.filter(function (t) { return t.id === String(id); })[0]; }
   function cardsOf(tab) { return SITE.cards.filter(function (c) { return c.tab === tab.id; }); }
-  function stageLabel(t) { return t.stage + "단계 " + t.stageName; }
+  function stageLabel(t) { return t.stageName; }
   function isInput(g) { return g.mode === "직접입력" || g.mode === "긴글입력"; }
   function isPic(g) { return g.mode === "그림" || g.mode === "그림(여/남)" || g.mode === "그림+직접입력"; }
   function hasTyping(g) { return g.mode === "버튼+직접입력" || g.mode === "그림+직접입력"; }
@@ -156,9 +156,18 @@
       '<ol class="how3"><li><b>1</b>고르기</li><li><b>2</b>복사하기</li><li><b>3</b>붙여넣기</li></ol>' +
       '<a class="hero-start" href="#/tab/' + SITE.tabs[0].id + '">체험 시작하기</a>' +
       "</section>";
+    var today = (SITE.today || []).map(function (id) {
+      var c = SITE.cards.filter(function (x) { return x.id === id; })[0];
+      var tt = !c && tabById(id);
+      return c ? { href: "#/card/" + c.id, name: c.title } : (tt ? { href: "#/tab/" + tt.id, name: tt.title } : null);
+    }).filter(Boolean);
+    if (today.length) {
+      html += '<section class="today" aria-labelledby="todayH"><h2 id="todayH">오늘 수업은 여기를 누르세요</h2><ul>' +
+        today.map(function (x) { return '<li><a class="today-btn" href="' + x.href + '">' + titleHtml(x.name) + "</a></li>"; }).join("") + "</ul></section>";
+    }
     stages.forEach(function (s) {
       html += '<section class="stage" aria-labelledby="st' + s.stage + '">' +
-        '<h2 id="st' + s.stage + '">' + s.stage + "단계 " + esc(s.name) + "</h2>" +
+        '<h2 id="st' + s.stage + '">' + esc(s.name) + "</h2>" +
         '<ul class="tiles">' + s.tabs.map(function (t) {
           var first = cardsOf(t)[0];
           var pic = first && first.img ? pickFile(first.img, "여") : "";
@@ -166,7 +175,7 @@
             (pic
               ? '<span class="tile-ico tile-pic"><img src="' + src(pic, true) + '" alt="" loading="lazy" onerror="this.remove()"></span>'
               : '<span class="tile-ico">' + svg(t.icon) + "</span>") +
-            '<span class="tile-txt"><b>' + esc(t.title) + "</b><span>" + esc(t.desc) + "</span></span>" + '<span class="tile-go" aria-hidden="true"></span></a></li>';
+            '<span class="tile-txt"><b>' + esc(t.title) + "</b></span>" + '<span class="tile-go" aria-hidden="true"></span></a></li>';
         }).join("") + "</ul></section>";
     });
     if (SITE.homeOrgs && SITE.homeOrgs.length) {
@@ -563,12 +572,8 @@
       '<button type="button" class="edit-undo" id="editUndo">처음 문장으로</button></div></div>' +
       typedNote + '<div class="how"><h3>이렇게 하세요</h3>' + how + "</div>" +
       (after.length
-        ? '<div class="after-box"><h3>붙여넣은 다음</h3><ol class="after-steps">' +
-          after.slice(0, after.length > 3 ? 2 : 3).map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ol>" +
-          (after.length > 3
-            ? '<details class="after-more"><summary>잘 안 될 때 · 더 보기</summary><ul>' +
-              after.slice(2).map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></details>"
-            : "") + "</div>"
+        ? '<details class="after-more"><summary>잘 안 될 때 보기</summary><ul>' +
+          after.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></details>"
         : "") +
       "</section>" +
       flowBox(card) +
