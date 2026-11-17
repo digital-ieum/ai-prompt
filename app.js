@@ -36,9 +36,42 @@
   var REDUCE = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var state = null;
 
+  var MENU = window.MENU || null;
+  if (MENU) {
+    SITE.cards.forEach(function (c) {
+      if (MENU.rename && MENU.rename[c.id]) c.title = MENU.rename[c.id];
+      else c.title = c.title.replace(/^[①-⑨]\s*/, "").replace(/^추가 · /, "");
+      if (MENU.desc && MENU.desc[c.id]) c.desc = MENU.desc[c.id];
+      var o = MENU.options && MENU.options[c.id];
+      if (o) c.groups.forEach(function (g) {
+        if (g.key !== o.key) return;
+        var old = g.items;
+        g.q = o.q;
+        g.items = o.items.map(function (it) {
+          var base = typeof it.keep === "number" && old[it.keep] ? old[it.keep] : {};
+          return { label: it.label, text: it.text, img: base.img || "", bubble: "", desc: "", extra: false };
+        });
+      });
+    });
+  }
+  function allCats() { return MENU ? MENU.cats.concat([learnCat()]) : []; }
+  function learnCat() {
+    var ids = [];
+    MENU.learn.topics.forEach(function (t) { t.cards.forEach(function (id) { if (ids.indexOf(id) < 0) ids.push(id); }); });
+    return { id: "learn", title: MENU.learn.title, hint: MENU.learn.hint, kind: "text", sections: [{ name: "", cards: ids }] };
+  }
+  function catById(id) { return allCats().filter(function (c) { return c.id === id; })[0]; }
+  function catOf(cardId) {
+    return allCats().filter(function (c) { return c.sections.some(function (x) { return x.cards.indexOf(cardId) > -1; }); })[0];
+  }
+  function cardById(id) { return SITE.cards.filter(function (c) { return c.id === id; })[0]; }
+  function listHref(t) { return t.href || "#/tab/" + t.id; }
+  function ss(k, v) { try { if (v === undefined) return sessionStorage.getItem(k); if (v === null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); } catch (e) {} return null; }
+  function aiPick(apps) { var p = ss("aiPick"); return apps.indexOf(p) > -1 ? p : apps[0]; }
+
   function tabById(id) { return SITE.tabs.filter(function (t) { return t.id === String(id); })[0]; }
   function cardsOf(tab) { return SITE.cards.filter(function (c) { return c.tab === tab.id; }); }
-  function stageLabel(t) { return t.stageName; }
+  function stageLabel(t) { return t.stageName || ""; }
   function isInput(g) { return g.mode === "직접입력" || g.mode === "긴글입력"; }
   function isPic(g) { return g.mode === "그림" || g.mode === "그림(여/남)" || g.mode === "그림+직접입력"; }
   function hasTyping(g) { return g.mode === "버튼+직접입력" || g.mode === "그림+직접입력"; }
@@ -111,9 +144,9 @@
     }
     menuBtn.hidden = false;
     nav.hidden = false;
-    var html = '<span class="stage-chip">' + esc(stageLabel(tab)) + "</span>";
+    var html = stageLabel(tab) ? '<span class="stage-chip">' + esc(stageLabel(tab)) + "</span>" : "";
     html += card
-      ? '<a href="#/tab/' + tab.id + '">' + esc(tab.title) + "</a>"
+      ? '<a href="' + listHref(tab) + '">' + esc(tab.title) + "</a>"
       : "<b>" + esc(tab.title) + "</b>";
     nav.innerHTML = html;
   }
@@ -184,6 +217,107 @@
         (SITE.homeOrgsNote ? "<p>" + esc(SITE.homeOrgsNote) + "</p>" : "") + "</section>";
     }
     $("#view").innerHTML = html;
+  }
+
+  // ---------- 새 메뉴 (미리보기) ----------
+  function fixBox(card, t) {
+    if (!MENU || card.followup) return "";
+    var list = MENU.fix[t.kind] || MENU.fix.text;
+    return '<details class="fix"><summary>결과가 다르면 · 고쳐 보기</summary>' +
+      '<p class="fix-lead">AI가 요청과 다르게 만들 때가 있어요. 고치고 싶은 것을 하나 골라 보세요.</p>' +
+      '<div class="fix-btns">' + list.map(function (x) {
+        return '<button type="button" class="opt" data-fix="' + esc(x[1]) + '" aria-pressed="false">' + esc(x[0]) + "</button>";
+      }).join("") + "</div>" +
+      '<div class="fix-out" id="fixOut" hidden><p class="fix-cap">AI에게 이어서 보낼 말</p><p class="sentence" id="fixText"></p>' +
+      '<button type="button" class="fix-copy" id="fixCopy">이 문장 복사하기</button>' +
+      '<p class="fix-note">결과를 받은 같은 대화에 붙여넣어 보내세요. 다시 해도 꼭 고쳐지는 것은 아니에요.</p></div></details>';
+  }
+  function rowHtml(href, title, hint, extra) {
+    return '<li><a class="mrow" href="' + href + '"><span class="mrow-txt"><b>' + title + "</b>" +
+      (hint ? "<span>" + esc(hint) + "</span>" : "") + "</span>" + (extra || "") + '<span class="tile-go" aria-hidden="true"></span></a></li>';
+  }
+  function renderHomeMenu() {
+    renderTop(null);
+    hideDock();
+    var last = cardById(ss("lastCard"));
+    var html = '<h1 class="lead home-q">' + esc(MENU.title) + "</h1>" +
+      (last ? '<a class="resume" href="#/card/' + last.id + '"><span>하던 활동 이어하기</span><b>' + esc(last.title) + "</b></a>" : "") +
+      '<ul class="mlist">' + MENU.cats.map(function (c) { return rowHtml("#/cat/" + c.id, esc(c.title), c.hint); }).join("") + "</ul>" +
+      '<ul class="mlist learn-row">' + rowHtml("#/cat/learn", esc(MENU.learn.title), MENU.learn.hint) + "</ul>" +
+      '<a class="first-time" href="#/start">처음 사용해요 · 사용 방법 보기</a>';
+    $("#view").innerHTML = html;
+  }
+  function renderCat(id) {
+    if (id === "learn") return renderLearn();
+    var c = catById(id);
+    if (!c) { location.hash = "#/"; return; }
+    renderTop({ id: c.id, title: c.title, href: "#/cat/" + c.id });
+    hideDock();
+    var html = '<h1 class="lead">' + esc(c.title) + "</h1>";
+    c.sections.forEach(function (sec) {
+      html += (sec.name ? '<h2 class="sec">' + esc(sec.name) + "</h2>" : "") + '<ul class="mlist cards-list">' +
+        sec.cards.map(function (cid) {
+          var k = cardById(cid);
+          if (!k) return "";
+          return '<li><a class="mrow has-pic" href="#/card/' + k.id + '">' +
+            '<span class="mrow-pic">' + (k.img ? '<img src="' + src(pickFile(k.img, "여"), true) + '" alt="" loading="lazy" onerror="this.remove()">' : "") + "</span>" +
+            '<span class="mrow-txt"><b>' + esc(k.title) + "</b>" +
+            (k.photo ? '<span class="need-photo">사진 필요</span>' : "") + "</span>" +
+            '<span class="tile-go" aria-hidden="true"></span></a></li>';
+        }).join("") + "</ul>";
+    });
+    (c.more || []).forEach(function (m) {
+      var mc = catById(m.cat);
+      html += '<a class="also" href="#/cat/' + m.cat + '">' + esc(m.text) + " → <b>" + esc(mc.title) + "</b></a>";
+    });
+    $("#view").innerHTML = html;
+  }
+  function renderLearn(topicId) {
+    var L = MENU.learn;
+    renderTop({ id: "learn", title: L.title, href: "#/cat/learn" }, topicId ? {} : null);
+    hideDock();
+    var back = cardById(ss("lastCard"));
+    var t = topicId && L.topics.filter(function (x) { return x.id === topicId; })[0];
+    var html;
+    if (!t) {
+      html = '<h1 class="lead">' + esc(L.title) + '</h1><p class="sub">궁금한 것부터 골라 보세요. 순서는 없어요.</p><ul class="mlist">' +
+        L.topics.map(function (x) {
+          return rowHtml("#/learn/" + x.id, esc(x.q), x.ready ? "" : (x.cards.length ? "연습 " + x.cards.length + "가지" : "설명 준비 중"));
+        }).join("") + "</ul>";
+    } else {
+      html = '<a class="back" href="#/cat/learn">' + esc(L.title) + ' 목록으로</a><h1 class="lead">' + esc(t.q) + "</h1>";
+      if (t.ready) {
+        html += '<p class="learn-lead">' + esc(t.lead) + '</p><h2 class="sec">' + esc(t.caseTitle) + '</h2><div class="cases">' +
+          t.cases.map(function (c) {
+            return '<div class="case"><b>' + esc(c.label) + '</b><p class="case-say">' + esc(c.text) + '</p><p class="case-note">' + esc(c.note) + "</p></div>";
+          }).join("") + '</div><h2 class="sec">' + esc(t.doTitle) + '</h2><ul class="dos">' +
+          t.dos.map(function (d) { return "<li>" + esc(d) + "</li>"; }).join("") + "</ul>";
+      } else {
+        html += '<p class="learn-lead">이 주제의 설명은 내용을 확인한 뒤에 넣을 예정이에요.' + (t.cards.length ? " 아래 연습은 지금 해 볼 수 있어요." : "") + "</p>";
+      }
+      if (t.cards.length) {
+        html += '<h2 class="sec">AI에서 직접 해 보기</h2><ul class="mlist cards-list">' + t.cards.map(function (cid) {
+          var k = cardById(cid);
+          return k ? rowHtml("#/card/" + k.id, esc(k.title), "") : "";
+        }).join("") + "</ul>";
+      }
+      if (back) html += '<a class="resume" href="#/card/' + back.id + '"><span>하던 활동으로 돌아가기</span><b>' + esc(back.title) + "</b></a>";
+    }
+    $("#view").innerHTML = html;
+  }
+  function renderStart() {
+    renderTop({ id: "start", title: "처음 사용해요", href: "#/start" });
+    hideDock();
+    var steps = [
+      ["하고 싶은 것을 골라요", "그림, 노래, 글처럼 만들고 싶은 것을 누르고, 질문에 답하듯 단추를 골라요."],
+      ["① 문장 복사하기를 눌러요", "AI에게 보낼 문장을 휴대폰이 잠시 기억해 두는 거예요. 화면에는 아무 변화가 없어도 괜찮아요."],
+      ["② AI 열기를 눌러요", "챗GPT나 제미나이 같은 AI 화면이 새로 열려요. 이 체험관은 그대로 남아 있어요."],
+      ["글자 칸을 꾹 눌러 붙여넣기", "AI 화면 아래쪽 글자 칸을 손가락으로 1초쯤 누르고 있으면 '붙여넣기'가 나와요. 그것을 누르면 문장이 들어가요."],
+      ["보내기(↑)를 눌러요", "화살표 단추를 누르면 AI가 답을 만들기 시작해요. 사진이 필요한 활동은 보내기 전에 사진도 넣어요."]
+    ];
+    $("#view").innerHTML = '<h1 class="lead">처음 사용해요</h1><p class="sub">이 다섯 가지만 하면 돼요. 틀려도 괜찮아요. 언제든 다시 할 수 있어요.</p>' +
+      '<ol class="start-steps">' + steps.map(function (x) { return "<li><b>" + esc(x[0]) + "</b><span>" + esc(x[1]) + "</span></li>"; }).join("") + "</ol>" +
+      '<a class="hero-start start-go" href="#/card/5-1">연습해 보기 · AI에게 처음 말 걸기</a>';
   }
 
   // ---------- 탭 ----------
@@ -295,6 +429,7 @@
   }
 
   function updateSentence(card, changedKey) {
+    if (MENU && changedKey !== undefined && state && ss("undo:" + state.card)) { ss("undo:" + state.card, null); var ub = $("#undoBtn"); if (ub) ub.remove(); }
     var dk = $("#dock"), cb = $("#copyBtn");
     if (dk && dk.classList.contains("copied")) { dk.classList.remove("copied"); if (cb) { cb.textContent = "① 문장 복사하기"; cb.classList.remove("done"); } }
     var s = buildSentence(card);
@@ -513,17 +648,23 @@
     var card = SITE.cards.filter(function (c) { return c.id === id; })[0];
     if (!card) { location.hash = "#/"; return; }
     var t = tabById(card.tab);
+    if (MENU) { var cc0 = catOf(card.id); if (cc0) t = { id: cc0.id, title: cc0.title, href: "#/cat/" + cc0.id, kind: cc0.kind }; }
+    ss("lastCard", card.id);
     renderTop(t, card);
     if (!state || state.card !== card.id) state = loadState(card);
     var apps = appsOf(card);
-    var chips = "<li>사용할 AI: " + esc(apps.join(" 또는 ")) + "</li>";
+    var chips = (MENU && apps.length > 1)
+      ? '<li class="ai-pick"><span>사용할 AI</span>' + apps.map(function (a) {
+          return '<button type="button" data-ai="' + esc(a) + '" aria-pressed="' + (aiPick(apps) === a) + '">' + esc(a) + "</button>";
+        }).join("") + "</li>"
+      : "<li>사용할 AI: " + esc(apps.join(" 또는 ")) + "</li>";
     if (card.photo) chips += '<li class="need">사진 넣기 필요</li>';
     chips += card.followup ? '<li class="need">앞 대화에 이어서</li>' : '<li class="fresh">새 대화에서 시작</li>';
     var after = (card.after && card.after.length) ? card.after
       : ((!card.photo && !card.followup && card.app.indexOf("Flow") < 0) ? (SITE.afterDefault || []) : []);
     var typedNote = (SITE.typedNote && card.groups.some(function (g) { return isInput(g) || hasTyping(g); }))
       ? '<p class="typed-note">' + esc(SITE.typedNote) + "</p>" : "";
-    var openName = card.followup ? "" : (apps.length > 1 ? "AI 사이트 열기" : apps[0] + " 사이트 열기");
+    var openName = card.followup ? "" : ((MENU ? aiPick(apps) : (apps.length > 1 ? "AI" : apps[0])) + " 사이트 열기");
     var step3 = card.photo && card.flowSet === "영상"
       ? "글자 칸 위 <strong>시작</strong> 칸을 눌러 사진을 고르고, 글자 칸을 꾹 눌러 <strong>붙여넣기</strong>"
       : card.photo
@@ -551,14 +692,15 @@
     }
     var hasChoice = card.groups.length > 0;
     $("#view").innerHTML =
-      '<a class="back" href="#/tab/' + t.id + '">' + esc(t.title) + " 목록으로</a>" +
+      '<a class="back" href="' + listHref(t) + '">' + esc(t.title) + " 목록으로</a>" +
       '<h1 class="lead">' + titleHtml(card.title) + "</h1>" +
       (card.banner ? '<p class="banner">' + esc(card.banner) + "</p>" : "") +
       '<ul class="chips">' + chips + "</ul>" +
       (card.note ? '<p class="tip">' + esc(card.note) + "</p>" : "") +
       (hasChoice
         ? '<div class="picked" id="picked"><b>내가 고른 것</b><ul class="picked-list" id="pickedList" aria-live="polite"></ul>' +
-          '<button type="button" class="reset" id="resetBtn">다시 고르기</button></div>'
+          '<button type="button" class="reset" id="resetBtn">다시 고르기</button>' +
+          (MENU && ss("undo:" + card.id) ? '<button type="button" class="reset undo" id="undoBtn">되돌리기</button>' : "") + "</div>"
         : "") +
       qs +
       '<section class="result" aria-labelledby="rh"><h2 id="rh">완성된 문장</h2>' +
@@ -575,10 +717,11 @@
         ? '<details class="after-more"><summary>잘 안 될 때 보기</summary><ul>' +
           after.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></details>"
         : "") +
+      fixBox(card, t) +
       "</section>" +
       flowBox(card) +
       '<nav class="card-end" aria-label="다른 곳으로 가기">' +
-      '<a class="end-btn" href="#/tab/' + t.id + '">' + esc(t.title) + ' 목록으로</a>' +
+      '<a class="end-btn" href="' + listHref(t) + '">' + esc(t.title) + ' 목록으로</a>' +
       '<a class="end-btn home" href="#/">처음 화면으로</a></nav>';
     showDock(apps, card);
     applyRules(card);
@@ -616,6 +759,14 @@
         var before = JSON.parse(JSON.stringify(state));
         clearState(card.id);
         state = freshState(card);
+        if (MENU) {
+          ss("undo:" + card.id, JSON.stringify(before));
+          var y0 = window.scrollY;
+          renderCard(card.id);
+          window.scrollTo(0, y0);
+          toast("처음 상태로 돌렸어요. '되돌리기'를 누르면 다시 살아나요.");
+          return;
+        }
         var y = window.scrollY;
         renderCard(card.id);
         window.scrollTo(0, y);
@@ -627,6 +778,39 @@
           window.scrollTo(0, y3);
           toast("고른 것을 다시 살렸어요.");
         });
+        return;
+      }
+      if (e.target.closest("#undoBtn")) {
+        try { state = JSON.parse(ss("undo:" + card.id)); } catch (er) {}
+        ss("undo:" + card.id, null);
+        saveState();
+        var yu = window.scrollY;
+        renderCard(card.id);
+        window.scrollTo(0, yu);
+        toast("고른 것을 다시 살렸어요.");
+        return;
+      }
+      var ab = e.target.closest("[data-ai]");
+      if (ab) {
+        ss("aiPick", ab.getAttribute("data-ai"));
+        var ya = window.scrollY;
+        renderCard(card.id);
+        window.scrollTo(0, ya);
+        return;
+      }
+      var fb = e.target.closest("[data-fix]");
+      if (fb) {
+        var box = $("#fixOut");
+        box.hidden = false;
+        $("#fixText").textContent = fb.getAttribute("data-fix");
+        $$("[data-fix]").forEach(function (x) { x.setAttribute("aria-pressed", x === fb); });
+        box.scrollIntoView({ block: "nearest", behavior: REDUCE ? "auto" : "smooth" });
+        return;
+      }
+      if (e.target.closest("#fixCopy")) {
+        copyText($("#fixText").textContent).then(function () {
+          toast("복사했어요. 결과를 받은 같은 대화에 붙여넣어 보내세요.", null, null, 6000);
+        }, function () { toast("복사가 안 됐어요. 문장을 꾹 눌러 직접 복사하세요."); });
         return;
       }
       if (e.target.closest("[data-zoom]")) { openZoom(card); return; }
@@ -687,6 +871,7 @@
       $("#dockApps").innerHTML = '<span class="btn-app follow">앞 대화에<br>붙여넣기</span>';
       return;
     }
+    if (MENU && apps.length > 1) apps = [aiPick(apps)];
     $("#dockApps").innerHTML = apps.map(function (a) {
       return '<a class="btn-app" href="' + esc(appHref(SITE.links[a] || "#")) + '" target="_blank" rel="noopener"><span class="app-no">②</span> ' + esc(a) + "<br>사이트 열기</a>";
     }).join("");
@@ -797,12 +982,24 @@
     routing = true;
     if (h[0] === "card" && h[1]) {
       renderCard(decodeURIComponent(h[1]));
+    } else if (MENU && h[0] === "cat" && h[1]) {
+      state = null;
+      renderCat(h[1]);
+    } else if (MENU && h[0] === "learn" && h[1]) {
+      state = null;
+      renderLearn(h[1]);
+    } else if (MENU && h[0] === "start") {
+      state = null;
+      renderStart();
     } else if (h[0] === "tab" && h[1]) {
       state = null;
+      var ot = MENU && tabById(h[1]);
+      var oc = ot && cardsOf(ot)[0] && catOf(cardsOf(ot)[0].id);
+      if (oc) { location.replace("#/cat/" + oc.id); return; }
       renderTab(h[1]);
     } else {
       state = null;
-      renderHome();
+      if (MENU) renderHomeMenu(); else renderHome();
     }
     window.scrollTo(0, y);
     requestAnimationFrame(function () { if (y) window.scrollTo(0, y); routing = false; });
