@@ -631,3 +631,12 @@ body.typing.has-dock { padding-bottom: 0; }
 .mrow-ico { flex: none; width: 56px; height: 56px; border-radius: 14px; display: grid; place-items: center; background: #eef2f7; color: var(--navy); }
 .mrow-ico svg { width: 32px; height: 32px; }
 .learn-row .mrow-ico { background: rgba(255,255,255,.12); color: #f3d9a4; }
+
+/* v1.0 미리보기: 메뉴 밝게 통일, 설명 글자 키움, 누름 표시 */
+.mlist:not(.cards-list) .mrow-txt span { font-size: 18px; }
+.learn-row .mrow { background: var(--paper); border-color: var(--edge); }
+.learn-row .mrow-txt b { color: var(--navy); }
+.learn-row .mrow-txt span { color: var(--muted); }
+.learn-row .tile-go { border-color: var(--navy); }
+.learn-row .mrow-ico { background: #eef2f7; color: var(--navy); }
+.mrow:active, .mrow:focus-visible { background: #e8eef6; border-color: var(--navy); outline: none; }

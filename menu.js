@@ -2,17 +2,17 @@
 window.MENU = {
   title: "무엇을 해 볼까요?",
   cats: [
-    { id: "draw", title: "그림 만들기", hint: "새 그림 · 축하 카드 · 움직이는 그림", kind: "pic",
+    { id: "draw", title: "그림 만들기", hint: "새 그림 · 움직이는 그림", kind: "pic",
       sections: [
         { name: "새 그림", cards: ["2-1", "2-4", "4-1"] },
         { name: "움직이는 그림", cards: ["10-1", "10-2", "10-3", "10-4", "10-5", "10-6", "11-4"] }
       ] },
-    { id: "photo", title: "사진 바꾸기", hint: "옷 갈아입히기 · 선명하게 · 그림으로", kind: "pic",
+    { id: "photo", title: "사진 바꾸기", hint: "옷 갈아입히기 · 선명하게", kind: "pic",
       sections: [{ name: "", cards: ["11-1", "2-3", "4-4", "2-2"] }],
       more: [{ text: "사진 속 글을 읽고 싶으면", cat: "ask" }] },
-    { id: "song", title: "노래 만들기", hint: "바로 만들기 · 가사부터 · 사진으로", kind: "song",
+    { id: "song", title: "노래 만들기", hint: "바로 만들기 · 가사부터", kind: "song",
       sections: [{ name: "", cards: ["3-5", "3-1", "3-2", "3-4", "3-3"] }] },
-    { id: "video", title: "영상 만들기", hint: "글로 만들기 · 사진으로 만들기", kind: "video",
+    { id: "video", title: "영상 만들기", hint: "글로 · 사진으로", kind: "video",
       sections: [
         { name: "사진 없이", cards: ["4-7"] },
         { name: "사진으로", cards: ["4-3", "4-5", "11-2", "4-2", "4-6"] }
@@ -29,7 +29,7 @@ window.MENU = {
       ] }
   ],
   learn: {
-    id: "learn", title: "AI 이해하기", hint: "작동 원리 · 틀린 답 · 안전하게 쓰기",
+    id: "learn", title: "AI 이해하기", hint: "작동 원리 · 안전하게 쓰기",
     topics: [
       { id: "how", q: "AI는 어떻게 답할까요?", cards: ["5-1", "5-4"], ready: false },
       { id: "text", q: "AI는 어떻게 글을 쓸까요?", cards: [], ready: false },
@@ -75,7 +75,11 @@ window.MENU = {
       note: "이대로 맞추면 영상 1개에 5크레딧이 들어요 (무료는 하루 50크레딧)" }
   },
   /* 문장 틀 바꾸기 (미리보기용). 챗GPT 시험에서 머리 비율이 가장 나았던 문구 */
-  template: { "11-1": "사진 속 인물이 {명절} 자연스럽게 미소를 짓는 모습으로 만들어 줘. 밝고 화사한 컬러 사진, 얼굴이 작고 키가 큰 모델 같은 체형, 머리부터 발끝까지 나오는 전신 사진, 9:16 비율." },
+  template: {
+    "2-4": "{받는분}께 드릴 {행사} 축하 카드를 {느낌} 느낌으로 그려 줘. 카드에 인쇄할 글은 '{문구}' 한 문장으로 정하고, 가운데에 큰 한글로 정확하게 써 줘. {장식} 그림으로 꾸미고, 화면은 세로 9:16으로 만들어 줘.",
+    "4-1": "{주제} 장면을 실제 사진 같은 그림으로 만들어 줘. 영상에 쓸 세로 9:16 그림 한 장으로 만들어 줘.",
+    "11-1": "사진 속 인물이 {명절} 자연스럽게 미소를 짓는 모습으로 만들어 줘. 밝고 화사한 컬러 사진, 얼굴이 작고 키가 큰 모델 같은 체형, 머리부터 발끝까지 나오는 전신 사진, 9:16 비율."
+  },
   /* 쓰는 AI 바꾸기 (미리보기용). 수업 때 둘 중 하나를 고름 */
   app: { "11-1": "제미나이·Flow" },
   rename: {
@@ -85,12 +89,12 @@ window.MENU = {
   /* 11-1을 옷 갈아입히기로 넓힌 선택지 (미리보기용) */
   options: {
     "11-1": { key: "명절", q: "어떤 옷을 입혀 볼까요?", items: [
-      { label: "한복", text: "파스텔톤의 고급스러운 한복을 입고", img: "11_ot_hanbok.jpg", g: "남" },
-      { label: "멋진 슈트", text: "몸에 잘 맞는 멋진 슈트를 입고", img: "11_ot_syuteu.jpg", g: "남" },
+      { label: "한복", text: "파스텔톤의 고급스러운 한복을 입고", img: "11_ot_hanbok_yeo.jpg / 11_ot_hanbok.jpg" },
+      { label: "멋진 슈트", text: "몸에 잘 맞는 멋진 슈트를 입고", img: "11_ot_syuteu_yeo.jpg / 11_ot_syuteu.jpg" },
       { label: "우아한 드레스", text: "우아한 드레스를 입고", img: "11_ot_deureseu.jpg", g: "여" },
-      { label: "단정한 재킷", text: "단정한 재킷 차림으로", img: "11_ot_jaekit.jpg", g: "여" },
-      { label: "크리스마스 옷", text: "따뜻한 빨간 니트와 목도리 차림으로", img: "11_ot_keuriseumaseu.jpg", g: "남" },
-      { label: "봄옷", text: "화사한 봄옷을 입고", keep: 3 }
+      { label: "단정한 재킷", text: "단정한 재킷 차림으로", img: "11_ot_jaekit.jpg / 11_ot_jaekit_nam.jpg" },
+      { label: "크리스마스 옷", text: "따뜻한 빨간 니트와 목도리 차림으로", img: "11_ot_keuriseumaseu_yeo.jpg / 11_ot_keuriseumaseu.jpg" },
+      { label: "봄옷", text: "화사한 봄옷을 입고", img: "11_ot_bom_yeo.jpg / 11_ot_bom_nam.jpg" }
     ] }
   },
   /* 결과가 다를 때 이어서 보낼 말 */
