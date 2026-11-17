@@ -184,7 +184,7 @@ site = {
             "items": [[x.split(":", 1)[0].strip(), x.split(":", 1)[1].strip()] for x in common.get(f"Flow {kind} 설정", "").split("|") if ":" in x],
             "note": common.get(f"Flow {kind} 크레딧", ""),
         }
-        for kind in ("영상", "그림", "복원") if common.get(f"Flow {kind} 설정")
+        for kind in ("영상", "그림", "복원", "인물") if common.get(f"Flow {kind} 설정")
     },
     "flowTips": [x.strip() for x in common.get("Flow 무료 팁", "").split("|") if x.strip()],
     "flowSource": common.get("Flow 설정 출처", ""),
