@@ -38,6 +38,16 @@
 
   var MENU = window.MENU || null;
   if (MENU) {
+    if (MENU.flow) Object.keys(MENU.flow).forEach(function (k) { SITE.flow[k] = MENU.flow[k]; });
+    (MENU.cards || []).forEach(function (c) {
+      var d = { order: 99, note: "", icon: "video", status: "검토중", before: "", picNote: "", followup: false, flowSet: "", banner: "", after: [], copyMsg: "", photo: false };
+      Object.keys(d).forEach(function (k) { if (c[k] === undefined) c[k] = d[k]; });
+      c.groups.forEach(function (g) {
+        g.more = !!g.more; g.optional = false;
+        g.items = g.items.map(function (it) { return { label: it[0], text: it[1], img: it[2] || "", bubble: "", desc: "", extra: false }; });
+      });
+      SITE.cards.push(c);
+    });
     SITE.cards.forEach(function (c) {
       if (MENU.rename && MENU.rename[c.id]) c.title = MENU.rename[c.id];
       else c.title = c.title.replace(/^[①-⑨]\s*/, "").replace(/^추가 · /, "");
@@ -241,7 +251,6 @@
     hideDock();
     var last = cardById(ss("lastCard"));
     var html = '<h1 class="lead home-q">' + esc(MENU.title) + "</h1>" +
-      (last ? '<a class="resume" href="#/card/' + last.id + '"><span>하던 활동 이어하기</span><b>' + esc(last.title) + "</b></a>" : "") +
       '<ul class="mlist">' + MENU.cats.map(function (c) { return rowHtml("#/cat/" + c.id, esc(c.title), c.hint); }).join("") + "</ul>" +
       '<ul class="mlist learn-row">' + rowHtml("#/cat/learn", esc(MENU.learn.title), MENU.learn.hint) + "</ul>" +
       '<a class="first-time" href="#/start">처음 사용해요 · 사용 방법 보기</a>';
@@ -625,7 +634,7 @@
   function flowBox(card) {
     var f = card.flowSet && SITE.flow && SITE.flow[card.flowSet];
     if (!f) return "";
-    var video = card.flowSet === "영상";
+    var video = card.flowSet.indexOf("영상") >= 0;
     var grid = f.items.map(function (it) {
       return "<div><dt>" + esc(it[0]) + "</dt><dd>" + esc(it[1]) + "</dd></div>";
     }).join("");
