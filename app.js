@@ -283,7 +283,7 @@
         '<div class="play-strip" role="list" aria-label="바로 해 보기">' + pics.map(function (p, i) {
           return '<a class="play-pic p' + (i % 2) + '" role="listitem" href="#/card/' + p[0] + '"><img src="' + src(p[1], true) + '" alt="" loading="lazy"><span>' + p[2] + "</span></a>";
         }).join("") + '</div><div class="play-foot"><p class="play-hint">옆으로 넘겨 보세요 · 누르면 바로 시작</p>' +
-        '<span class="play-nav"><button type="button" class="play-arrow" data-dir="-1" aria-label="앞 그림 보기">‹</button><button type="button" class="play-arrow" data-dir="1" aria-label="다음 그림 보기">›</button></span></div></section>';
+        '</div></section>';
       var cats = MENU.cats.concat([{ id: "learn", title: MENU.learn.title, hint: MENU.learn.hint }]);
       var TH = { draw: "그림 · 축하 카드", photo: "옷 · 화보 · 복원", song: "바로 · 가사부터", video: "글로 · 사진으로", write: "문자 · 편지", ask: "궁금한 것 · 사진 글" };
       cats = cats.map(function (c) { return { id: c.id, title: c.title, hint: hv !== "a" && TH[c.id] ? TH[c.id] : c.hint }; });
@@ -302,10 +302,30 @@
     }
     $("#view").innerHTML = html;
     var strip = $(".play-strip");
+    clearInterval(stripTimer);
+    if (strip) {
+      // 마우스로 잡아 끌어 넘기기 (컴퓨터)
+      var down = false, sx = 0, sl = 0, moved = false;
+      strip.addEventListener("mousedown", function (e) { down = true; moved = false; sx = e.pageX; sl = strip.scrollLeft; strip.classList.add("drag"); });
+      window.addEventListener("mouseup", function () { down = false; strip.classList.remove("drag"); });
+      strip.addEventListener("mousemove", function (e) { if (!down) return; var dx = e.pageX - sx; if (Math.abs(dx) > 5) moved = true; strip.scrollLeft = sl - dx; e.preventDefault(); });
+      strip.addEventListener("click", function (e) { if (moved) { e.preventDefault(); moved = false; } }, true);
+      strip.addEventListener("dragstart", function (e) { e.preventDefault(); });
+      // 천천히 저절로 넘어가기: 손대면 멈춤
+      var stop = function () { clearInterval(stripTimer); };
+      ["pointerdown", "touchstart", "wheel", "focusin"].forEach(function (ev) { strip.addEventListener(ev, stop, { passive: true }); });
+      if (!REDUCE) stripTimer = setInterval(function () {
+        if (!document.body.contains(strip)) return stop();
+        var step = strip.querySelector(".play-pic").offsetWidth + 14;
+        if (strip.scrollLeft + strip.clientWidth >= strip.scrollWidth - 4) strip.scrollTo({ left: 0, behavior: "smooth" });
+        else strip.scrollBy({ left: step, behavior: "smooth" });
+      }, 3200);
+    }
     if (strip) [].forEach.call(document.querySelectorAll(".play-arrow"), function (b) {
-      b.addEventListener("click", function () { strip.scrollBy({ left: Number(b.getAttribute("data-dir")) * Math.max(240, strip.clientWidth * 0.7), behavior: REDUCE ? "auto" : "smooth" }); });
+      b.addEventListener("click", function () { clearInterval(stripTimer); strip.scrollBy({ left: Number(b.getAttribute("data-dir")) * Math.max(240, strip.clientWidth * 0.7), behavior: REDUCE ? "auto" : "smooth" }); });
     });
   }
+  var stripTimer = 0;
   function homeVariant() {
     var m = /[?&]home=([abc])/.exec(location.search);
     var v = m ? m[1] : (MENU && MENU.home) || "";

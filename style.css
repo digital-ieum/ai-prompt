@@ -736,3 +736,7 @@ a.play-pic:active { outline: 2.5px solid var(--navy); }
   .play-tile { cursor: pointer; }
   .play-tile:hover, a.play-pic:hover { border-color: var(--navy); box-shadow: 0 4px 14px rgba(27,42,64,.14); }
 }
+
+.play-strip { cursor: grab; user-select: none; }
+.play-strip.drag { cursor: grabbing; scroll-snap-type: none; }
+.play-strip img { -webkit-user-drag: none; }
