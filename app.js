@@ -1048,6 +1048,7 @@
     var isHome = !h[0];
     document.body.setAttribute("data-page", h[0] || "home");
     var fn = $("#footNotice"); if (fn) fn.open = isHome;
+    if (MENU) homeVariant();
     var y = !isCard && lastWasCard && listPos[key] ? listPos[key] : 0;
     routing = true;
     if (h[0] === "card" && h[1]) {
