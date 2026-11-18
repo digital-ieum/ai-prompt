@@ -38,6 +38,7 @@
 
   var MENU = window.MENU || null;
   if (MENU) {
+    if (MENU.version) SITE.version = MENU.version;
     if (MENU.flow) Object.keys(MENU.flow).forEach(function (k) { SITE.flow[k] = MENU.flow[k]; });
     (MENU.cards || []).forEach(function (c) {
       var d = { order: 99, note: "", icon: "video", status: "검토중", before: "", picNote: "", followup: false, flowSet: "", banner: "", after: [], copyMsg: "", photo: false };
