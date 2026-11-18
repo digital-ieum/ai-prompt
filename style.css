@@ -703,3 +703,6 @@ body[data-home="c"] .play-hero { padding-bottom: 6px; background: none; padding-
 .mrow-ico .g { fill: #fff; stroke: #fff; }
 .mrow-ico .gs { stroke: #fff; }
 .mrow-ico .gf { fill: rgba(255,255,255,.22); }
+/* 인사말 상자 여백 줄임: 메뉴가 더 위로 */
+.play-hero { padding-top: 16px; padding-bottom: 12px; margin-bottom: 14px; }
+.play-kicker { margin-bottom: 14px; }
