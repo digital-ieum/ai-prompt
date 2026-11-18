@@ -277,8 +277,8 @@
     var hv = homeVariant();
     if (hv) {
       var pics = [["11_ot_hanbok_yeo.jpg", "옷 갈아입히기"], ["2_seutail_suchaehwa.jpg", "그림"], ["10-1_goyangikkamjjak.jpg", "움직이는 그림"], ["2-4_saengil.jpg", "축하 카드"], ["2-3_aidol_yeo.jpg", "화보 사진"]];
-      var hero = '<section class="play-hero"><p class="play-kicker">골라서 붙여넣기만 하면 돼요</p>' +
-        '<h1 class="play-title">오늘은 AI로<br>무엇을 만들어 볼까요?</h1>' +
+      var hero = '<section class="play-hero"><h1 class="play-title">오늘은 AI로<br>무엇을 해 볼까요?</h1>' +
+        '<p class="play-kicker">만들고 싶은 것, 궁금한 것을 골라 보세요.</p>' +
         '<div class="play-strip" aria-hidden="true">' + pics.map(function (p, i) {
           return '<figure class="play-pic p' + i + '"><img src="' + src(p[0], true) + '" alt="" loading="lazy"><figcaption>' + p[1] + "</figcaption></figure>";
         }).join("") + "</div></section>";
