@@ -59,6 +59,7 @@
       if (ot) c.groups.forEach(function (g) { var m = ot[g.key]; if (m) g.items.forEach(function (it) { if (m[it.label] !== undefined) it.text = m[it.label]; }); });
       if (MENU.picNote && MENU.picNote[c.id] !== undefined) c.picNote = MENU.picNote[c.id];
       if (MENU.note && MENU.note[c.id] !== undefined) c.note = MENU.note[c.id];
+      if (MENU.cardImg && MENU.cardImg[c.id]) c.img = MENU.cardImg[c.id];
       if (MENU.afterAdd && MENU.afterAdd[c.id]) c.after = (c.after || []).concat(MENU.afterAdd[c.id]);
       var os = MENU.options && MENU.options[c.id];
       (os ? [].concat(os) : []).forEach(function (o) { c.groups.forEach(function (g) {
