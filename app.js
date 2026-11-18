@@ -283,6 +283,9 @@
           return '<figure class="play-pic p' + i + '"><img src="' + src(p[0], true) + '" alt="" loading="lazy"><figcaption>' + p[1] + "</figcaption></figure>";
         }).join("") + "</div></section>";
       var cats = MENU.cats.concat([{ id: "learn", title: MENU.learn.title, hint: MENU.learn.hint }]);
+      var TH = { draw: "그림 · 축하 카드", photo: "옷 · 화보 · 복원", song: "바로 · 가사부터", video: "글로 · 사진으로", write: "문자 · 편지", ask: "궁금한 것 · 사진 글" };
+      cats = cats.map(function (c) { return { id: c.id, title: c.title, hint: hv !== "a" && TH[c.id] ? TH[c.id] : c.hint }; });
+      if (hv === "c") hero = hero.replace(/<div class="play-strip"[\s\S]*?<\/div>/, "");
       var TP = { draw: "2_seutail_suchaehwa.jpg", photo: "11_ot_hanbok_yeo.jpg", song: "3-5_baronorae.jpg", video: "4-3_sonheundeulgi.jpg", write: "1-1_munjabonaegi.jpg", ask: "9-4_gunggeumhaniyagi.jpg" };
       var menu = hv === "c"
         ? '<ul class="play-grid pic-grid">' + cats.map(function (c) {

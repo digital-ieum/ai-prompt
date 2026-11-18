@@ -691,3 +691,6 @@ body[data-home="a"] .brand-name, body[data-home="b"] .brand-name, body[data-home
 .pic-tile b { padding: 0 6px; }
 .pic-tile > span:last-child { padding: 0 6px; }
 .play-grid.pic-grid li:last-child .play-tile { padding: 12px 14px; }
+
+.play-tile > span:last-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+body[data-home="c"] .play-hero { padding-bottom: 6px; background: none; padding-left: 4px; padding-top: 8px; margin-bottom: 6px; }
