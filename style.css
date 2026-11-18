@@ -667,13 +667,6 @@ body[data-home="a"] .brand-name, body[data-home="b"] .brand-name, body[data-home
 .play-pic figcaption { padding: 5px 0 6px; text-align: center; font-size: 14px; font-weight: 700; color: var(--navy); white-space: nowrap; }
 .play-pic.p0, .play-pic.p2, .play-pic.p4 { transform: rotate(-2deg); }
 .play-pic.p1, .play-pic.p3 { transform: rotate(2deg) translateY(4px); }
-.t-draw .mrow-ico, .play-tile.t-draw .mrow-ico { background: #fde9d2; color: #b3560a; }
-.t-photo .mrow-ico, .play-tile.t-photo .mrow-ico { background: #dcebfb; color: #1f5fa8; }
-.t-song .mrow-ico, .play-tile.t-song .mrow-ico { background: #f9dde8; color: #b02a62; }
-.t-video .mrow-ico, .play-tile.t-video .mrow-ico { background: #e3e0fa; color: #4a3fb0; }
-.t-write .mrow-ico, .play-tile.t-write .mrow-ico { background: #dff2e3; color: #1f7a3d; }
-.t-ask .mrow-ico, .play-tile.t-ask .mrow-ico { background: #fdf0c4; color: #8a6400; }
-.t-learn .mrow-ico, .play-tile.t-learn .mrow-ico { background: #e4e9f0; color: var(--navy); }
 .play-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .play-grid li:last-child { grid-column: 1 / -1; }
 .play-tile { display: flex; flex-direction: column; gap: 4px; min-height: 132px; padding: 16px 14px 14px; border-radius: 18px; background: var(--paper); border: 1.5px solid var(--edge); text-decoration: none; }
@@ -694,3 +687,13 @@ body[data-home="a"] .brand-name, body[data-home="b"] .brand-name, body[data-home
 
 .play-tile > span:last-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 body[data-home="c"] .play-hero { padding-bottom: 6px; background: none; padding-left: 4px; padding-top: 8px; margin-bottom: 6px; }
+
+/* 메뉴 아이콘: 남색 바탕 + 흰 선 + 금색 포인트 한 가지로 통일 */
+.mrow-ico { background: var(--navy); color: #fff; border-radius: 16px; }
+.mrow-ico svg { width: 34px; height: 34px; }
+.mrow-ico .g { fill: #f2c15c; stroke: #f2c15c; }
+.mrow-ico .gs { stroke: #f2c15c; }
+.mrow-ico .gf { fill: rgba(242,193,92,.35); stroke: none; }
+.play-tile .mrow-ico { width: 60px; height: 60px; margin-bottom: 8px; }
+.play-tile .mrow-ico, .mrow .mrow-ico { color: #fff; }
+.play-tile .mrow-ico svg { width: 40px; height: 40px; }
