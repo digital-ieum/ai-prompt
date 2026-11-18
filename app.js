@@ -56,8 +56,10 @@
       if (MENU.app && MENU.app[c.id]) c.app = MENU.app[c.id];
       var ot = MENU.optText && MENU.optText[c.id];
       if (ot) c.groups.forEach(function (g) { var m = ot[g.key]; if (m) g.items.forEach(function (it) { if (m[it.label] !== undefined) it.text = m[it.label]; }); });
-      var o = MENU.options && MENU.options[c.id];
-      if (o) c.groups.forEach(function (g) {
+      if (MENU.picNote && MENU.picNote[c.id] !== undefined) c.picNote = MENU.picNote[c.id];
+      if (MENU.afterAdd && MENU.afterAdd[c.id]) c.after = (c.after || []).concat(MENU.afterAdd[c.id]);
+      var os = MENU.options && MENU.options[c.id];
+      (os ? [].concat(os) : []).forEach(function (o) { c.groups.forEach(function (g) {
         if (g.key !== o.key) return;
         var old = g.items;
         g.q = o.q;
@@ -65,7 +67,7 @@
           var base = typeof it.keep === "number" && old[it.keep] ? old[it.keep] : {};
           return { label: it.label, text: it.text, img: it.img || base.img || "", bubble: "", desc: "", extra: false, g: it.g };
         });
-      });
+      }); });
     });
   }
   function allCats() { return MENU ? MENU.cats.concat([learnCat()]) : []; }
