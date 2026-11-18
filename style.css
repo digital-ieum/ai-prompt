@@ -706,3 +706,33 @@ body[data-home="c"] .play-hero { padding-bottom: 6px; background: none; padding-
 /* 인사말 상자 여백 줄임: 메뉴가 더 위로 */
 .play-hero { padding-top: 16px; padding-bottom: 12px; margin-bottom: 14px; }
 .play-kicker { margin-bottom: 14px; }
+
+/* 첫 화면 사진 띠: 옆으로 넘기고, 누르면 그 활동으로 */
+.play-strip { scroll-snap-type: x proximity; gap: 12px; -webkit-overflow-scrolling: touch; }
+a.play-pic { display: block; width: 116px; text-decoration: none; scroll-snap-align: start; transform: none; }
+a.play-pic img { height: 124px; }
+a.play-pic span { display: block; padding: 6px 0 7px; text-align: center; font-size: 14.5px; font-weight: 700; color: var(--navy); white-space: nowrap; }
+a.play-pic.p0 { transform: rotate(-1.5deg); }
+a.play-pic.p1 { transform: rotate(1.5deg) translateY(3px); }
+a.play-pic:active { outline: 2.5px solid var(--navy); }
+.play-hint { margin: 8px 0 0; font-size: 14.5px; color: var(--muted); text-align: right; }
+
+.play-strip { scroll-padding-left: 18px; padding-bottom: 10px; }
+.play-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 4px; }
+.play-hint { margin: 0; text-align: left; }
+.play-nav { display: flex; gap: 8px; flex: none; }
+.play-arrow { width: 48px; height: 48px; border-radius: 50%; border: 1.5px solid var(--edge); background: #fff; color: var(--navy); font-size: 28px; line-height: 1; font-weight: 700; cursor: pointer; padding: 0 0 4px; }
+.play-arrow:active { background: var(--navy); color: #fff; }
+/* 넓은 화면(컴퓨터·태블릿) */
+@media (min-width: 700px) {
+  .play-hero { padding: 26px 28px 16px; }
+  .play-title { font-size: 34px; }
+  .play-title br { display: none; }
+  .play-strip { margin: 0 -28px; padding-left: 28px; padding-right: 28px; scroll-padding-left: 28px; gap: 16px; }
+  a.play-pic { width: 148px; }
+  a.play-pic img { height: 156px; }
+  a.play-pic span { font-size: 16px; }
+  .play-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .play-tile { cursor: pointer; }
+  .play-tile:hover, a.play-pic:hover { border-color: var(--navy); box-shadow: 0 4px 14px rgba(27,42,64,.14); }
+}

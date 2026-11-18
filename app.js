@@ -276,16 +276,18 @@
       '<a class="first-time" href="#/start">처음 사용해요 · 사용 방법 보기</a>';
     var hv = homeVariant();
     if (hv) {
-      var pics = [["11_ot_hanbok_yeo.jpg", "옷 갈아입히기"], ["2_seutail_suchaehwa.jpg", "그림"], ["10-1_goyangikkamjjak.jpg", "움직이는 그림"], ["2-4_saengil.jpg", "축하 카드"], ["2-3_aidol_yeo.jpg", "화보 사진"]];
-      var hero = '<section class="play-hero"><h1 class="play-title">오늘은 AI로<br>무엇을 해 볼까요?</h1>' +
+      var pics = [["11-1", "11_ot_hanbok_yeo.jpg", "옷 갈아입히기"], ["2-1", "2_seutail_suchaehwa.jpg", "그림 그리기"], ["10-1", "10-1_goyangikkamjjak.jpg", "움직이는 그림"], ["2-4", "2-4_saengil.jpg", "축하 카드"], ["2-3", "2-3_aidol_yeo.jpg", "화보 사진"], ["3-5", "3-5_baronorae.jpg", "노래 만들기"], ["4-4", "4-4_saekiphim.jpg", "옛날 사진 복원"], ["4-3", "4-3_sonheundeulgi.jpg", "사진을 영상으로"], ["2-2", "2_seutail_minhwa.jpg", "풍경을 그림으로"], ["4-7", "4-2_mulgyeol.jpg", "글로 영상"]]
+        .filter(function (p) { return cardById(p[0]); });
+      var hero = '<section class="play-hero"><h1 class="play-title">오늘은 AI로 <br>무엇을 해 볼까요?</h1>' +
         '<p class="play-kicker">만들고 싶은 것, 궁금한 것을 골라 보세요.</p>' +
-        '<div class="play-strip" aria-hidden="true">' + pics.map(function (p, i) {
-          return '<figure class="play-pic p' + i + '"><img src="' + src(p[0], true) + '" alt="" loading="lazy"><figcaption>' + p[1] + "</figcaption></figure>";
-        }).join("") + "</div></section>";
+        '<div class="play-strip" role="list" aria-label="바로 해 보기">' + pics.map(function (p, i) {
+          return '<a class="play-pic p' + (i % 2) + '" role="listitem" href="#/card/' + p[0] + '"><img src="' + src(p[1], true) + '" alt="" loading="lazy"><span>' + p[2] + "</span></a>";
+        }).join("") + '</div><div class="play-foot"><p class="play-hint">옆으로 넘겨 보세요 · 누르면 바로 시작</p>' +
+        '<span class="play-nav"><button type="button" class="play-arrow" data-dir="-1" aria-label="앞 그림 보기">‹</button><button type="button" class="play-arrow" data-dir="1" aria-label="다음 그림 보기">›</button></span></div></section>';
       var cats = MENU.cats.concat([{ id: "learn", title: MENU.learn.title, hint: MENU.learn.hint }]);
       var TH = { draw: "그림 · 축하 카드", photo: "옷 · 화보 · 복원", song: "바로 · 가사부터", video: "글로 · 사진으로", write: "문자 · 편지", ask: "궁금한 것 · 사진 글" };
       cats = cats.map(function (c) { return { id: c.id, title: c.title, hint: hv !== "a" && TH[c.id] ? TH[c.id] : c.hint }; });
-      if (hv === "c") hero = hero.replace(/<div class="play-strip"[\s\S]*?<\/div>/, "");
+      if (hv === "c") hero = hero.replace(/<div class="play-strip"[\s\S]*<\/div>(?=<\/section>)/, "");
       var TP = { draw: "2_seutail_suchaehwa.jpg", photo: "11_ot_hanbok_yeo.jpg", song: "3-5_baronorae.jpg", video: "4-3_sonheundeulgi.jpg", write: "1-1_munjabonaegi.jpg", ask: "9-4_gunggeumhaniyagi.jpg" };
       var menu = hv === "c"
         ? '<ul class="play-grid pic-grid">' + cats.map(function (c) {
@@ -299,6 +301,10 @@
       html = hero + menu + '<a class="first-time" href="#/start">처음 사용해요 · 사용 방법 보기</a>';
     }
     $("#view").innerHTML = html;
+    var strip = $(".play-strip");
+    if (strip) [].forEach.call(document.querySelectorAll(".play-arrow"), function (b) {
+      b.addEventListener("click", function () { strip.scrollBy({ left: Number(b.getAttribute("data-dir")) * Math.max(240, strip.clientWidth * 0.7), behavior: REDUCE ? "auto" : "smooth" }); });
+    });
   }
   function homeVariant() {
     var m = /[?&]home=([abc])/.exec(location.search);
