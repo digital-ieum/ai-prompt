@@ -640,3 +640,14 @@ body.typing.has-dock { padding-bottom: 0; }
 .learn-row .tile-go { border-color: var(--navy); }
 .learn-row .mrow-ico { background: #eef2f7; color: var(--navy); }
 .mrow:active, .mrow:focus-visible { background: #e8eef6; border-color: var(--navy); outline: none; }
+
+/* 아래쪽 정리: 작품 자랑방은 첫 화면에만, '꼭 알아 두세요'는 다른 화면에서 접어 둠 */
+body:not([data-page="home"]) .brag { display: none; }
+.foot-notice > summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; min-height: 52px; }
+.foot-notice > summary::-webkit-details-marker { display: none; }
+.foot-notice > summary h2 { margin: 0; }
+.foot-notice > summary::after { content: ""; width: 10px; height: 10px; margin-right: 6px; border-right: 2.5px solid var(--navy); border-bottom: 2.5px solid var(--navy); transform: rotate(45deg); transition: transform .15s; }
+.foot-notice[open] > summary::after { transform: rotate(-135deg); }
+body:not([data-page="home"]) .foot-notice { padding: 4px 16px; border: 1.5px solid var(--line, #dfe5ee); border-radius: 14px; background: var(--paper, #fff); }
+body:not([data-page="home"]) .foot-notice[open] { padding-bottom: 16px; }
+.typed-note[hidden] { display: none; }

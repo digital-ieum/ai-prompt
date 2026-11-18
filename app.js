@@ -474,6 +474,8 @@
   }
 
   function updatePicked(card, changedKey) {
+    var tn = $("#typedNote");
+    if (tn) tn.hidden = !(card.groups.some(function (g) { var p = groupShort(g); return p && p.typed; }) || (state.edited !== null && state.edited !== undefined));
     var list = $("#pickedList");
     if (!list) return;
     list.innerHTML = card.groups.map(function (g) {
@@ -691,7 +693,7 @@
     var after = (card.after && card.after.length) ? card.after
       : ((!card.photo && !card.followup && card.app.indexOf("Flow") < 0) ? (SITE.afterDefault || []) : []);
     var typedNote = (SITE.typedNote && card.groups.some(function (g) { return isInput(g) || hasTyping(g); }))
-      ? '<p class="typed-note">' + esc(SITE.typedNote) + "</p>" : "";
+      ? '<p class="typed-note" id="typedNote" hidden>' + esc(SITE.typedNote) + "</p>" : "";
     var openName = card.followup ? "" : ((MENU ? aiPick(apps) : (apps.length > 1 ? "AI" : apps[0])) + " 사이트 열기");
     var step3 = card.photo && card.flowSet === "영상"
       ? "글자 칸 위 <strong>시작</strong> 칸을 눌러 사진을 고르고, 글자 칸을 꾹 눌러 <strong>붙여넣기</strong>"
@@ -1006,6 +1008,9 @@
     var key = location.hash || "#/";
     var h = location.hash.replace(/^#\/?/, "").split("/");
     var isCard = h[0] === "card";
+    var isHome = !h[0];
+    document.body.setAttribute("data-page", h[0] || "home");
+    var fn = $("#footNotice"); if (fn) fn.open = isHome;
     var y = !isCard && lastWasCard && listPos[key] ? listPos[key] : 0;
     routing = true;
     if (h[0] === "card" && h[1]) {
