@@ -276,7 +276,7 @@
       '<a class="first-time" href="#/start">처음 사용해요 · 사용 방법 보기</a>';
     var hv = homeVariant();
     if (hv) {
-      var pics = [["11-1", "11_ot_hanbok_yeo.jpg", "옷 갈아입히기"], ["2-1", "2_seutail_suchaehwa.jpg", "그림 그리기"], ["10-1", "10-1_goyangikkamjjak.jpg", "움직이는 그림"], ["2-4", "2-4_saengil.jpg", "축하 카드"], ["2-3", "2-3_aidol_yeo.jpg", "화보 사진"], ["3-5", "3-5_baronorae.jpg", "노래 만들기"], ["4-4", "1_hom_80nyeondaegyeolhonsajin_jeongsagak.jpg", "옛날 사진 복원"], ["4-5", "2-3_halriudeu_yeo.jpg", "말하는 영상"], ["2-2", "2_seutail_minhwa.jpg", "풍경을 그림으로"], ["4-7", "4-2_mulgyeol.jpg", "글로 영상"]]
+      var pics = [["11-1", "11_ot_hanbok_yeo.jpg", "옷 갈아입히기"], ["2-1", "2_seutail_suchaehwa.jpg", "그림 그리기"], ["10-1", "10-1_goyangikkamjjak.jpg", "움직이는 그림"], ["4-4", "1_hom_80nyeondaegyeolhonsajin_jeongsagak.jpg", "옛날 사진 복원"], ["2-4", "2-4_saengil.jpg", "축하 카드"], ["4-5", "2-3_halriudeu_nam.jpg", "말하는 영상"], ["3-5", "3_teuroteu.jpg", "노래 만들기"], ["4-7", "4-2_danpung.jpg", "글로 영상"]]
         .filter(function (p) { return cardById(p[0]); });
       var hero = '<section class="play-hero"><h1 class="play-title">오늘은 AI로 <br>무엇을 해 볼까요?</h1>' +
         '<p class="play-kicker">만들고 싶은 것, 궁금한 것을 골라 보세요.</p>' +
