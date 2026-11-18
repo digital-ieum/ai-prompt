@@ -274,7 +274,29 @@
       '<ul class="mlist">' + MENU.cats.map(function (c) { return rowHtml("#/cat/" + c.id, esc(c.title), c.hint, "", c.id); }).join("") + "</ul>" +
       '<ul class="mlist learn-row">' + rowHtml("#/cat/learn", esc(MENU.learn.title), MENU.learn.hint, "", "learn") + "</ul>" +
       '<a class="first-time" href="#/start">처음 사용해요 · 사용 방법 보기</a>';
+    var hv = homeVariant();
+    if (hv) {
+      var pics = [["11_ot_hanbok_yeo.jpg", "옷 갈아입히기"], ["2_seutail_suchaehwa.jpg", "그림"], ["10-1_goyangikkamjjak.jpg", "움직이는 그림"], ["2-4_saengil.jpg", "축하 카드"], ["2-3_aidol_yeo.jpg", "화보 사진"]];
+      var hero = '<section class="play-hero"><p class="play-kicker">골라서 붙여넣기만 하면 돼요</p>' +
+        '<h1 class="play-title">오늘은 AI로<br>무엇을 만들어 볼까요?</h1>' +
+        '<div class="play-strip" aria-hidden="true">' + pics.map(function (p, i) {
+          return '<figure class="play-pic p' + i + '"><img src="' + src(p[0], true) + '" alt="" loading="lazy"><figcaption>' + p[1] + "</figcaption></figure>";
+        }).join("") + "</div></section>";
+      var cats = MENU.cats.concat([{ id: "learn", title: MENU.learn.title, hint: MENU.learn.hint }]);
+      var menu = hv === "b"
+        ? '<ul class="play-grid">' + cats.map(function (c) {
+            return '<li><a class="play-tile t-' + c.id + '" href="#/cat/' + c.id + '">' + iconHtml(c.id) + "<b>" + esc(c.title) + "</b><span>" + esc(c.hint) + "</span></a></li>";
+          }).join("") + "</ul>"
+        : '<ul class="mlist play-list">' + cats.map(function (c) { return rowHtml("#/cat/" + c.id, esc(c.title), c.hint, "", c.id).replace('class="mrow', 'class="mrow t-' + c.id); }).join("") + "</ul>";
+      html = hero + menu + '<a class="first-time" href="#/start">처음 사용해요 · 사용 방법 보기</a>';
+    }
     $("#view").innerHTML = html;
+  }
+  function homeVariant() {
+    var m = /[?&]home=([ab])/.exec(location.search);
+    var v = m ? m[1] : (MENU && MENU.home) || "";
+    document.body.setAttribute("data-home", v);
+    return v;
   }
   function renderCat(id) {
     if (id === "learn") return renderLearn();
