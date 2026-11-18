@@ -94,7 +94,7 @@ window.MENU = {
   },
   desc: { "11-1": "한복 · 슈트 · 드레스 · 재킷 · 계절 옷" },
   /* 11-1을 옷 갈아입히기로 넓힌 선택지 (미리보기용) */
-  version: "v1.0.3",
+  version: "v1.0.4",
   home: "b", /* 첫 화면: 아이콘 타일형 (선생님 확정 2026-11-18) */
   /* 목록에 보이는 활동 대표 그림 (사물 중심·화풍 다양하게) */
   cardImg: { "1-1": "list_1-1.jpg", "1-2": "list_1-2.jpg", "1-3": "list_1-3.jpg", "8-1": "list_8-1.jpg", "8-2": "list_8-2.jpg", "8-4": "list_8-4.jpg", "9-4": "list_9-4.jpg", "9-3": "list_9-3.jpg", "9-2": "list_9-2.jpg", "1-4": "list_1-4.jpg", "7-3": "list_7-3.jpg", "3-5": "list_3-5.jpg", "9-1": "list_9-1.jpg", "7-1": "list_7-1.jpg", "7-2": "list_7-2.jpg", "7-4": "list_7-4.jpg", "11-3": "list_11-3.jpg", "3-2": "list_3-2.jpg", "3-3": "list_3-3.jpg", "4-5": "2-3_halriudeu_nam.jpg", "4-4": "1_hom_80nyeondaegyeolhonsajin_jeongsagak.jpg" },
