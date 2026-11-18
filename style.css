@@ -699,3 +699,7 @@ body[data-home="c"] .play-hero { padding-bottom: 6px; background: none; padding-
 .play-tile .mrow-ico svg { width: 40px; height: 40px; }
 .play-title { margin-bottom: 6px; }
 .play-kicker { margin: 0 0 16px; font-size: 17.5px; color: var(--muted); font-weight: 600; }
+/* 아이콘은 흰색 한 가지 (금색 포인트 없음) */
+.mrow-ico .g { fill: #fff; stroke: #fff; }
+.mrow-ico .gs { stroke: #fff; }
+.mrow-ico .gf { fill: rgba(255,255,255,.22); }
