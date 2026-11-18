@@ -281,7 +281,7 @@
       var hero = '<section class="play-hero"><h1 class="play-title">오늘은 AI로 <br>무엇을 해 볼까요?</h1>' +
         '<p class="play-kicker">만들고 싶은 것, 궁금한 것을 골라 보세요.</p>' +
         '<div class="play-strip" role="list" aria-label="바로 해 보기">' + pics.map(function (p, i) {
-          return '<a class="play-pic p' + (i % 2) + '" role="listitem" href="#/card/' + p[0] + '"><img src="' + src(p[1], true) + '" alt="" loading="lazy"><span>' + p[2] + "</span></a>";
+          return '<a class="play-pic p' + (i % 2) + '" role="listitem" href="#/card/' + p[0] + '"><i class="pp-img"><img src="' + src(p[1], true) + '" alt="" loading="lazy"><em>AI로 만든 예시</em></i><span>' + p[2] + "</span></a>";
         }).join("") + '</div></section>';
       var cats = MENU.cats.concat([{ id: "learn", title: MENU.learn.title, hint: MENU.learn.hint }]);
       var TH = { draw: "그림 · 축하 카드", photo: "옷 · 화보 · 복원", song: "바로 · 가사부터", video: "글로 · 사진으로", write: "문자 · 편지", ask: "궁금한 것 · 사진 글" };

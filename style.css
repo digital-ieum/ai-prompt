@@ -781,3 +781,11 @@ a.play-pic:active { outline: 2.5px solid var(--navy); }
 @media (min-width: 1000px) {
   body[data-page="card"] #view > .back { justify-self: start; }
 }
+
+/* 사진 띠: 그림 아래 AI 표시를 모두 같은 띠로 */
+.pp-img { position: relative; display: block; border-radius: 8px; overflow: hidden; font-style: normal; }
+.pp-img img { border-radius: 0 !important; object-position: 50% 0 !important; }
+.pp-img em { position: absolute; left: 0; right: 0; bottom: 0; height: 17%; min-height: 20px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.94); color: var(--navy); font-style: normal; font-size: 12.5px; font-weight: 700; letter-spacing: -0.01em; white-space: nowrap; }
+@media (min-width: 1000px) { .pp-img em { font-size: 14px; } }
+.pp-img em { background: #fff; color: var(--muted); font-weight: 600; font-size: 12px; }
+@media (min-width: 1000px) { .pp-img em { font-size: 13px; } }
