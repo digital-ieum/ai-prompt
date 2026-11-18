@@ -58,6 +58,7 @@
       var ot = MENU.optText && MENU.optText[c.id];
       if (ot) c.groups.forEach(function (g) { var m = ot[g.key]; if (m) g.items.forEach(function (it) { if (m[it.label] !== undefined) it.text = m[it.label]; }); });
       if (MENU.picNote && MENU.picNote[c.id] !== undefined) c.picNote = MENU.picNote[c.id];
+      if (MENU.note && MENU.note[c.id] !== undefined) c.note = MENU.note[c.id];
       if (MENU.afterAdd && MENU.afterAdd[c.id]) c.after = (c.after || []).concat(MENU.afterAdd[c.id]);
       var os = MENU.options && MENU.options[c.id];
       (os ? [].concat(os) : []).forEach(function (o) { c.groups.forEach(function (g) {
@@ -160,7 +161,7 @@
       return;
     }
     menuBtn.hidden = false;
-    nav.hidden = false;
+    nav.hidden = !!MENU;
     var html = stageLabel(tab) ? '<span class="stage-chip">' + esc(stageLabel(tab)) + "</span>" : "";
     html += card
       ? '<a href="' + listHref(tab) + '">' + esc(tab.title) + "</a>"
@@ -469,14 +470,18 @@
     box.innerHTML = edited ? esc(state.edited).replace(/\n/g, "<br>") : s.html;
     var eb = $("#editBtn"); if (eb) eb.textContent = edited ? "✏️ 고친 문장 다시 고치기" : "✏️ 문장 직접 고치기";
     var en = $("#editNote"); if (en) en.hidden = !edited;
+    updateTypedNote(card);
     if (changedKey && !REDUCE && !edited) {
       box.querySelectorAll('mark[data-k="' + changedKey + '"]').forEach(function (mk) { mk.classList.add("flash"); });
     }
   }
 
-  function updatePicked(card, changedKey) {
+  function updateTypedNote(card) {
     var tn = $("#typedNote");
-    if (tn) tn.hidden = !(card.groups.some(function (g) { var p = groupShort(g); return p && p.typed; }) || (state.edited !== null && state.edited !== undefined));
+    if (tn && state) tn.hidden = !(card.groups.some(function (g) { var p = groupShort(g); return p && p.typed; }) || (state.edited !== null && state.edited !== undefined));
+  }
+  function updatePicked(card, changedKey) {
+    updateTypedNote(card);
     var list = $("#pickedList");
     if (!list) return;
     list.innerHTML = card.groups.map(function (g) {
@@ -515,8 +520,9 @@
     return { file: pickFile(it.img, state.gender), label: it.label, g: it.g };
   }
   function noteHtml(card) {
-    var common = SITE.picCaption ? "<b>" + esc(SITE.picCaption) + "</b>" : "";
-    var own = card.picNote ? " " + esc(card.picNote) : "";
+    var solo = card.picNote && card.picNote.charAt(0) === "!";
+    var common = SITE.picCaption && !solo ? "<b>" + esc(SITE.picCaption) + "</b>" : "";
+    var own = card.picNote ? (solo ? "<b>" + esc(card.picNote.slice(1)) + "</b>" : " " + esc(card.picNote)) : "";
     return common || own ? '<p class="pic-note">' + common + own + "</p>" : "";
   }
   var ARROW = '<span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>';
@@ -693,7 +699,7 @@
     chips += card.followup ? '<li class="need">앞 대화에 이어서</li>' : '<li class="fresh">새 대화에서 시작</li>';
     var after = (card.after && card.after.length) ? card.after
       : ((!card.photo && !card.followup && card.app.indexOf("Flow") < 0) ? (SITE.afterDefault || []) : []);
-    var typedNote = (SITE.typedNote && card.groups.some(function (g) { return isInput(g) || hasTyping(g); }))
+    var typedNote = SITE.typedNote
       ? '<p class="typed-note" id="typedNote" hidden>' + esc(SITE.typedNote) + "</p>" : "";
     var openName = card.followup ? "" : ((MENU ? aiPick(apps) : (apps.length > 1 ? "AI" : apps[0])) + " 사이트 열기");
     var step3 = card.photo && card.flowSet === "영상"
