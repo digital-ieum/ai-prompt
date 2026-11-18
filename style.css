@@ -655,8 +655,8 @@ body:not([data-page="home"]) .foot-notice[open] { padding-bottom: 16px; }
 /* ===== 첫 화면 시안 (?home=a 목록형 / ?home=b 타일형) ===== */
 .brand-name { display: none; align-items: center; gap: 8px; font-size: 20px; font-weight: 800; color: var(--navy); letter-spacing: -0.01em; }
 .brand-name svg { color: #e2a23a; }
-body[data-home="a"] .brand img, body[data-home="a"] .brand span, body[data-home="b"] .brand img, body[data-home="b"] .brand span { display: none; }
-body[data-home="a"] .brand-name, body[data-home="b"] .brand-name { display: inline-flex; }
+body[data-home="a"] .brand > img, body[data-home="a"] .brand > span, body[data-home="b"] .brand > img, body[data-home="b"] .brand > span, body[data-home="c"] .brand > img, body[data-home="c"] .brand > span { display: none; }
+body[data-home="a"] .brand-name, body[data-home="b"] .brand-name, body[data-home="c"] .brand-name { display: inline-flex; }
 .play-hero { margin: 4px 0 18px; padding: 22px 18px 18px; border-radius: 22px; background: linear-gradient(160deg, #fff6e2 0%, #fdeedd 45%, #e9f0fb 100%); overflow: hidden; }
 .play-kicker { margin: 0 0 6px; font-size: 16.5px; font-weight: 700; color: #a36a12; }
 .play-title { margin: 0 0 16px; font-size: 29px; line-height: 1.3; font-weight: 800; color: var(--navy); letter-spacing: -0.02em; }
@@ -683,3 +683,11 @@ body[data-home="a"] .brand-name, body[data-home="b"] .brand-name { display: inli
 .play-tile span { font-size: 15.5px; color: var(--muted); line-height: 1.4; }
 .play-grid li:last-child .play-tile { min-height: 0; display: grid; grid-template-columns: auto 1fr; column-gap: 14px; align-items: center; }
 .play-grid li:last-child .play-tile .mrow-ico { grid-row: 1 / 3; margin: 0; }
+
+/* 시안 C: 그림 타일 */
+.pic-tile { padding: 8px 8px 12px; gap: 2px; min-height: 0; }
+.pic-top { display: block; margin-bottom: 8px; border-radius: 12px; overflow: hidden; aspect-ratio: 4 / 3; background: var(--sky); }
+.pic-top img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%; display: block; }
+.pic-tile b { padding: 0 6px; }
+.pic-tile > span:last-child { padding: 0 6px; }
+.play-grid.pic-grid li:last-child .play-tile { padding: 12px 14px; }

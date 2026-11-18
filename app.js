@@ -283,7 +283,12 @@
           return '<figure class="play-pic p' + i + '"><img src="' + src(p[0], true) + '" alt="" loading="lazy"><figcaption>' + p[1] + "</figcaption></figure>";
         }).join("") + "</div></section>";
       var cats = MENU.cats.concat([{ id: "learn", title: MENU.learn.title, hint: MENU.learn.hint }]);
-      var menu = hv === "b"
+      var TP = { draw: "2_seutail_suchaehwa.jpg", photo: "11_ot_hanbok_yeo.jpg", song: "3-5_baronorae.jpg", video: "4-3_sonheundeulgi.jpg", write: "1-1_munjabonaegi.jpg", ask: "9-4_gunggeumhaniyagi.jpg" };
+      var menu = hv === "c"
+        ? '<ul class="play-grid pic-grid">' + cats.map(function (c) {
+            return '<li><a class="play-tile pic-tile t-' + c.id + '" href="#/cat/' + c.id + '">' + (TP[c.id] ? '<span class="pic-top"><img src="' + src(TP[c.id], true) + '" alt="" loading="lazy"></span>' : iconHtml(c.id)) + "<b>" + esc(c.title) + "</b><span>" + esc(c.hint) + "</span></a></li>";
+          }).join("") + "</ul>"
+        : hv === "b"
         ? '<ul class="play-grid">' + cats.map(function (c) {
             return '<li><a class="play-tile t-' + c.id + '" href="#/cat/' + c.id + '">' + iconHtml(c.id) + "<b>" + esc(c.title) + "</b><span>" + esc(c.hint) + "</span></a></li>";
           }).join("") + "</ul>"
@@ -293,7 +298,7 @@
     $("#view").innerHTML = html;
   }
   function homeVariant() {
-    var m = /[?&]home=([ab])/.exec(location.search);
+    var m = /[?&]home=([abc])/.exec(location.search);
     var v = m ? m[1] : (MENU && MENU.home) || "";
     document.body.setAttribute("data-home", v);
     return v;
