@@ -789,3 +789,82 @@ a.play-pic:active { outline: 2.5px solid var(--navy); }
 @media (min-width: 1000px) { .pp-img em { font-size: 14px; } }
 .pp-img em { background: #fff; color: var(--muted); font-weight: 600; font-size: 12px; }
 @media (min-width: 1000px) { .pp-img em { font-size: 13px; } }
+
+/* ===== AI 이해하기 (강사 수업자료 화면) — 왼쪽 남색 패널 + 오른쪽 작업 영역 ===== */
+.lrn{--lnavy:#1b2a40;--lbg:#f7f3ec;--lpaper:#fff;--lmuted:#475569;--lline:#d8dde3;
+  --lmark:#eee3cc;--lbrass:#765a25;--ltrack:#e6e8ec;
+  display:flex;flex-direction:column;gap:0;margin:-4px 0 0;
+  border:1px solid var(--lline);border-radius:14px;overflow:hidden;background:var(--lbg)}
+@media(min-width:900px){.lrn{flex-direction:row;min-height:62vh}}
+.lrn-side{background:var(--lnavy);color:#fff;display:flex;flex-direction:column;padding:22px}
+@media(min-width:900px){.lrn-side{width:27%;min-width:230px;padding:28px 24px}}
+.lrn-brand{font-size:15px;font-weight:600;margin:0;color:#fff}
+.lrn-no{font-size:14px;color:#9fb0c6;margin:8px 0 0}
+.lrn-title{font-size:clamp(22px,2.4vw,30px);font-weight:600;line-height:1.28;margin:18px 0 0;color:#fff}
+.lrn-q{font-size:clamp(15px,1.4vw,18px);line-height:1.5;color:#c6d2e2;margin:14px 0 0}
+.lrn-sp{flex:1 1 auto;min-height:18px}
+.lrn-nav{display:flex;gap:20px;flex-wrap:wrap;padding-top:14px;border-top:1px solid rgba(255,255,255,.18)}
+.lrn-nav a{font-size:15px;color:#dbe4ef;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.4);padding-bottom:2px}
+.lrn-nav a:hover,.lrn-nav a:focus-visible{color:#fff;border-color:#fff;outline:none}
+.lrn-work{flex:1 1 auto;min-width:0;padding:20px;display:flex;flex-direction:column;gap:16px;background:var(--lbg)}
+@media(min-width:900px){.lrn-work{padding:28px}}
+.lrn-status{font-size:14px;color:var(--lmuted);margin:0}
+.lrn-op{font-size:clamp(18px,1.8vw,24px);font-weight:600;margin:0;line-height:1.3;color:var(--lnavy)}
+.lrn-bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.lrn-seg{display:flex;flex-wrap:wrap;border:1px solid var(--lline);border-radius:10px;overflow:hidden;background:var(--lpaper)}
+.lrn-seg button{font:inherit;font-size:16px;font-weight:500;min-height:48px;padding:0 16px;border:0;background:transparent;color:#1b2a40;cursor:pointer}
+.lrn-seg button+button{border-left:1px solid var(--lline)}
+.lrn-seg button[aria-pressed="true"]{background:var(--lnavy);color:#fff;font-weight:600}
+.lrn-seg button[aria-pressed="true"]+button{border-left-color:rgba(255,255,255,.28)}
+.lrn-seg button:focus-visible{outline:3px solid var(--lbrass);outline-offset:-3px}
+.lrn-acts{display:flex;gap:10px;flex-wrap:wrap}
+.lrn-btn{font:inherit;font-size:16px;font-weight:600;min-height:48px;padding:0 18px;border-radius:10px;
+  border:1px solid var(--lnavy);background:var(--lpaper);color:var(--lnavy);cursor:pointer}
+.lrn-btn.pri{background:var(--lnavy);color:#fff}
+.lrn-btn.plain{border-color:var(--lline);color:#1b2a40;font-weight:500}
+.lrn-btn:focus-visible{outline:3px solid var(--lbrass);outline-offset:2px}
+.lrn-card{background:var(--lpaper);border:1px solid var(--lline);border-radius:12px;padding:18px}
+.lrn-split{display:grid;gap:16px}
+@media(min-width:760px){.lrn-split{grid-template-columns:35fr 65fr;align-items:center}
+  .lrn-split.even{grid-template-columns:1fr 1fr;align-items:stretch}
+  .lrn-split>div+div{border-left:1px solid var(--lline);padding-left:20px}}
+.lrn-lab{font-size:16px;font-weight:600;margin:0 0 10px;color:var(--lnavy)}
+.lrn-inp{font-size:clamp(18px,1.8vw,24px);font-weight:500;margin:0;line-height:1.5;color:#1b2a40}
+.lrn-inp.lrn-plain{font-weight:400;font-size:clamp(16px,1.5vw,20px)}
+.lrn-slot{display:inline-block;width:2.6em;border-bottom:3px solid var(--lbrass);vertical-align:baseline}
+.lrn-side-note{font-size:15px;color:var(--lmuted);margin:12px 0 0;line-height:1.5}
+.lrn-cands{display:grid;gap:12px}
+.lrn-cand{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}
+.lrn-cw{font-size:17px;font-weight:500;white-space:nowrap;color:#1b2a40}
+.lrn-bar2{height:8px;border-radius:4px;background:var(--ltrack);overflow:hidden}
+.lrn-bar2 i{display:block;height:100%;background:var(--lnavy);border-radius:4px}
+.lrn-pc{font-size:17px;font-variant-numeric:tabular-nums;text-align:right;min-width:3.4em;color:#1b2a40}
+.lrn-once{font-size:14px;color:var(--lmuted);margin:12px 0 0}
+.lrn-sec{font-size:17px;font-weight:600;margin:0;color:var(--lnavy)}
+.lrn-table{background:var(--lpaper);border:1px solid var(--lline);border-radius:12px;overflow:hidden}
+.lrn-row{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;min-height:60px;
+  padding:12px 18px;border-top:1px solid var(--lline)}
+.lrn-row:first-child{border-top:0}
+.lrn-rl{font-size:14px;color:var(--lmuted);white-space:nowrap}
+.lrn-rt{font-size:clamp(17px,1.6vw,22px);line-height:1.45;color:#1b2a40}
+.lrn-rt mark{background:var(--lmark);color:inherit;padding:1px 4px;border-radius:3px}
+.lrn-note{border-left:3px solid var(--lbrass);padding-left:14px;font-size:clamp(16px,1.5vw,19px);
+  margin:0;color:#1b2a40;line-height:1.55}
+.lrn-ghost{color:var(--lmuted);font-size:17px;padding:18px;margin:0}
+.lrn-two{display:grid;gap:14px}
+@media(min-width:620px){.lrn-two{grid-template-columns:1fr 1fr}}
+.lrn-two canvas{width:100%;height:auto;display:block;border:1px solid var(--lline);border-radius:8px;background:#fff}
+.lrn-capm{font-size:14px;color:var(--lmuted);margin:0 0 6px}
+.lrn-pick{display:flex;gap:10px;flex-wrap:wrap}
+.lrn-pickb{font:inherit;font-size:16px;font-weight:600;min-height:52px;padding:0 20px;border-radius:10px;
+  border:1px solid var(--lnavy);background:var(--lpaper);color:var(--lnavy);cursor:pointer;flex:1 1 180px}
+.lrn-pickb.wide{flex:1 1 100%;font-weight:500;border-color:var(--lline);color:#1b2a40}
+.lrn-pickb:focus-visible{outline:3px solid var(--lbrass);outline-offset:2px}
+.lrn-why{background:var(--lpaper);border:1px solid var(--lline);border-left:3px solid var(--lbrass);
+  border-radius:0 12px 12px 0;padding:18px;font-size:clamp(15px,1.45vw,18px);line-height:1.6;color:#1b2a40}
+.lrn-why b{color:var(--lnavy)}
+.lrn-src{display:block;margin-top:12px;font-size:14px;color:var(--lmuted)}
+.lrn-src a{color:inherit}
+.lrn-ph{background:var(--lpaper);border:1px dashed var(--lbrass);border-radius:12px;padding:20px;
+  font-size:clamp(15px,1.45vw,18px);line-height:1.65;color:#1b2a40}
+.lrn-ph b{color:var(--lnavy)}

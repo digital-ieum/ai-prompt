@@ -357,38 +357,299 @@
     });
     $("#view").innerHTML = html;
   }
+  function lrnJosa(w) {
+    var c = w.charCodeAt(w.length - 1);
+    if (c < 0xAC00 || c > 0xD7A3) return "를";
+    return ((c - 0xAC00) % 28) !== 0 ? "을" : "를";
+  }
+  function lrnShell(t, bodyHtml) {
+    return '<div class="lrn">' +
+      '<aside class="lrn-side">' +
+        '<p class="lrn-brand">AI 이해하기</p>' +
+        '<p class="lrn-no">주제 ' + t.n + ' / 7</p>' +
+        '<h1 class="lrn-title">' + esc(t.q) + '</h1>' +
+        '<p class="lrn-q">' + t.sub + '</p>' +
+        '<div class="lrn-sp"></div>' +
+        '<nav class="lrn-nav"><a href="#/cat/learn">주제 목록</a>' +
+        '<a href="#/learn/' + MENU.learn.topics[t.n % 7].id + '">다음 주제</a></nav>' +
+      '</aside>' +
+      '<main class="lrn-work" id="lrnWork">' + bodyHtml + '</main></div>';
+  }
+  function lrnHead(status, head, tools) {
+    return '<p class="lrn-status">' + esc(status) + '</p><h2 class="lrn-op">' + esc(head) + '</h2>' +
+      '<div class="lrn-bar">' + tools + "</div>";
+  }
+  function lrnSeg(items, id) {
+    return '<div class="lrn-seg" role="group" id="' + id + '">' + items + "</div>";
+  }
+  var LRN = {};
+  /* 1 — 같은 입력 3번 비교 */
+  LRN.how = function (w) {
+    w.innerHTML = lrnHead("미리 만든 예시 · 실제 AI 실행 아님", "선택 방법을 바꿔 비교해 보세요",
+      lrnSeg('<button type="button" id="lm1" aria-pressed="false">1등만 고르기</button>' +
+             '<button type="button" id="lm2" aria-pressed="true">2·3등도 고르기</button>', "lseg") +
+      '<div class="lrn-acts"><button class="lrn-btn pri" id="lrun">3번 비교하기</button>' +
+      '<button class="lrn-btn plain" id="lrst">다시 보기</button></div>') +
+      '<div class="lrn-card"><div class="lrn-split"><div><p class="lrn-lab">같은 입력</p>' +
+      '<p class="lrn-inp">오늘 점심에는 <span class="lrn-slot"></span></p>' +
+      '<p class="lrn-side-note">빈칸에 들어갈 말을<br>오른쪽에서 고릅니다.</p></div>' +
+      '<div><p class="lrn-lab">다음 말 후보</p><div class="lrn-cands">' +
+      '<div class="lrn-cand"><span class="lrn-cw">국수를</span><span class="lrn-bar2"><i style="width:55%"></i></span><span class="lrn-pc">55%</span></div>' +
+      '<div class="lrn-cand"><span class="lrn-cw">김밥을</span><span class="lrn-bar2"><i style="width:30%"></i></span><span class="lrn-pc">30%</span></div>' +
+      '<div class="lrn-cand"><span class="lrn-cw">비빔밥을</span><span class="lrn-bar2"><i style="width:15%"></i></span><span class="lrn-pc">15%</span></div>' +
+      '</div><p class="lrn-once">설명용 가상 수치</p></div></div></div>' +
+      '<h3 class="lrn-sec">같은 입력으로 3번 비교</h3><div class="lrn-table" id="ltb"></div>' +
+      '<p class="lrn-note" id="lnt">가능한 말을 다르게 고르면 답도 달라질 수 있어요.</p>';
+    var LAB = ["첫 번째", "두 번째", "세 번째"], MIX = ["국수", "김밥", "비빔밥"], ONE = ["국수", "국수", "국수"];
+    var onlyTop = false, shown = false, tb = $("#ltb"), nt = $("#lnt");
+    function render(ws) {
+      tb.innerHTML = "";
+      if (!ws) { tb.innerHTML = '<p class="lrn-ghost">[3번 비교하기]를 누르면 결과가 나옵니다.</p>'; return; }
+      ws.forEach(function (x, i) {
+        var d = document.createElement("div"); d.className = "lrn-row";
+        d.innerHTML = '<span class="lrn-rl">' + LAB[i] + '</span><span class="lrn-rt">오늘 점심에는 <mark>' +
+          esc(x) + "</mark>" + lrnJosa(x) + " 먹었어요.</span>";
+        tb.appendChild(d);
+      });
+    }
+    function draw() {
+      shown = true; render(onlyTop ? ONE : MIX);
+      nt.textContent = onlyTop
+        ? "1등만 고르게 하면 세 번 모두 같은 말이 나옵니다. 답은 안정되지만 표현이 단조로워집니다."
+        : "가능한 말을 다르게 고르면 답도 달라질 수 있어요.";
+    }
+    function mode(v) {
+      onlyTop = v;
+      $("#lm1").setAttribute("aria-pressed", v ? "true" : "false");
+      $("#lm2").setAttribute("aria-pressed", v ? "false" : "true");
+      if (shown) draw();
+    }
+    $("#lm1").onclick = function () { mode(true); };
+    $("#lm2").onclick = function () { mode(false); };
+    $("#lrun").onclick = draw;
+    $("#lrst").onclick = function () { shown = false; render(null); nt.textContent = "가능한 말을 다르게 고르면 답도 달라질 수 있어요."; };
+    render(null);
+  };
+  /* 2 — 확산 */
+  LRN.image = function (w) {
+    w.innerHTML = lrnHead("확산 방식을 단순화한 예시 · 실제 생성 기록 아님", "단계를 넘기며 형태가 드러나는 것을 보세요",
+      lrnSeg("", "lsd") +
+      '<div class="lrn-acts"><button class="lrn-btn pri" id="lnx">다음 단계</button>' +
+      '<button class="lrn-btn plain" id="lag">같은 요청으로 다시</button></div>') +
+      '<div class="lrn-card"><div class="lrn-split"><div><p class="lrn-lab">같은 요청</p>' +
+      '<p class="lrn-inp">둥근 그릇을 그려 줘</p><p class="lrn-side-note">두 번 돌린 결과를<br>나란히 놓았습니다.</p></div>' +
+      '<div><p class="lrn-lab">만들어지는 과정</p><div class="lrn-two">' +
+      '<div><p class="lrn-capm">첫 번째</p><canvas id="lc1" width="420" height="280"></canvas></div>' +
+      '<div><p class="lrn-capm">두 번째</p><canvas id="lc2" width="420" height="280"></canvas></div>' +
+      '</div></div></div></div><p class="lrn-note" id="lnt"></p>';
+    var S = 0, MAX = 4, s1 = Math.random() * 999, s2 = Math.random() * 999;
+    var NAMES = ["무작위 얼룩", "큰 덩어리", "형태", "세부"];
+    function rnd(x) { var v = Math.sin(x) * 10000; return v - Math.floor(v); }
+    function paintC(id, seed) {
+      var c = $("#" + id); if (!c) return;
+      var x = c.getContext("2d"), W = c.width, H = c.height, cl = S / MAX;
+      x.fillStyle = "#fff"; x.fillRect(0, 0, W, H);
+      var pts = Math.round(1300 * (1 - cl) + 50);
+      for (var i = 0; i < pts; i++) {
+        x.fillStyle = "rgba(27,42,64," + (0.10 + 0.15 * (1 - cl)) + ")";
+        x.fillRect(rnd(seed + i * 1.7) * W, rnd(seed + i * 3.1) * H, 2.5, 2.5);
+      }
+      if (S > 0) {
+        var r = 46 + rnd(seed + 9) * 50, cx = W / 2 + (rnd(seed) * 2 - 1) * 46, cy = H / 2 + 8 + (rnd(seed + 4) * 2 - 1) * 22;
+        var rot = (rnd(seed + 7) * 2 - 1) * 0.28, sq = 0.48 + rnd(seed + 2) * 0.3;
+        x.save(); x.globalAlpha = Math.min(1, cl * 1.15);
+        x.beginPath(); x.ellipse(cx, cy, r, r * sq, rot, 0, Math.PI * 2);
+        x.fillStyle = rnd(seed + 5) > 0.5 ? "#efe9dc" : "#e4e7ea"; x.fill();
+        x.lineWidth = 3; x.strokeStyle = "#1b2a40"; x.stroke();
+        x.beginPath(); x.ellipse(cx, cy - r * sq * 0.55, r * 0.92, r * sq * 0.34, rot, 0, Math.PI * 2);
+        x.strokeStyle = "rgba(27,42,64,.45)"; x.lineWidth = 2; x.stroke(); x.restore();
+      }
+    }
+    function paint() {
+      var sd = $("#lsd"); sd.innerHTML = "";
+      NAMES.forEach(function (nm, i) {
+        var b = document.createElement("button"); b.type = "button";
+        b.setAttribute("aria-pressed", S === i + 1 ? "true" : "false");
+        b.textContent = (i + 1) + ". " + nm;
+        b.onclick = function () { S = i + 1; paint(); };
+        sd.appendChild(b);
+      });
+      paintC("lc1", s1); paintC("lc2", s2);
+      $("#lnt").textContent = S >= MAX
+        ? "같은 요청인데 두 그림이 다릅니다. 시작한 얼룩이 달랐기 때문입니다. 사진을 찾아온 것이 아니라 매번 새로 만든 것입니다."
+        : "점에서 시작해 단계마다 조금씩 형태를 또렷하게 만듭니다.";
+    }
+    $("#lnx").onclick = function () { if (S < MAX) { S++; paint(); } };
+    $("#lag").onclick = function () { S = 0; s1 = Math.random() * 999; s2 = Math.random() * 999; paint(); };
+    paint();
+  };
+  /* 3 — 조건 조각 */
+  LRN.ask = function (w) {
+    var OPT = [{ k: "누구에게", v: "환갑잔치에 못 오신 사촌에게" },
+               { k: "무슨 일로", v: "안부를 묻는" },
+               { k: "말투·길이", v: "서운함 없이 따뜻한 말투로, 3문장" }];
+    var OUT = { "000": "안녕하세요. 잘 지내시죠? 연락 한번 드립니다.",
+      "100": "안녕하세요, 잘 지내시는지요. 한번 뵙고 싶습니다.",
+      "010": "잘 지내시죠? 언제 한번 뵙겠습니다.",
+      "001": "그동안 잘 지내셨어요? 늘 고맙습니다. 곧 연락드리겠습니다.",
+      "110": "잘 지내셨어요? 오랜만에 안부 여쭙습니다. 건강은 어떠신지 궁금합니다.",
+      "101": "형님, 잘 지내셨어요? 늘 마음 쓰고 있습니다. 조만간 찾아뵙겠습니다.",
+      "011": "잘 지내셨어요? 오랜만에 소식 여쭙습니다. 조만간 찾아뵐게요.",
+      "111": "형님, 그동안 잘 지내셨어요? 환갑 때 못 뵈어 아쉬웠습니다. 날 풀리면 꼭 한번 들르겠습니다." };
+    var on = [false, false, false];
+    w.innerHTML = lrnHead("미리 만든 예시 · 실제 AI 실행 아님", "조건을 켜고 끄며 결과를 비교해 보세요",
+      lrnSeg("", "lsw") + '<div class="lrn-acts"><button class="lrn-btn plain" id="lrst">다시 보기</button></div>') +
+      '<div class="lrn-card"><div class="lrn-split"><div><p class="lrn-lab">완성된 요청</p>' +
+      '<p class="lrn-inp" id="lreq"></p></div><div><p class="lrn-lab">AI가 돌려준 글</p>' +
+      '<p class="lrn-inp lrn-plain" id="lout"></p></div></div></div><p class="lrn-note" id="lnt"></p>';
+    var sw = $("#lsw");
+    OPT.forEach(function (o, i) {
+      var b = document.createElement("button"); b.type = "button";
+      b.setAttribute("aria-pressed", "false"); b.textContent = o.k;
+      b.onclick = function () { on[i] = !on[i]; b.setAttribute("aria-pressed", on[i] ? "true" : "false"); paint(); };
+      sw.appendChild(b);
+    });
+    function paint() {
+      var key = on.map(function (x) { return x ? "1" : "0"; }).join(""), p = [];
+      if (on[0]) p.push(OPT[0].v);
+      if (on[1]) p.push(OPT[1].v);
+      p.push("문자 써 줘");
+      if (on[2]) p.push("— " + OPT[2].v);
+      $("#lreq").textContent = p.join(" ");
+      $("#lout").textContent = OUT[key];
+      var c = on.filter(Boolean).length;
+      $("#lnt").textContent = c === 0 ? "조건이 없으면 누구에게 쓰는 글인지 알 수 없는 답이 나옵니다."
+        : (c === 3 ? "세 조각을 다 넣으니 그대로 보내도 될 만한 글이 됐습니다." : "조각 " + c + "개를 넣었습니다. 더 넣어 보세요.");
+    }
+    $("#lrst").onclick = function () {
+      on = [false, false, false];
+      [].slice.call(sw.children).forEach(function (b) { b.setAttribute("aria-pressed", "false"); });
+      paint();
+    };
+    paint();
+  };
+  /* 4 — 환각 */
+  LRN.wrong = function (w) {
+    var Q = [{ a: "세종대왕은 훈민정음을 1443년에 창제하고 1446년에 반포했습니다.",
+        b: "세종대왕은 훈민정음을 만들며 집현전 학자에게 자판 배열을 맡겼습니다.",
+        aw: "공식 기록과 연도·사건이 일치합니다.",
+        bw: "그럴듯하지만 사실이 아닙니다. ‘자판 배열’은 현대의 개념입니다." },
+      { a: "이 약은 복용법이 사람마다 달라 약사에게 확인하셔야 합니다.",
+        b: "이 약은 하루 세 번, 식후 30분에 드시면 됩니다.",
+        aw: "신중한 답입니다. 다만 신중한 말투라고 늘 맞는 것은 아닙니다.",
+        bw: "단정적이지만 약은 사람과 증상에 따라 다릅니다. 반드시 전문가에게 확인해야 합니다." }];
+    var i = 0;
+    function paint() {
+      var o = Q[i];
+      w.innerHTML = lrnHead("설명용 예시", "그대로 믿어도 되는 답은 어느 쪽일까요?",
+        lrnSeg('<button type="button" aria-pressed="true">문제 ' + (i + 1) + " / " + Q.length + "</button>", "lsq") +
+        '<div class="lrn-acts"><button class="lrn-btn pri" id="lnx">' + (i < Q.length - 1 ? "다음 문제" : "처음으로") + "</button></div>") +
+        '<div class="lrn-card"><div class="lrn-split even"><div><p class="lrn-lab">답 ①</p>' +
+        '<p class="lrn-inp lrn-plain">' + esc(o.a) + '</p></div><div><p class="lrn-lab">답 ②</p>' +
+        '<p class="lrn-inp lrn-plain">' + esc(o.b) + "</p></div></div></div>" +
+        '<div class="lrn-pick"><button class="lrn-pickb">① 이 맞다</button>' +
+        '<button class="lrn-pickb">② 가 맞다</button>' +
+        '<button class="lrn-pickb wide">지금은 판단하기 어려워요</button></div>' +
+        '<div class="lrn-why" id="lwhy" hidden></div>';
+      [].slice.call(w.querySelectorAll(".lrn-pickb")).forEach(function (b) {
+        b.onclick = function () {
+          var y = $("#lwhy"); y.hidden = false;
+          y.innerHTML = "<b>답 ①</b> — " + esc(o.aw) + "<br><br><b>답 ②</b> — " + esc(o.bw) +
+            '<br><br>두 답 모두 자신 있는 말투였습니다. <b>말투만 보고는 가려낼 수 없습니다.</b> 중요한 내용은 공식 자료와 비교하세요.' +
+            '<span class="lrn-src">근거: OpenAI, <a href="https://openai.com/index/why-language-models-hallucinate/" target="_blank" rel="noopener">Why language models hallucinate</a></span>';
+        };
+      });
+      $("#lnx").onclick = function () { i = (i + 1) % Q.length; paint(); };
+    }
+    paint();
+  };
+  /* 5 — 편향 (강사 준비 자리) */
+  LRN.bias = function (w) {
+    w.innerHTML = lrnHead("실제 실행 결과를 넣는 자리", "실제로 돌린 결과로 확인합니다",
+      lrnSeg('<button type="button" aria-pressed="true">강사 준비 필요</button>', "lsb") + '<div class="lrn-acts"></div>') +
+      '<div class="lrn-ph"><b>이 주제는 지어낸 예시를 쓰지 않습니다.</b><br><br>' +
+      '같은 요청을 조건을 맞춰 여러 번 실행하고 <b>첫 결과를 전부</b> 넣습니다. 결론에 맞는 것만 고르거나, 원하는 모습이 나올 때까지 다시 돌리지 않습니다.<br><br>' +
+      '권하는 첫 소재는 <b>집의 모습</b>입니다. “집 한 채의 바깥 모습을 사진처럼 만들어 줘. 사람이 없는 장면.”처럼 나라나 형태를 지정하지 않은 문장을 씁니다.<br><br>' +
+      '기록할 것: 실행 날짜 · 사용한 서비스 · 입력 문장 · 실행 횟수 · 거절되거나 실패한 결과까지.</div>' +
+      '<p class="lrn-note">발표는 “이번 조건의 8개 중 이런 모습이 몇 개였어요. 빠진 모습도 있을까요?”까지로 제한합니다. 전체 AI의 편향 정도를 계산했다고 말하지 않습니다.</p>';
+  };
+  /* 6 — 내 글의 위치 */
+  LRN.where = function (w) {
+    var ST = [{ t: "체험관에서 고르기", p: "내 기기 안", d: "아직 아무 데도 가지 않았습니다. 고른 내용은 이 화면 안에만 있습니다." },
+      { t: "복사하기", p: "내 기기 안", d: "기기의 임시 보관함에 담겼습니다. <b>복사는 전송이 아닙니다.</b>" },
+      { t: "AI 앱에 붙여넣기", p: "내 기기 안", d: "앱 입력창에 들어갔습니다. 여기까지도 내 기기 안입니다." },
+      { t: "보내기", p: "외부 서비스로", d: "이제 내용이 <b>그 회사의 서버로 전송</b>됩니다. 보관·학습 사용 여부는 서비스와 계정 설정에 따라 다릅니다." }];
+    var i = 0;
+    w.innerHTML = lrnHead("체험관은 입력한 글을 수집하거나 외부로 보내지 않습니다", "단계를 눌러 내 글의 위치를 확인하세요",
+      lrnSeg("", "lsw") + '<div class="lrn-acts"></div>') +
+      '<div class="lrn-card"><div class="lrn-split"><div><p class="lrn-lab">지금 내 글의 위치</p>' +
+      '<p class="lrn-inp" id="lpos"></p></div><div><p class="lrn-lab">무슨 일이 일어나는가</p>' +
+      '<p class="lrn-inp lrn-plain" id="ldsc"></p></div></div></div><p class="lrn-note" id="lnt"></p>';
+    var sw = $("#lsw");
+    ST.forEach(function (o, k) {
+      var b = document.createElement("button"); b.type = "button";
+      b.textContent = (k + 1) + ". " + o.t;
+      b.onclick = function () { i = k; paint(); };
+      sw.appendChild(b);
+    });
+    function paint() {
+      [].slice.call(sw.children).forEach(function (b, k) { b.setAttribute("aria-pressed", k === i ? "true" : "false"); });
+      $("#lpos").textContent = ST[i].p;
+      $("#ldsc").innerHTML = ST[i].d;
+      $("#lnt").innerHTML = i < 3 ? "여기까지는 <b>내 기기 안</b>입니다."
+        : "<b>이 지점부터 외부로 나갑니다.</b> 보내기 전에 주민번호·계좌번호 같은 비밀정보가 없는지 확인하세요.";
+    }
+    paint();
+  };
+  /* 7 — 안전 */
+  LRN.safe = function (w) {
+    var C = [{ q: "주민번호나 비밀번호를 그대로 넣어도 될까요?", ok: false, r: "비밀정보는 빼고 상황만 설명하세요." },
+      { q: "이름만 가린 사진이면 보내도 될까요?", ok: false, r: "얼굴·주소·전화번호 같은 다른 정보도 함께 확인하세요." },
+      { q: "AI가 자신 있게 답하면 확인 없이 써도 될까요?", ok: false, r: "중요한 사실은 공식 자료와 비교하세요." },
+      { q: "마음에 안 들면 조건 하나를 바꿔 다시 부탁해도 될까요?", ok: true, r: "됩니다. 말투나 길이처럼 바꿀 부분을 알려 주세요." },
+      { q: "친구 사진을 허락 없이 올려도 될까요?", ok: false, r: "사진 속 사람에게 먼저 허락을 받으세요." },
+      { q: "AI가 쓴 글도 보내기 전에 이름·날짜를 확인할까요?", ok: true, r: "네. 실제로 보낼 내용은 내가 마지막으로 확인하세요." }];
+    var i = 0;
+    function paint() {
+      var o = C[i];
+      w.innerHTML = lrnHead("점수를 매기지 않습니다. 다시 눌러 보셔도 됩니다", "보내기 전에 한 번씩 확인하세요",
+        lrnSeg('<button type="button" aria-pressed="true">질문 ' + (i + 1) + " / " + C.length + "</button>", "lsc") +
+        '<div class="lrn-acts"><button class="lrn-btn plain" id="lpv">이전</button>' +
+        '<button class="lrn-btn pri" id="lnx">' + (i < C.length - 1 ? "다음 질문" : "처음으로") + "</button></div>") +
+        '<div class="lrn-card"><p class="lrn-lab">질문</p><p class="lrn-inp">' + esc(o.q) + "</p></div>" +
+        '<div class="lrn-pick"><button class="lrn-pickb">해도 돼요</button>' +
+        '<button class="lrn-pickb">안 돼요</button></div>' +
+        '<div class="lrn-why" id="lwhy" hidden></div>';
+      [].slice.call(w.querySelectorAll(".lrn-pickb")).forEach(function (b) {
+        b.onclick = function () {
+          var y = $("#lwhy"); y.hidden = false;
+          y.innerHTML = "<b>" + (o.ok ? "해도 됩니다" : "하지 않는 것이 좋습니다") + "</b><br>" + esc(o.r);
+        };
+      });
+      $("#lnx").onclick = function () { i = (i + 1) % C.length; paint(); };
+      $("#lpv").onclick = function () { i = (i - 1 + C.length) % C.length; paint(); };
+    }
+    paint();
+  };
   function renderLearn(topicId) {
     var L = MENU.learn;
     renderTop({ id: "learn", title: L.title, href: "#/cat/learn" }, topicId ? {} : null);
     hideDock();
-    var back = cardById(ss("lastCard"));
     var t = topicId && L.topics.filter(function (x) { return x.id === topicId; })[0];
-    var html;
     if (!t) {
-      html = '<h1 class="lead">' + esc(L.title) + '</h1><p class="sub">궁금한 것부터 골라 보세요. 순서는 없어요.</p><ul class="mlist">' +
-        L.topics.map(function (x) {
-          return rowHtml("#/learn/" + x.id, esc(x.q), x.ready ? "" : (x.cards.length ? "연습 " + x.cards.length + "가지" : "설명 준비 중"));
+      $("#view").innerHTML = '<h1 class="lead">' + esc(L.title) + '</h1>' +
+        '<p class="sub">AI가 어떻게 움직이는지 직접 돌려 보며 확인합니다.</p>' +
+        '<ul class="mlist cards-list">' + L.topics.map(function (x) {
+          return '<li><a class="mrow has-pic" href="#/learn/' + x.id + '">' +
+            '<span class="mrow-pic"><img src="' + src(x.img, true) + '" alt="" loading="lazy" onerror="this.remove()"></span>' +
+            '<span class="mrow-txt"><b>' + esc(x.q) + "</b>" +
+            (x.ready ? "" : '<span class="need-photo">강사 준비 필요</span>') + "</span>" +
+            '<span class="tile-go" aria-hidden="true"></span></a></li>';
         }).join("") + "</ul>";
-    } else {
-      html = '<a class="back" href="#/cat/learn">' + esc(L.title) + ' 목록으로</a><h1 class="lead">' + esc(t.q) + "</h1>";
-      if (t.ready) {
-        html += '<p class="learn-lead">' + esc(t.lead) + '</p><h2 class="sec">' + esc(t.caseTitle) + '</h2><div class="cases">' +
-          t.cases.map(function (c) {
-            return '<div class="case"><b>' + esc(c.label) + '</b><p class="case-say">' + esc(c.text) + '</p><p class="case-note">' + esc(c.note) + "</p></div>";
-          }).join("") + '</div><h2 class="sec">' + esc(t.doTitle) + '</h2><ul class="dos">' +
-          t.dos.map(function (d) { return "<li>" + esc(d) + "</li>"; }).join("") + "</ul>";
-      } else {
-        html += '<p class="learn-lead">이 주제의 설명은 내용을 확인한 뒤에 넣을 예정이에요.' + (t.cards.length ? " 아래 연습은 지금 해 볼 수 있어요." : "") + "</p>";
-      }
-      if (t.cards.length) {
-        html += '<h2 class="sec">AI에서 직접 해 보기</h2><ul class="mlist cards-list">' + t.cards.map(function (cid) {
-          var k = cardById(cid);
-          return k ? rowHtml("#/card/" + k.id, esc(k.title), "") : "";
-        }).join("") + "</ul>";
-      }
-      if (back) html += '<a class="resume" href="#/card/' + back.id + '"><span>하던 활동으로 돌아가기</span><b>' + esc(back.title) + "</b></a>";
+      return;
     }
-    $("#view").innerHTML = html;
+    $("#view").innerHTML = lrnShell(t, "");
+    (LRN[t.id] || function (w) { w.innerHTML = '<p class="lrn-ghost">준비 중입니다.</p>'; })($("#lrnWork"));
   }
   function renderStart() {
     renderTop({ id: "start", title: "처음 사용해요", href: "#/start" });

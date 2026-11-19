@@ -31,23 +31,16 @@ window.MENU = {
   learn: {
     id: "learn", title: "AI 이해하기", hint: "작동 원리 · 안전하게 쓰기",
     topics: [
-      { id: "how", q: "AI는 어떻게 답할까요?", cards: ["5-1", "5-4"], ready: false },
-      { id: "text", q: "AI는 어떻게 글을 쓸까요?", cards: [], ready: false },
-      { id: "image", q: "AI는 어떻게 그림을 그릴까요?", cards: [], ready: false },
-      { id: "ask", q: "어떻게 부탁하면 좋을까요?", cards: ["5-2", "5-3"], ready: false },
-      { id: "wrong", q: "왜 틀린 말을 자신 있게 할까요?", cards: ["6-7"], ready: true,
-        lead: "AI는 사실을 찾아서 답하는 것이 아니라, 앞의 말에 이어질 만한 말을 만들어서 답해요. 그래서 모르는 것도 아는 것처럼 매끄럽게 말할 때가 있어요.",
-        caseTitle: "비교해 보기 (설명을 위해 만든 예시예요)",
-        cases: [
-          { label: "그럴듯하지만 확인이 필요한 답", text: "“○○ 약수터는 1970년에 문을 열었고, 해마다 10만 명이 찾습니다.”", note: "숫자와 연도가 있어서 믿음이 가지만, 어디에서 나온 내용인지 없어요." },
-          { label: "믿을 만하게 답하는 모습", text: "“정확한 개장 연도는 제가 확인하지 못했어요. 시청 누리집이나 안내판에서 확인해 보세요.”", note: "모르는 것은 모른다고 하고, 확인할 곳을 알려 줘요." }
-        ],
-        doTitle: "이렇게 해 보세요",
-        dos: ["날짜·금액·건강·법률처럼 중요한 내용은 공식 누리집이나 전문가에게 한 번 더 확인해요.", "AI에게 “확실하지 않은 부분은 따로 표시해 줘”라고 부탁해요."] },
-      { id: "bias", q: "왜 한쪽으로 치우칠까요?", cards: [], ready: false },
-      { id: "safe", q: "안전하게 쓰려면 무엇을 지킬까요?", cards: ["6-5", "6-6", "6-8"], ready: false }
+      { id:"how",   n:1, q:"AI는 어떻게 답할까요?",         sub:"같은 질문인데,<br>왜 답이 달라질까요?",   img:"learn_01.jpg", cards:[], ready:true  },
+      { id:"image", n:2, q:"AI는 어떻게 그림을 그릴까요?",   sub:"사진을 찾아오는<br>걸까요?",             img:"learn_02.jpg", cards:[], ready:true  },
+      { id:"ask",   n:3, q:"어떻게 부탁하면 좋을까요?",       sub:"조건을 더하면<br>무엇이 달라질까요?",     img:"learn_03.jpg", cards:[], ready:true  },
+      { id:"wrong", n:4, q:"왜 틀린 말을 자신 있게 할까요?",  sub:"말투로 가려낼 수<br>있을까요?",           img:"learn_04.jpg", cards:[], ready:true  },
+      { id:"bias",  n:5, q:"왜 한쪽으로 치우칠까요?",         sub:"무엇이 빠져<br>있을까요?",               img:"learn_05.jpg", cards:[], ready:false },
+      { id:"where", n:6, q:"내가 쓴 말은 어디로 갈까요?",     sub:"복사와 전송은<br>같은 걸까요?",           img:"learn_06.jpg", cards:[], ready:true  },
+      { id:"safe",  n:7, q:"안전하게 쓰려면 무엇을 지킬까요?", sub:"넣지 말아야 할 것은<br>무엇일까요?",      img:"learn_07.jpg", cards:[], ready:true  }
     ]
   },
+  
   /* 미리보기에만 있는 새 카드 (승인되면 관리표로 옮긴다) */
   cards: [
     { id: "4-7", tab: "4", title: "글로 영상 만들기", desc: "사진 없이 문장만으로 영상을 만들어요", app: "Flow",
