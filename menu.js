@@ -2,11 +2,15 @@
 window.MENU = {
   title: "무엇을 해 볼까요?",
   cats: [
-    { id: "draw", title: "그림 만들기", hint: "새 그림 · 움직이는 그림", kind: "pic",
+    { id: "draw", title: "그림 만들기", hint: "새 그림 · 축하 카드", kind: "pic",
+      sections: [{ name: "", cards: ["2-1", "2-4", "4-1"] }],
+      more: [{ text: "움직이는 그림을 만들고 싶으면", cat: "gif" }] },
+    { id: "gif", title: "움직이는 그림", hint: "움짤 · 답장용 표정", kind: "pic",
       sections: [
-        { name: "새 그림", cards: ["2-1", "2-4", "4-1"] },
-        { name: "움직이는 그림", cards: ["10-1", "10-2", "10-3", "10-4", "10-5", "10-6", "11-4"] }
-      ] },
+        { name: "", cards: ["10-1", "10-2", "10-3", "10-4", "10-5", "10-6"] },
+        { name: "카드에 넣을 배경", cards: ["11-4"] }
+      ],
+      more: [{ text: "한 장짜리 그림을 그리고 싶으면", cat: "draw" }] },
     { id: "photo", title: "사진 바꾸기", hint: "옷 갈아입히기 · 선명하게", kind: "pic",
       sections: [{ name: "", cards: ["11-1", "2-3", "4-4", "2-2"] }],
       more: [{ text: "사진 속 글을 읽고 싶으면", cat: "ask" }] },
@@ -92,7 +96,7 @@ window.MENU = {
   },
   desc: { "11-1": "한복 · 슈트 · 드레스 · 재킷 · 계절 옷" },
   /* 11-1을 옷 갈아입히기로 넓힌 선택지 (미리보기용) */
-  version: "v1.0.7",
+  version: "v1.0.8",
   home: "b", /* 첫 화면: 아이콘 타일형 (선생님 확정 2026-11-18) */
   /* 목록에 보이는 활동 대표 그림 (사물 중심·화풍 다양하게) */
   cardImg: { "1-1": "list_1-1.jpg", "1-2": "list_1-2.jpg", "1-3": "list_1-3.jpg", "8-1": "list_8-1.jpg", "8-2": "list_8-2.jpg", "8-4": "list_8-4.jpg", "9-4": "list_9-4.jpg", "9-3": "list_9-3.jpg", "9-2": "list_9-2.jpg", "1-4": "list_1-4.jpg", "7-3": "list_7-3.jpg", "3-5": "list_3-5.jpg", "9-1": "list_9-1.jpg", "7-1": "list_7-1.jpg", "7-2": "list_7-2.jpg", "7-4": "list_7-4.jpg", "11-3": "list_11-3.jpg", "3-2": "list_3-2.jpg", "3-3": "list_3-3.jpg", "4-5": "2-3_halriudeu_nam.jpg", "4-4": "1_hom_80nyeondaegyeolhonsajin_jeongsagak.jpg" },
