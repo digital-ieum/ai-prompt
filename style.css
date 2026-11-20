@@ -868,3 +868,8 @@ a.play-pic:active { outline: 2.5px solid var(--navy); }
 .lrn-ph{background:var(--lpaper);border:1px dashed var(--lbrass);border-radius:12px;padding:20px;
   font-size:clamp(15px,1.45vw,18px);line-height:1.65;color:#1b2a40}
 .lrn-ph b{color:var(--lnavy)}
+.lrn-cur{display:inline-block;width:2px;height:1em;vertical-align:-0.12em;background:var(--lbrass);
+  margin-left:2px;animation:lrnblink 1s steps(2,start) infinite}
+@keyframes lrnblink{to{visibility:hidden}}
+@media (prefers-reduced-motion:reduce){.lrn-cur{animation:none}}
+.lrn-work mark{background:var(--lmark);color:inherit;padding:1px 5px;border-radius:3px}

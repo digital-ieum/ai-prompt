@@ -382,7 +382,7 @@
   function lrnSeg(items, id) {
     return '<div class="lrn-seg" role="group" id="' + id + '">' + items + "</div>";
   }
-  var LRN = {};
+  var LRN = { _t: null };
   /* 1 — 같은 입력 3번 비교 */
   LRN.how = function (w) {
     w.innerHTML = lrnHead("미리 만든 예시 · 실제 AI 실행 아님", "선택 방법을 바꿔 비교해 보세요",
@@ -430,7 +430,82 @@
     $("#lrst").onclick = function () { shown = false; render(null); nt.textContent = "가능한 말을 다르게 고르면 답도 달라질 수 있어요."; };
     render(null);
   };
-  /* 2 — 확산 */
+  /* 2 — 글쓰기 */
+  LRN.text = function (w) {
+    var PIECES = ["가을이면", "마당의", "감나무가", "붉어집니다.", "아침마다", "떨어진", "잎을", "쓸면서",
+      "한 해가", "또", "지났구나", "생각합니다."];
+    var FULL = PIECES.join(" ");
+    var step = 1, cut = 2, pos = 0;
+    function head() {
+      return lrnHead("미리 만든 예시 · 실제 AI 실행 아님", "긴 글이 만들어지는 과정을 단계로 나눠 보세요",
+        lrnSeg('<button type="button" id="ls1">1. 한 줄씩 나옵니다</button>' +
+               '<button type="button" id="ls2">2. 앞 글을 다시 읽습니다</button>' +
+               '<button type="button" id="ls3">3. 길어지면 흐려집니다</button>', "lst") +
+        '<div class="lrn-acts" id="lact"></div>');
+    }
+    function paint() {
+      w.innerHTML = head() + '<div id="lbody"></div><p class="lrn-note" id="lnt"></p>';
+      $("#ls1").setAttribute("aria-pressed", step === 1 ? "true" : "false");
+      $("#ls2").setAttribute("aria-pressed", step === 2 ? "true" : "false");
+      $("#ls3").setAttribute("aria-pressed", step === 3 ? "true" : "false");
+      $("#ls1").onclick = function () { step = 1; pos = 0; paint(); };
+      $("#ls2").onclick = function () { step = 2; cut = 2; paint(); };
+      $("#ls3").onclick = function () { step = 3; paint(); };
+      var body = $("#lbody"), act = $("#lact"), nt = $("#lnt");
+      if (step === 1) {
+        act.innerHTML = '<button class="lrn-btn pri" id="lgo">한 글자씩 써 보기</button>' +
+          '<button class="lrn-btn plain" id="lall">끝까지 한 번에</button>';
+        body.innerHTML = '<div class="lrn-card"><p class="lrn-lab">부탁한 말</p>' +
+          '<p class="lrn-inp">가을 마당 이야기를 짧게 써 줘</p>' +
+          '<p class="lrn-lab" style="margin-top:18px">AI가 쓰는 모습</p>' +
+          '<p class="lrn-inp lrn-plain" id="ltype"><span class="lrn-cur"></span></p></div>';
+        nt.innerHTML = "AI는 완성된 글을 어디에서 꺼내 오지 않습니다. <b>앞에서부터 한 조각씩</b> 만들어 붙입니다. 그래서 글이 왼쪽부터 차례로 나타납니다.";
+        var tgt = $("#ltype");
+        function tick() {
+          pos += 1;
+          if (!document.body.contains(tgt)) { clearInterval(LRN._t); return; }
+          tgt.innerHTML = esc(FULL.slice(0, pos)) + (pos < FULL.length ? '<span class="lrn-cur"></span>' : "");
+          if (pos >= FULL.length) clearInterval(LRN._t);
+        }
+        $("#lgo").onclick = function () { clearInterval(LRN._t); pos = 0; tgt.innerHTML = '<span class="lrn-cur"></span>'; LRN._t = setInterval(tick, 55); };
+        $("#lall").onclick = function () { clearInterval(LRN._t); pos = FULL.length; tgt.textContent = FULL; };
+      } else if (step === 2) {
+        act.innerHTML = '<button class="lrn-btn pri" id="lnx">다음 한 조각</button>' +
+          '<button class="lrn-btn plain" id="lrs">처음부터</button>';
+        function draw2() {
+          var done = PIECES.slice(0, cut).join(" "), next = PIECES[cut] || "";
+          body.innerHTML = '<div class="lrn-card"><div class="lrn-split">' +
+            '<div><p class="lrn-lab">지금까지 쓴 글<br><span class="lrn-side-note" style="margin:0">매번 처음부터 다시 읽습니다</span></p>' +
+            '<p class="lrn-inp lrn-plain" id="ldone">' + (done ? esc(done) : "—") + "</p></div>" +
+            '<div><p class="lrn-lab">다음 한 조각</p>' +
+            (next ? '<p class="lrn-inp"><mark>' + esc(next) + "</mark></p>"
+                  : '<p class="lrn-inp lrn-plain">더 이어 쓸 말이 없다고 판단하면 멈춥니다.</p>') + "</div></div></div>";
+          nt.innerHTML = cut >= PIECES.length
+            ? "조각 " + PIECES.length + "개가 모여 한 문단이 됐습니다. <b>한 조각을 고를 때마다 앞 글 전체를 다시 읽습니다.</b> 그래서 글이 길어질수록 읽어야 할 양도 함께 늘어납니다."
+            : "왼쪽 글을 전부 읽고, 거기에 가장 잘 이어질 말 하나를 고릅니다. 이 과정을 글이 끝날 때까지 반복합니다.";
+        }
+        $("#lnx").onclick = function () { if (cut < PIECES.length) cut++; draw2(); };
+        $("#lrs").onclick = function () { cut = 2; draw2(); };
+        draw2();
+      } else {
+        act.innerHTML = "";
+        body.innerHTML = '<div class="lrn-card"><p class="lrn-lab">부탁한 말 (두 번 모두 같음)</p>' +
+          '<p class="lrn-inp">감나무 이야기를 <mark>3문장으로</mark> 써 줘</p></div>' +
+          '<div class="lrn-split even" style="margin-top:4px">' +
+          '<div class="lrn-card"><p class="lrn-lab">짧게 쓰게 했을 때</p>' +
+          '<p class="lrn-inp lrn-plain">마당에 감나무 한 그루가 있습니다. 가을이면 잎이 붉어집니다. 올해는 감이 많이 달렸습니다.</p>' +
+          '<p class="lrn-once">3문장 — 조건을 지켰습니다.</p></div>' +
+          '<div class="lrn-card"><p class="lrn-lab">길게 쓰게 했을 때</p>' +
+          '<p class="lrn-inp lrn-plain">마당에 감나무 한 그루가 있습니다. 가을이면 잎이 붉게 물듭니다. ' +
+          '<mark>감나무는</mark> 해마다 다른 모습을 보여 줍니다. 올해는 감이 유난히 많이 달렸습니다. ' +
+          '<mark>감나무를</mark> 보고 있으면 한 해가 지났다는 생각이 듭니다. 내년에도 잘 자랐으면 좋겠습니다.</p>' +
+          '<p class="lrn-once">6문장 — 조건을 넘겼고, 같은 말이 반복됩니다.</p></div></div>';
+        nt.innerHTML = "길어질수록 <b>처음에 준 조건이 흐려지고 같은 표현이 반복</b>됩니다. 긴 글은 한 번에 시키지 말고 <b>나눠서 시키고, 조건은 마지막에 한 번 더</b> 적어 주세요.";
+      }
+    }
+    paint();
+  };
+  /* 3 — 확산 */
   LRN.image = function (w) {
     w.innerHTML = lrnHead("확산 방식을 단순화한 예시 · 실제 생성 기록 아님", "단계를 넘기며 형태가 드러나는 것을 보세요",
       lrnSeg("", "lsd") +
@@ -483,7 +558,7 @@
     $("#lag").onclick = function () { S = 0; s1 = Math.random() * 999; s2 = Math.random() * 999; paint(); };
     paint();
   };
-  /* 3 — 조건 조각 */
+  /* 4 — 조건 조각 */
   LRN.ask = function (w) {
     var OPT = [{ k: "누구에게", v: "환갑잔치에 못 오신 사촌에게" },
                { k: "무슨 일로", v: "안부를 묻는" },
@@ -528,7 +603,7 @@
     };
     paint();
   };
-  /* 4 — 환각 */
+  /* 5 — 환각 */
   LRN.wrong = function (w) {
     var Q = [{ a: "세종대왕은 훈민정음을 1443년에 창제하고 1446년에 반포했습니다.",
         b: "세종대왕은 훈민정음을 만들며 집현전 학자에게 자판 배열을 맡겼습니다.",
@@ -562,16 +637,6 @@
       $("#lnx").onclick = function () { i = (i + 1) % Q.length; paint(); };
     }
     paint();
-  };
-  /* 5 — 편향 (강사 준비 자리) */
-  LRN.bias = function (w) {
-    w.innerHTML = lrnHead("실제 실행 결과를 넣는 자리", "실제로 돌린 결과로 확인합니다",
-      lrnSeg('<button type="button" aria-pressed="true">강사 준비 필요</button>', "lsb") + '<div class="lrn-acts"></div>') +
-      '<div class="lrn-ph"><b>이 주제는 지어낸 예시를 쓰지 않습니다.</b><br><br>' +
-      '같은 요청을 조건을 맞춰 여러 번 실행하고 <b>첫 결과를 전부</b> 넣습니다. 결론에 맞는 것만 고르거나, 원하는 모습이 나올 때까지 다시 돌리지 않습니다.<br><br>' +
-      '권하는 첫 소재는 <b>집의 모습</b>입니다. “집 한 채의 바깥 모습을 사진처럼 만들어 줘. 사람이 없는 장면.”처럼 나라나 형태를 지정하지 않은 문장을 씁니다.<br><br>' +
-      '기록할 것: 실행 날짜 · 사용한 서비스 · 입력 문장 · 실행 횟수 · 거절되거나 실패한 결과까지.</div>' +
-      '<p class="lrn-note">발표는 “이번 조건의 8개 중 이런 모습이 몇 개였어요. 빠진 모습도 있을까요?”까지로 제한합니다. 전체 AI의 편향 정도를 계산했다고 말하지 않습니다.</p>';
   };
   /* 6 — 내 글의 위치 */
   LRN.where = function (w) {
@@ -648,6 +713,7 @@
         }).join("") + "</ul>";
       return;
     }
+    clearInterval(LRN._t);
     $("#view").innerHTML = lrnShell(t, "");
     (LRN[t.id] || function (w) { w.innerHTML = '<p class="lrn-ghost">준비 중입니다.</p>'; })($("#lrnWork"));
   }

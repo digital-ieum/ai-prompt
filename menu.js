@@ -32,10 +32,10 @@ window.MENU = {
     id: "learn", title: "AI 이해하기", hint: "작동 원리 · 안전하게 쓰기",
     topics: [
       { id:"how",   n:1, q:"AI는 어떻게 답할까요?",         sub:"같은 질문인데,<br>왜 답이 달라질까요?",   img:"learn_01.jpg", cards:[], ready:true  },
-      { id:"image", n:2, q:"AI는 어떻게 그림을 그릴까요?",   sub:"사진을 찾아오는<br>걸까요?",             img:"learn_02.jpg", cards:[], ready:true  },
-      { id:"ask",   n:3, q:"어떻게 부탁하면 좋을까요?",       sub:"조건을 더하면<br>무엇이 달라질까요?",     img:"learn_03.jpg", cards:[], ready:true  },
-      { id:"wrong", n:4, q:"왜 틀린 말을 자신 있게 할까요?",  sub:"말투로 가려낼 수<br>있을까요?",           img:"learn_04.jpg", cards:[], ready:true  },
-      { id:"bias",  n:5, q:"왜 한쪽으로 치우칠까요?",         sub:"무엇이 빠져<br>있을까요?",               img:"learn_05.jpg", cards:[], ready:false },
+      { id:"text",  n:2, q:"AI는 어떻게 글을 쓸까요?",       sub:"긴 글은 어떻게<br>만들어질까요?",         img:"learn_08.jpg", cards:[], ready:true  },
+      { id:"image", n:3, q:"AI는 어떻게 그림을 그릴까요?",   sub:"사진을 찾아오는<br>걸까요?",             img:"learn_02.jpg", cards:[], ready:true  },
+      { id:"ask",   n:4, q:"어떻게 부탁하면 좋을까요?",       sub:"조건을 더하면<br>무엇이 달라질까요?",     img:"learn_03.jpg", cards:[], ready:true  },
+      { id:"wrong", n:5, q:"왜 틀린 말을 자신 있게 할까요?",  sub:"말투로 가려낼 수<br>있을까요?",           img:"learn_04.jpg", cards:[], ready:true  },
       { id:"where", n:6, q:"내가 쓴 말은 어디로 갈까요?",     sub:"복사와 전송은<br>같은 걸까요?",           img:"learn_06.jpg", cards:[], ready:true  },
       { id:"safe",  n:7, q:"안전하게 쓰려면 무엇을 지킬까요?", sub:"넣지 말아야 할 것은<br>무엇일까요?",      img:"learn_07.jpg", cards:[], ready:true  }
     ]
