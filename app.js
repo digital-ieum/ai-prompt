@@ -40,6 +40,7 @@
   if (MENU) {
     if (MENU.version) SITE.version = MENU.version;
     if (MENU.flow) Object.keys(MENU.flow).forEach(function (k) { SITE.flow[k] = MENU.flow[k]; });
+    if (MENU.notices) SITE.notices = MENU.notices;
     (MENU.cards || []).forEach(function (c) {
       var d = { order: 99, note: "", icon: "video", status: "검토중", before: "", picNote: "", followup: false, flowSet: "", banner: "", after: [], copyMsg: "", photo: false };
       Object.keys(d).forEach(function (k) { if (c[k] === undefined) c[k] = d[k]; });
@@ -259,6 +260,7 @@
     write: '<path d="M8.5 4.5h10.5l5.5 5.5v17.5h-16z"/><path d="M19 4.5v5.5h5.5"/><path class="gs" d="M12.5 16h7"/><path d="M12.5 21h7"/>',
     ask: '<path d="M5 6.5h22v15.5H15.5l-6 5v-5H5z"/><path class="gs" d="M13.2 12.3a2.9 2.9 0 1 1 4.3 2.5c-1 .6-1.5 1.1-1.5 2"/><circle class="g" cx="16" cy="19.2" r="1.1"/>',
     gif: '<rect class="gf" x="9.5" y="11.5" width="13" height="9.5" rx="2.5"/><path d="M6.5 16.5a9.5 9.5 0 0 1 14.5-8.1"/><path d="M25.5 15.5a9.5 9.5 0 0 1-14.5 8.1"/><path d="M20.5 4.2v4.4h-4.4"/><path d="M11.5 27.8v-4.4h4.4"/>',
+    safe: '<path class="gf" d="M16 4.5l10 3.5v8c0 6.2-4.1 10.1-10 11.5-5.9-1.4-10-5.3-10-11.5v-8z"/><path d="M16 4.5l10 3.5v8c0 6.2-4.1 10.1-10 11.5-5.9-1.4-10-5.3-10-11.5v-8z"/><path d="M11.5 15.8l3.2 3.2 6-6.4"/>',
     learn: '<path class="gf" d="M11.5 20.5a7.5 7.5 0 1 1 9 0v3h-9z"/><path d="M11.5 20.5a7.5 7.5 0 1 1 9 0v3h-9z"/><path d="M12.5 27.5h7"/>'
   };
   function iconHtml(id) {
@@ -286,10 +288,10 @@
           return '<a class="play-pic p' + (i % 2) + '" role="listitem" href="#/card/' + p[0] + '"><i class="pp-img"><img src="' + src(p[1], true) + '" alt="" loading="lazy"><em>AI로 만든 예시</em></i><span>' + p[2] + "</span></a>";
         }).join("") + '</div></section>';
       var cats = MENU.cats.concat([{ id: "learn", title: MENU.learn.title, hint: MENU.learn.hint }]);
-      var TH = { draw: "그림 · 축하 카드", gif: "움짤 · 답장용 표정", photo: "옷 · 화보 · 복원", song: "바로 · 가사부터", video: "글로 · 사진으로", write: "문자 · 편지", ask: "궁금한 것 · 사진 글" };
+      var TH = { draw: "그림 · 축하 카드", gif: "움짤 · 답장용 표정", safe: "사기 · 가짜 소식 · 개인정보", photo: "옷 · 화보 · 복원", song: "바로 · 가사부터", video: "글로 · 사진으로", write: "문자 · 편지", ask: "궁금한 것 · 사진 글" };
       cats = cats.map(function (c) { return { id: c.id, title: c.title, hint: hv !== "a" && TH[c.id] ? TH[c.id] : c.hint }; });
       if (hv === "c") hero = hero.replace(/<div class="play-strip"[\s\S]*<\/div>(?=<\/section>)/, "");
-      var TP = { draw: "2_seutail_suchaehwa.jpg", gif: "10-1_goyangikkamjjak.jpg", photo: "11_ot_hanbok_yeo.jpg", song: "3-5_baronorae.jpg", video: "4-3_sonheundeulgi.jpg", write: "1-1_munjabonaegi.jpg", ask: "9-4_gunggeumhaniyagi.jpg" };
+      var TP = { draw: "2_seutail_suchaehwa.jpg", gif: "10-1_goyangikkamjjak.jpg", safe: "list_9-1.jpg", photo: "11_ot_hanbok_yeo.jpg", song: "3-5_baronorae.jpg", video: "4-3_sonheundeulgi.jpg", write: "1-1_munjabonaegi.jpg", ask: "9-4_gunggeumhaniyagi.jpg" };
       var menu = hv === "c"
         ? '<ul class="play-grid pic-grid">' + cats.map(function (c) {
             return '<li><a class="play-tile pic-tile t-' + c.id + '" href="#/cat/' + c.id + '">' + (TP[c.id] ? '<span class="pic-top"><img src="' + src(TP[c.id], true) + '" alt="" loading="lazy"></span>' : iconHtml(c.id)) + "<b>" + esc(c.title) + "</b><span>" + esc(c.hint) + "</span></a></li>";
