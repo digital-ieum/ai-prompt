@@ -383,6 +383,10 @@
     return '<div class="lrn-seg" role="group" id="' + id + '">' + items + "</div>";
   }
   var LRN = { _t: null };
+  function lrnFig(file, cap) {
+    return '<figure class="lrn-fig"><img src="' + IMG + file + '" alt="" loading="lazy" onerror="this.closest(\'figure\').remove()">' +
+      '<figcaption>' + cap + "</figcaption></figure>";
+  }
   /* 1 — 같은 입력 3번 비교 */
   LRN.how = function (w) {
     w.innerHTML = lrnHead("미리 만든 예시 · 실제 AI 실행 아님", "선택 방법을 바꿔 비교해 보세요",
@@ -440,7 +444,7 @@
       return lrnHead("미리 만든 예시 · 실제 AI 실행 아님", "긴 글이 만들어지는 과정을 단계로 나눠 보세요",
         lrnSeg('<button type="button" id="ls1">1. 한 줄씩 나옵니다</button>' +
                '<button type="button" id="ls2">2. 앞 글을 다시 읽습니다</button>' +
-               '<button type="button" id="ls3">3. 길어지면 흐려집니다</button>', "lst") +
+               '<button type="button" id="ls3">3. 길어지면 조건을 놓칩니다</button>', "lst") +
         '<div class="lrn-acts" id="lact"></div>');
     }
     function paint() {
@@ -479,7 +483,8 @@
             '<p class="lrn-inp lrn-plain" id="ldone">' + (done ? esc(done) : "—") + "</p></div>" +
             '<div><p class="lrn-lab">다음 한 조각</p>' +
             (next ? '<p class="lrn-inp"><mark>' + esc(next) + "</mark></p>"
-                  : '<p class="lrn-inp lrn-plain">더 이어 쓸 말이 없다고 판단하면 멈춥니다.</p>') + "</div></div></div>";
+                  : '<p class="lrn-inp lrn-plain">더 이어 쓸 말이 없다고 판단하면 멈춥니다.</p>') + "</div></div></div>" +
+            lrnFig("learn_in_02.jpg", "앞의 글을 전부 다시 읽고 다음 한 조각을 고릅니다 — 설명용 모형");
           nt.innerHTML = cut >= PIECES.length
             ? "조각 " + PIECES.length + "개가 모여 한 문단이 됐습니다. <b>한 조각을 고를 때마다 앞 글 전체를 다시 읽습니다.</b> 그래서 글이 길어질수록 읽어야 할 양도 함께 늘어납니다."
             : "왼쪽 글을 전부 읽고, 거기에 가장 잘 이어질 말 하나를 고릅니다. 이 과정을 글이 끝날 때까지 반복합니다.";
@@ -500,7 +505,7 @@
           '<mark>감나무는</mark> 해마다 다른 모습을 보여 줍니다. 올해는 감이 유난히 많이 달렸습니다. ' +
           '<mark>감나무를</mark> 보고 있으면 한 해가 지났다는 생각이 듭니다. 내년에도 잘 자랐으면 좋겠습니다.</p>' +
           '<p class="lrn-once">6문장 — 조건을 넘겼고, 같은 말이 반복됩니다.</p></div></div>';
-        nt.innerHTML = "길어질수록 <b>처음에 준 조건이 흐려지고 같은 표현이 반복</b>됩니다. 긴 글은 한 번에 시키지 말고 <b>나눠서 시키고, 조건은 마지막에 한 번 더</b> 적어 주세요.";
+        nt.innerHTML = "글이 길어지면 <b>처음에 준 중요한 조건을 놓칠 수 있고</b>, 같은 표현이 반복되기도 합니다. 긴 글은 한 번에 시키지 말고 <b>나눠서 시키고, 조건은 마지막에 한 번 더</b> 적어 주세요.";
       }
     }
     paint();
@@ -511,6 +516,7 @@
       lrnSeg("", "lsd") +
       '<div class="lrn-acts"><button class="lrn-btn pri" id="lnx">다음 단계</button>' +
       '<button class="lrn-btn plain" id="lag">같은 요청으로 다시</button></div>') +
+      lrnFig("learn_in_03.jpg", "확산 방식의 설명용 모형입니다 — 실제 생성 중간 결과는 아닙니다") +
       '<div class="lrn-card"><div class="lrn-split"><div><p class="lrn-lab">같은 요청</p>' +
       '<p class="lrn-inp">둥근 그릇을 그려 줘</p><p class="lrn-side-note">두 번 돌린 결과를<br>나란히 놓았습니다.</p></div>' +
       '<div><p class="lrn-lab">만들어지는 과정</p><div class="lrn-two">' +
@@ -647,6 +653,7 @@
     var i = 0;
     w.innerHTML = lrnHead("체험관은 입력한 글을 수집하거나 외부로 보내지 않습니다", "단계를 눌러 내 글의 위치를 확인하세요",
       lrnSeg("", "lsw") + '<div class="lrn-acts"></div>') +
+      lrnFig("learn_in_06.jpg", "점선은 외부 서비스로 작업 공간이 바뀌는 경계입니다 — 전송 시점을 보장하는 표시가 아닙니다") +
       '<div class="lrn-card"><div class="lrn-split"><div><p class="lrn-lab">지금 내 글의 위치</p>' +
       '<p class="lrn-inp" id="lpos"></p></div><div><p class="lrn-lab">무슨 일이 일어나는가</p>' +
       '<p class="lrn-inp lrn-plain" id="ldsc"></p></div></div></div><p class="lrn-note" id="lnt"></p>';
