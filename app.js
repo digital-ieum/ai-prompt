@@ -42,7 +42,7 @@
     if (MENU.flow) Object.keys(MENU.flow).forEach(function (k) { SITE.flow[k] = MENU.flow[k]; });
     if (MENU.notices) SITE.notices = MENU.notices;
     (MENU.cards || []).forEach(function (c) {
-      var d = { order: 99, note: "", icon: "video", status: "검토중", before: "", picNote: "", followup: false, flowSet: "", banner: "", after: [], copyMsg: "", photo: false };
+      var d = { order: 99, note: "", icon: "video", status: "검토중", before: "", picNote: "", followup: false, flowSet: "", banner: "", after: [], copyMsg: "", photo: false, gifFormat: false };
       Object.keys(d).forEach(function (k) { if (c[k] === undefined) c[k] = d[k]; });
       c.groups.forEach(function (g) {
         g.more = !!g.more; g.optional = false;
@@ -1097,6 +1097,8 @@
     var openName = card.followup ? "" : ((MENU ? aiPick(apps) : (apps.length > 1 ? "AI" : apps[0])) + " 사이트 열기");
     var step3 = card.photo && card.flowSet === "영상"
       ? "글자 칸 위 <strong>시작</strong> 칸을 눌러 사진을 고르고, 글자 칸을 꾹 눌러 <strong>붙여넣기</strong>"
+      : card.gifFormat
+      ? "<strong>+</strong>에서 <strong>이미지 만들기</strong>를 켜고 <strong>형식</strong>을 <strong>GIF</strong>로 바꾼 뒤, 사진을 넣고 글자 칸을 꾹 눌러 <strong>붙여넣기</strong>"
       : card.photo
       ? "<strong>+</strong>를 눌러 사진을 넣고, 글자 칸을 꾹 눌러 <strong>붙여넣기</strong>"
       : "글자 칸을 꾹 눌러 <strong>붙여넣기</strong>";
