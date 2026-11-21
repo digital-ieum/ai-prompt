@@ -39,15 +39,15 @@ window.MENU = {
       sections: [{ name: "", cards: ["6-5", "6-6", "6-7", "6-8"] }] }
   ],
   learn: {
-    id: "learn", title: "AI 이해하기", hint: "작동 원리 · 안전하게 쓰기",
+    id: "learn", title: "AI 이해하기", hint: "수업 전 안내 · 복습",
     topics: [
-      { id:"how",   n:1, q:"AI는 어떻게 답할까요?",         sub:"같은 질문인데,<br>왜 답이 달라질까요?",   img:"learn_01.jpg", cards:[], ready:true  },
-      { id:"text",  n:2, q:"AI는 어떻게 글을 쓸까요?",       sub:"긴 글은 어떻게<br>만들어질까요?",         img:"learn_08.jpg", cards:[], ready:true  },
-      { id:"image", n:3, q:"AI는 어떻게 그림을 그릴까요?",   sub:"사진을 찾아오는<br>걸까요?",             img:"learn_02.jpg", cards:[], ready:true  },
-      { id:"ask",   n:4, q:"어떻게 부탁하면 좋을까요?",       sub:"조건을 더하면<br>무엇이 달라질까요?",     img:"learn_03.jpg", cards:[], ready:true  },
-      { id:"wrong", n:5, q:"왜 틀린 말을 자신 있게 할까요?",  sub:"말투로 가려낼 수<br>있을까요?",           img:"learn_04.jpg", cards:[], ready:true  },
-      { id:"where", n:6, q:"내가 쓴 말은 어디로 갈까요?",     sub:"복사와 전송은<br>같은 걸까요?",           img:"learn_06.jpg", cards:[], ready:true  },
-      { id:"safe",  n:7, q:"안전하게 쓰려면 무엇을 지킬까요?", sub:"넣지 말아야 할 것은<br>무엇일까요?",      img:"learn_07.jpg", cards:[], ready:true  }
+      { id:"used",   n:1, q:"오늘 아침부터 내가 쓴 AI",      sub:"나는 AI를<br>안 쓴다고요?",             img:"learn_01.jpg", cards:[], ready:true },
+      { id:"search", n:2, q:"검색과 무엇이 다를까요?",        sub:"찾아 주는 것과<br>만들어 주는 것",       img:"learn_04.jpg", cards:[], ready:true },
+      { id:"how",    n:3, q:"AI는 어떻게 답할까요?",          sub:"모으기 · 익히기<br>· 답하기",            img:"learn_08.jpg", cards:[], ready:true },
+      { id:"ask",    n:4, q:"AI가 내 말을 안 듣는 이유",      sub:"빈칸을 AI가<br>알아서 채웁니다",         img:"learn_03.jpg", cards:[], ready:true },
+      { id:"vary",   n:5, q:"왜 답이 매번 다를까요?",         sub:"같은 질문인데<br>왜 다를까요?",          img:"learn_02.jpg", cards:[], ready:true },
+      { id:"wrong",  n:6, q:"자신 있게 틀립니다",             sub:"약 · 돈 · 법 · 병원은<br>꼭 다시 확인",   img:"learn_06.jpg", cards:[], ready:true },
+      { id:"safe",   n:7, q:"넣지 말아야 할 것",              sub:"주민번호 · 계좌번호<br>· 비밀번호",      img:"learn_07.jpg", cards:[], ready:true }
     ]
   },
   
@@ -68,14 +68,14 @@ window.MENU = {
           ["인사하기", "고개를 숙여 인사하는", "10-8_insahagi.jpg"],
           ["웃으며 끄덕", "웃으며 고개를 천천히 끄덕이는", "10-7_kkeudeok.jpg"],
           ["박수 치기", "환하게 웃으며 박수를 치는", "10-7_baksu.jpg"],
-          ["머리카락 날리기", "바람에 머리카락과 옷자락이 가볍게 흔들리는", "10-8_meorikarak.jpg"],
-          ["눈 깜빡이며 미소", "천천히 눈을 깜빡이며 잔잔하게 미소 짓는", "10-8_misonun.jpg"]
+          ["머리카락 살랑이기", "바람에 머리카락이 가볍게 흔들리는", "10-8_meorikarak.jpg"],
+          ["눈 깜빡이며 미소 짓기", "천천히 눈을 깜빡이며 잔잔하게 미소 짓는", "10-8_misonun.jpg"]
         ] }
       ] },
     { id: "10-9", tab: "10", title: "풍경·물건 사진 움직이기", desc: "풍경 사진이나 찻잔 같은 사진에 움직임을 넣어요",
       app: "제미나이", photo: true, gifFormat: true, img: "10-9_punggyeongumjigim.jpg",
       template: "이 사진에서 {움직임} 나머지는 그대로 두고, 카메라는 움직이지 말고, 글자는 넣지 마. 처음과 끝이 자연스럽게 이어지게 반복해 줘.",
-      note: "사진 한 장만 넣어요. 물결·구름·나뭇잎·김·불꽃은 그 사진에 실제로 있어야 움직여요. 눈은 없던 것을 더해 주는 효과예요. " + GEM,
+      note: "사진 한 장만 넣어요. 물결·구름·나뭇잎·불꽃은 그 사진에 실제로 있어야 움직여요. 김과 눈은 없어도 더해 줄 수 있어요. " + GEM,
       after: [
         "움직이지 않고 그림 한 장만 나오면 「형식」이 GIF로 되어 있는지 다시 봐요",
         "너무 빠르면 '더 천천히 움직여 줘'라고 보내요",
