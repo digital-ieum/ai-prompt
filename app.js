@@ -382,6 +382,23 @@
     return '<p class="lrn-status">' + esc(status) + '</p><h2 class="lrn-op">' + esc(head) + '</h2>' +
       '<div class="lrn-bar">' + tools + "</div>";
   }
+  function lrnTodo(n, text) {
+    return '<div class="lrn-todo"><i>' + n + "</i><b>" + text + "</b></div>";
+  }
+  function lrnDone(title, body, wrong) {
+    return '<div class="lrn-done' + (wrong ? " lrn-wrong" : "") + '"><i>' + (wrong ? "✕" : "✓") + "</i>" +
+      "<span><b>" + title + "</b>" + (body ? "<span>" + body + "</span>" : "") + "</span></div>";
+  }
+  function lrnDots(n, total) {
+    var h = "";
+    for (var k = 0; k < total; k++) h += '<i class="' + (k < n ? "on" : "") + '"></i>';
+    return '<div class="lrn-dots">' + h + "</div>";
+  }
+  function lrnFoot(t, extra) {
+    var nx = MENU.learn.topics[t.n % 7];
+    return '<div class="lrn-foot">' + (extra || "<span></span>") +
+      '<a class="lrn-next" href="#/learn/' + nx.id + '">다음 주제 · ' + esc(nx.q) + ' →</a></div>';
+  }
   function lrnSeg(items, id) {
     return '<div class="lrn-seg" role="group" id="' + id + '">' + items + "</div>";
   }
@@ -390,181 +407,121 @@
     return '<figure class="lrn-fig"><img src="' + IMG + file + '" alt="" loading="lazy" onerror="this.closest(\'figure\').remove()">' +
       '<figcaption>' + cap + "</figcaption></figure>";
   }
-  /* 1 — 같은 입력 3번 비교 */
-  LRN.how = function (w) {
-    w.innerHTML = lrnHead("미리 만든 예시 · 실제 AI 실행 아님", "선택 방법을 바꿔 비교해 보세요",
-      lrnSeg('<button type="button" id="lm1" aria-pressed="false">1등만 고르기</button>' +
-             '<button type="button" id="lm2" aria-pressed="true">2·3등도 고르기</button>', "lseg") +
-      '<div class="lrn-acts"><button class="lrn-btn pri" id="lrun">3번 비교하기</button>' +
-      '<button class="lrn-btn plain" id="lrst">다시 보기</button></div>') +
-      '<div class="lrn-card"><div class="lrn-split"><div><p class="lrn-lab">같은 입력</p>' +
-      '<p class="lrn-inp">오늘 점심에는 <span class="lrn-slot"></span></p>' +
-      '<p class="lrn-side-note">빈칸에 들어갈 말을<br>오른쪽에서 고릅니다.</p></div>' +
-      '<div><p class="lrn-lab">다음 말 후보</p><div class="lrn-cands">' +
-      '<div class="lrn-cand"><span class="lrn-cw">국수를</span><span class="lrn-bar2"><i style="width:55%"></i></span><span class="lrn-pc">55%</span></div>' +
-      '<div class="lrn-cand"><span class="lrn-cw">김밥을</span><span class="lrn-bar2"><i style="width:30%"></i></span><span class="lrn-pc">30%</span></div>' +
-      '<div class="lrn-cand"><span class="lrn-cw">비빔밥을</span><span class="lrn-bar2"><i style="width:15%"></i></span><span class="lrn-pc">15%</span></div>' +
-      '</div><p class="lrn-once">설명용 가상 수치</p></div></div></div>' +
-      '<h3 class="lrn-sec">같은 입력으로 3번 비교</h3><div class="lrn-table" id="ltb"></div>' +
-      '<p class="lrn-note" id="lnt">가능한 말을 다르게 고르면 답도 달라질 수 있어요.</p>';
-    var LAB = ["첫 번째", "두 번째", "세 번째"], MIX = ["국수", "김밥", "비빔밥"], ONE = ["국수", "국수", "국수"];
-    var onlyTop = false, shown = false, tb = $("#ltb"), nt = $("#lnt");
-    function render(ws) {
-      tb.innerHTML = "";
-      if (!ws) { tb.innerHTML = '<p class="lrn-ghost">[3번 비교하기]를 누르면 결과가 나옵니다.</p>'; return; }
-      ws.forEach(function (x, i) {
-        var d = document.createElement("div"); d.className = "lrn-row";
-        d.innerHTML = '<span class="lrn-rl">' + LAB[i] + '</span><span class="lrn-rt">오늘 점심에는 <mark>' +
-          esc(x) + "</mark>" + lrnJosa(x) + " 먹었어요.</span>";
-        tb.appendChild(d);
-      });
-    }
-    function draw() {
-      shown = true; render(onlyTop ? ONE : MIX);
-      nt.textContent = onlyTop
-        ? "1등만 고르게 하면 세 번 모두 같은 말이 나옵니다. 답은 안정되지만 표현이 단조로워집니다."
-        : "가능한 말을 다르게 고르면 답도 달라질 수 있어요.";
-    }
-    function mode(v) {
-      onlyTop = v;
-      $("#lm1").setAttribute("aria-pressed", v ? "true" : "false");
-      $("#lm2").setAttribute("aria-pressed", v ? "false" : "true");
-      if (shown) draw();
-    }
-    $("#lm1").onclick = function () { mode(true); };
-    $("#lm2").onclick = function () { mode(false); };
-    $("#lrun").onclick = draw;
-    $("#lrst").onclick = function () { shown = false; render(null); nt.textContent = "가능한 말을 다르게 고르면 답도 달라질 수 있어요."; };
-    render(null);
-  };
-  /* 2 — 글쓰기 */
-  LRN.text = function (w) {
-    var PIECES = ["가을이면", "마당의", "감나무가", "붉어집니다.", "아침마다", "떨어진", "잎을", "쓸면서",
-      "한 해가", "또", "지났구나", "생각합니다."];
-    var FULL = PIECES.join(" ");
-    var step = 1, cut = 2, pos = 0;
-    function head() {
-      return lrnHead("미리 만든 예시 · 실제 AI 실행 아님", "긴 글이 만들어지는 과정을 단계로 나눠 보세요",
-        lrnSeg('<button type="button" id="ls1">1. 한 줄씩 나옵니다</button>' +
-               '<button type="button" id="ls2">2. 앞 글을 다시 읽습니다</button>' +
-               '<button type="button" id="ls3">3. 길어지면 조건을 놓칩니다</button>', "lst") +
-        '<div class="lrn-acts" id="lact"></div>');
-    }
+  /* 1 — 내가 AI가 되어 보기 */
+  LRN.how = function (w, t) {
+    var START = "오늘 점심에";
+    var T1 = ["친구와", "김치찌개를", "회사 앞에서"];
+    var T2 = {
+      "친구와": ["먹었어요", "만났어요", "갔어요"],
+      "김치찌개를": ["먹었어요", "끓였어요", "시켰어요"],
+      "회사 앞에서": ["먹었어요", "만났어요", "기다렸어요"]
+    };
+    var picked = [], made = [];
     function paint() {
-      w.innerHTML = head() + '<div id="lbody"></div><p class="lrn-note" id="lnt"></p>';
-      $("#ls1").setAttribute("aria-pressed", step === 1 ? "true" : "false");
-      $("#ls2").setAttribute("aria-pressed", step === 2 ? "true" : "false");
-      $("#ls3").setAttribute("aria-pressed", step === 3 ? "true" : "false");
-      $("#ls1").onclick = function () { step = 1; pos = 0; paint(); };
-      $("#ls2").onclick = function () { step = 2; cut = 2; paint(); };
-      $("#ls3").onclick = function () { step = 3; paint(); };
-      var body = $("#lbody"), act = $("#lact"), nt = $("#lnt");
-      if (step === 1) {
-        act.innerHTML = '<button class="lrn-btn pri" id="lgo">한 글자씩 써 보기</button>' +
-          '<button class="lrn-btn plain" id="lall">끝까지 한 번에</button>';
-        body.innerHTML = '<div class="lrn-card"><p class="lrn-lab">부탁한 말</p>' +
-          '<p class="lrn-inp">가을 마당 이야기를 짧게 써 줘</p>' +
-          '<p class="lrn-lab" style="margin-top:18px">AI가 쓰는 모습</p>' +
-          '<p class="lrn-inp lrn-plain" id="ltype"><span class="lrn-cur"></span></p></div>';
-        nt.innerHTML = "AI는 완성된 글을 어디에서 꺼내 오지 않습니다. <b>앞에서부터 한 조각씩</b> 만들어 붙입니다. 그래서 글이 왼쪽부터 차례로 나타납니다.";
-        var tgt = $("#ltype");
-        function tick() {
-          pos += 1;
-          if (!document.body.contains(tgt)) { clearInterval(LRN._t); return; }
-          tgt.innerHTML = esc(FULL.slice(0, pos)) + (pos < FULL.length ? '<span class="lrn-cur"></span>' : "");
-          if (pos >= FULL.length) clearInterval(LRN._t);
-        }
-        $("#lgo").onclick = function () { clearInterval(LRN._t); pos = 0; tgt.innerHTML = '<span class="lrn-cur"></span>'; LRN._t = setInterval(tick, 55); };
-        $("#lall").onclick = function () { clearInterval(LRN._t); pos = FULL.length; tgt.textContent = FULL; };
-      } else if (step === 2) {
-        act.innerHTML = '<button class="lrn-btn pri" id="lnx">다음 한 조각</button>' +
-          '<button class="lrn-btn plain" id="lrs">처음부터</button>';
-        function draw2() {
-          var done = PIECES.slice(0, cut).join(" "), next = PIECES[cut] || "";
-          body.innerHTML = '<div class="lrn-card"><div class="lrn-split">' +
-            '<div><p class="lrn-lab">지금까지 쓴 글<br><span class="lrn-side-note" style="margin:0">매번 처음부터 다시 읽습니다</span></p>' +
-            '<p class="lrn-inp lrn-plain" id="ldone">' + (done ? esc(done) : "—") + "</p></div>" +
-            '<div><p class="lrn-lab">다음 한 조각</p>' +
-            (next ? '<p class="lrn-inp"><mark>' + esc(next) + "</mark></p>"
-                  : '<p class="lrn-inp lrn-plain">더 이어 쓸 말이 없다고 판단하면 멈춥니다.</p>') + "</div></div></div>" +
-            lrnFig("learn_in_02.jpg", "앞의 글을 전부 다시 읽고 다음 한 조각을 고릅니다 — 설명용 모형");
-          nt.innerHTML = cut >= PIECES.length
-            ? "조각 " + PIECES.length + "개가 모여 한 문단이 됐습니다. <b>한 조각을 고를 때마다 앞 글 전체를 다시 읽습니다.</b> 그래서 글이 길어질수록 읽어야 할 양도 함께 늘어납니다."
-            : "왼쪽 글을 전부 읽고, 거기에 가장 잘 이어질 말 하나를 고릅니다. 이 과정을 글이 끝날 때까지 반복합니다.";
-        }
-        $("#lnx").onclick = function () { if (cut < PIECES.length) cut++; draw2(); };
-        $("#lrs").onclick = function () { cut = 2; draw2(); };
-        draw2();
-      } else {
-        act.innerHTML = "";
-        body.innerHTML = '<div class="lrn-card"><p class="lrn-lab">부탁한 말 (두 번 모두 같음)</p>' +
-          '<p class="lrn-inp">감나무 이야기를 <mark>3문장으로</mark> 써 줘</p></div>' +
-          '<div class="lrn-split even" style="margin-top:4px">' +
-          '<div class="lrn-card"><p class="lrn-lab">짧게 쓰게 했을 때</p>' +
-          '<p class="lrn-inp lrn-plain">마당에 감나무 한 그루가 있습니다. 가을이면 잎이 붉어집니다. 올해는 감이 많이 달렸습니다.</p>' +
-          '<p class="lrn-once">3문장 — 조건을 지켰습니다.</p></div>' +
-          '<div class="lrn-card"><p class="lrn-lab">길게 쓰게 했을 때</p>' +
-          '<p class="lrn-inp lrn-plain">마당에 감나무 한 그루가 있습니다. 가을이면 잎이 붉게 물듭니다. ' +
-          '<mark>감나무는</mark> 해마다 다른 모습을 보여 줍니다. 올해는 감이 유난히 많이 달렸습니다. ' +
-          '<mark>감나무를</mark> 보고 있으면 한 해가 지났다는 생각이 듭니다. 내년에도 잘 자랐으면 좋겠습니다.</p>' +
-          '<p class="lrn-once">6문장 — 조건을 넘겼고, 같은 말이 반복됩니다.</p></div></div>';
-        nt.innerHTML = "글이 길어지면 <b>처음에 준 중요한 조건을 놓칠 수 있고</b>, 같은 표현이 반복되기도 합니다. 긴 글은 한 번에 시키지 말고 <b>나눠서 시키고, 조건은 마지막에 한 번 더</b> 적어 주세요.";
-      }
+      var n = picked.length, done = n >= 2;
+      var list = n === 0 ? T1 : (n === 1 ? T2[picked[0]] : null);
+      var sent = START + (n ? " " + picked.join(" ") : "");
+      var diff = made.length > 1 && made[made.length - 1] !== made[made.length - 2];
+
+      var head = '<div class="lrn-bar"><p class="lrn-status">눌러 보는 화면입니다</p>' + lrnDots(n, 2) + "</div>";
+
+      var todo = done
+        ? lrnDone(diff ? "같은 말로 시작했는데 문장이 달라졌지요?" : "문장이 완성됐어요",
+            diff
+              ? "AI도 이렇게 매번 조금씩 다르게 고릅니다. <b>그래서 같은 질문에도 답이 달라집니다.</b>"
+              : "AI도 이렇게 <b>한 낱말씩</b> 골라 문장을 만듭니다. 아래 [다시 해 보기]로 다른 말을 골라 보세요.")
+        : lrnTodo(n + 1, n === 0 ? "빈칸에 들어갈 말을 하나 누르세요" : "하나만 더 누르면 문장이 완성됩니다");
+
+      var stage = '<div class="lrn-stage"><p class="lrn-big">' + esc(sent) +
+        (done ? "." : ' <span class="lrn-slot"></span>') + "</p></div>";
+
+      var pick = done ? "" :
+        '<div class="lrn-pick">' + list.map(function (x) {
+          return '<button class="lrn-pickb big" data-w="' + esc(x) + '">' + esc(x) + "</button>";
+        }).join("") + "</div>";
+
+      var log = made.length ? '<h3 class="lrn-sec">내가 만든 문장</h3><div class="lrn-table">' +
+        made.map(function (m, k) {
+          return '<div class="lrn-row"><span class="lrn-rl">' + (k + 1) + '번째</span><span class="lrn-rt">' + esc(m) + "</span></div>";
+        }).join("") + "</div>" : "";
+
+      var again = done ? '<button class="lrn-btn pri" id="lrs">다시 해 보기</button>' : "";
+
+      w.innerHTML = head + todo + stage + pick + log +
+        '<details class="lrn-more"><summary>조금 더 정확히</summary>' +
+        '<p>· 실제로는 낱말이 아니라 더 작은 <b>말 조각</b> 단위로 고릅니다.</p>' +
+        '<p>· 어느 말이 이어질 가능성이 높은지 계산해 고르지만, <b>늘 1위만 고르지는 않습니다.</b></p>' +
+        '<p>· 답할 때마다 인터넷을 찾는 것이 아니라 학습한 말의 흐름으로 만들어 냅니다.</p></details>' +
+        lrnFoot(t, again);
+
+      [].slice.call(w.querySelectorAll(".lrn-pickb")).forEach(function (b2) {
+        b2.onclick = function () {
+          picked.push(b2.getAttribute("data-w"));
+          if (picked.length >= 2) made.push(START + " " + picked.join(" ") + ".");
+          paint();
+        };
+      });
+      if ($("#lrs")) $("#lrs").onclick = function () { picked = []; paint(); };
     }
     paint();
   };
-  /* 3 — 확산 */
-  LRN.image = function (w) {
-    w.innerHTML = lrnHead("확산 방식을 단순화한 예시 · 실제 생성 기록 아님", "단계를 넘기며 형태가 드러나는 것을 보세요",
-      lrnSeg("", "lsd") +
-      '<div class="lrn-acts"><button class="lrn-btn pri" id="lnx">다음 단계</button>' +
-      '<button class="lrn-btn plain" id="lag">같은 요청으로 다시</button></div>') +
-      lrnFig("learn_in_03.jpg", "확산 방식의 설명용 모형입니다 — 실제 생성 중간 결과는 아닙니다") +
-      '<div class="lrn-card"><div class="lrn-split"><div><p class="lrn-lab">같은 요청</p>' +
-      '<p class="lrn-inp">둥근 그릇을 그려 줘</p><p class="lrn-side-note">두 번 돌린 결과를<br>나란히 놓았습니다.</p></div>' +
-      '<div><p class="lrn-lab">만들어지는 과정</p><div class="lrn-two">' +
-      '<div><p class="lrn-capm">첫 번째</p><canvas id="lc1" width="420" height="280"></canvas></div>' +
-      '<div><p class="lrn-capm">두 번째</p><canvas id="lc2" width="420" height="280"></canvas></div>' +
-      '</div></div></div></div><p class="lrn-note" id="lnt"></p>';
-    var S = 0, MAX = 4, s1 = Math.random() * 999, s2 = Math.random() * 999;
-    var NAMES = ["무작위 얼룩", "큰 덩어리", "형태", "세부"];
-    function rnd(x) { var v = Math.sin(x) * 10000; return v - Math.floor(v); }
-    function paintC(id, seed) {
-      var c = $("#" + id); if (!c) return;
-      var x = c.getContext("2d"), W = c.width, H = c.height, cl = S / MAX;
-      x.fillStyle = "#fff"; x.fillRect(0, 0, W, H);
-      var pts = Math.round(1300 * (1 - cl) + 50);
-      for (var i = 0; i < pts; i++) {
-        x.fillStyle = "rgba(27,42,64," + (0.10 + 0.15 * (1 - cl)) + ")";
-        x.fillRect(rnd(seed + i * 1.7) * W, rnd(seed + i * 3.1) * H, 2.5, 2.5);
-      }
-      if (S > 0) {
-        var r = 46 + rnd(seed + 9) * 50, cx = W / 2 + (rnd(seed) * 2 - 1) * 46, cy = H / 2 + 8 + (rnd(seed + 4) * 2 - 1) * 22;
-        var rot = (rnd(seed + 7) * 2 - 1) * 0.28, sq = 0.48 + rnd(seed + 2) * 0.3;
-        x.save(); x.globalAlpha = Math.min(1, cl * 1.15);
-        x.beginPath(); x.ellipse(cx, cy, r, r * sq, rot, 0, Math.PI * 2);
-        x.fillStyle = rnd(seed + 5) > 0.5 ? "#efe9dc" : "#e4e7ea"; x.fill();
-        x.lineWidth = 3; x.strokeStyle = "#1b2a40"; x.stroke();
-        x.beginPath(); x.ellipse(cx, cy - r * sq * 0.55, r * 0.92, r * sq * 0.34, rot, 0, Math.PI * 2);
-        x.strokeStyle = "rgba(27,42,64,.45)"; x.lineWidth = 2; x.stroke(); x.restore();
-      }
-    }
+  /* 2 — 글쓰기 */
+  LRN.text = function (w) {
+    var longMode = false;
     function paint() {
-      var sd = $("#lsd"); sd.innerHTML = "";
-      NAMES.forEach(function (nm, i) {
-        var b = document.createElement("button"); b.type = "button";
-        b.setAttribute("aria-pressed", S === i + 1 ? "true" : "false");
-        b.textContent = (i + 1) + ". " + nm;
-        b.onclick = function () { S = i + 1; paint(); };
-        sd.appendChild(b);
-      });
-      paintC("lc1", s1); paintC("lc2", s2);
-      $("#lnt").textContent = S >= MAX
-        ? "같은 요청인데 두 그림이 다릅니다. 시작한 얼룩이 달랐기 때문입니다. 사진을 찾아온 것이 아니라 매번 새로 만든 것입니다."
-        : "점에서 시작해 단계마다 조금씩 형태를 또렷하게 만듭니다.";
+      w.innerHTML = lrnHead("미리 만든 예시 · 실제 AI 실행 아님", "같은 부탁인데 왜 결과가 달라질까요",
+        lrnSeg('<button type="button" id="ls1" aria-pressed="' + (!longMode) + '">짧게 써 달라고 할 때</button>' +
+               '<button type="button" id="ls2" aria-pressed="' + longMode + '">길게 써 달라고 할 때</button>', "lst")) +
+        '<div class="lrn-card"><p class="lrn-lab">부탁한 말 (두 번 모두 같음)</p>' +
+        '<p class="lrn-inp">감나무 이야기를 <mark>3문장으로</mark> 써 줘</p></div>' +
+        '<div class="lrn-card"><p class="lrn-lab">AI가 써 준 글</p>' +
+        (longMode
+          ? '<p class="lrn-inp lrn-plain">마당에 감나무 한 그루가 있습니다. 가을이면 잎이 붉게 물듭니다. ' +
+            '<mark>감나무는</mark> 해마다 다른 모습을 보여 줍니다. 올해는 감이 유난히 많이 달렸습니다. ' +
+            '<mark>감나무를</mark> 보고 있으면 한 해가 지났다는 생각이 듭니다. 내년에도 잘 자랐으면 좋겠습니다.</p>' +
+            '<p class="lrn-once"><b>6문장</b> — 3문장으로 해 달라고 했는데 넘겼고, 같은 말이 두 번 나옵니다.</p>'
+          : '<p class="lrn-inp lrn-plain">마당에 감나무 한 그루가 있습니다. 가을이면 잎이 붉어집니다. 올해는 감이 많이 달렸습니다.</p>' +
+            '<p class="lrn-once"><b>3문장</b> — 부탁한 대로 나왔습니다.</p>') + "</div>" +
+        '<p class="lrn-note">' + (longMode
+          ? 'AI는 앞에 쓴 글을 다시 읽으며 다음 말을 이어 갑니다. 글이 길어질수록 <b>처음에 준 조건이 묻히고, 같은 말이 반복</b>되기 쉽습니다.<br><br><b>그래서 긴 글은 한 번에 시키지 말고, 나눠서 시키고 조건은 마지막에 한 번 더 적어 주세요.</b>'
+          : '짧은 글은 조건을 잘 지킵니다. 위 단추를 눌러 <b>길게 써 달라고 했을 때</b>와 비교해 보세요.') + "</p>" +
+        '<details class="lrn-more"><summary>조금 더 정확히</summary>' +
+        '<p>· AI는 한 낱말을 고를 때마다 <b>앞까지 쓴 글 전체를 다시 읽습니다.</b> 글이 길어지면 읽어야 할 양도 함께 늘어납니다.</p>' +
+        '<p>· 그래서 글머리에 적어 둔 조건일수록 뒤로 갈수록 영향이 약해집니다. 조건을 <b>끝에 한 번 더</b> 적으면 잘 지켜집니다.</p>' +
+        "</details>";
+      $("#ls1").onclick = function () { longMode = false; paint(); };
+      $("#ls2").onclick = function () { longMode = true; paint(); };
     }
-    $("#lnx").onclick = function () { if (S < MAX) { S++; paint(); } };
-    $("#lag").onclick = function () { S = 0; s1 = Math.random() * 999; s2 = Math.random() * 999; paint(); };
+    paint();
+  };
+  /* 3 — 그림이 만들어지는 순서 */
+  LRN.image = function (w) {
+    var ST = [
+      ["무작위 얼룩", "아무 뜻 없는 점과 얼룩에서 시작합니다. 아직 아무 그림도 아닙니다."],
+      ["큰 덩어리", "얼룩 속에서 큰 덩어리가 어렴풋이 잡힙니다."],
+      ["형태", "덩어리가 그릇 모양으로 또렷해집니다."],
+      ["세부", "가장자리와 무늬까지 다듬어 그림이 완성됩니다."]
+    ];
+    var i = -1;
+    function paint() {
+      w.innerHTML = lrnHead("확산 방식의 설명용 모형입니다 — 실제 생성 중간 결과는 아닙니다",
+        "그림이 만들어지는 순서를 눌러 보세요", "") +
+        lrnFig("learn_in_03.jpg", "왼쪽에서 오른쪽으로, 얼룩이 그림이 되어 가는 순서") +
+        '<div class="lrn-step">' + ST.map(function (x, k) {
+          return '<button class="lrn-stepb" aria-pressed="' + (i === k) + '" data-k="' + k + '">' +
+            "<i>" + (k + 1) + "</i><span class=\"\"><b>" + esc(x[0]) + "</b>" +
+            (i === k ? "<span>" + esc(x[1]) + "</span>" : "") + "</span></button>";
+        }).join("") + "</div>" +
+        '<p class="lrn-note">AI는 어딘가에 있는 사진을 찾아오는 것이 아닙니다. <b>매번 얼룩에서 시작해 새로 만듭니다.</b> ' +
+        "시작한 얼룩이 매번 다르기 때문에, 같은 말로 부탁해도 그림이 조금씩 다르게 나옵니다.</p>" +
+        '<details class="lrn-more"><summary>조금 더 정확히</summary>' +
+        '<p>· 이 방식을 <b>확산(디퓨전)</b>이라고 부릅니다. 일부러 넣은 잡음을 단계마다 걷어 내며 그림을 찾아갑니다.</p>' +
+        '<p>· 위 그림은 설명을 위해 만든 모형입니다. 실제 모델의 중간 결과를 그대로 찍은 것이 아닙니다.</p>' +
+        "</details>";
+      [].slice.call(w.querySelectorAll(".lrn-stepb")).forEach(function (b) {
+        b.onclick = function () { i = +b.getAttribute("data-k"); paint(); };
+      });
+    }
     paint();
   };
   /* 4 — 조건 조각 */
@@ -725,7 +682,7 @@
     }
     clearInterval(LRN._t);
     $("#view").innerHTML = lrnShell(t, "");
-    (LRN[t.id] || function (w) { w.innerHTML = '<p class="lrn-ghost">준비 중입니다.</p>'; })($("#lrnWork"));
+    (LRN[t.id] || function (w) { w.innerHTML = '<p class="lrn-ghost">준비 중입니다.</p>'; })($("#lrnWork"), t);
   }
   function renderStart() {
     renderTop({ id: "start", title: "처음 사용해요", href: "#/start" });
