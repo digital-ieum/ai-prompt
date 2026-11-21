@@ -41,13 +41,13 @@ window.MENU = {
   learn: {
     id: "learn", title: "AI 이해하기", hint: "수업 전 안내 · 복습",
     topics: [
-      { id:"used",   n:1, q:"오늘 아침부터 내가 쓴 AI",      sub:"나는 AI를<br>안 쓴다고요?",             img:"learn_01.jpg", cards:[], ready:true },
-      { id:"search", n:2, q:"검색과 무엇이 다를까요?",        sub:"찾아 주는 것과<br>만들어 주는 것",       img:"learn_04.jpg", cards:[], ready:true },
-      { id:"how",    n:3, q:"AI는 어떻게 답할까요?",          sub:"모으기 · 익히기<br>· 답하기",            img:"learn_08.jpg", cards:[], ready:true },
-      { id:"ask",    n:4, q:"AI가 내 말을 안 듣는 이유",      sub:"빈칸을 AI가<br>알아서 채웁니다",         img:"learn_03.jpg", cards:[], ready:true },
-      { id:"vary",   n:5, q:"왜 답이 매번 다를까요?",         sub:"같은 질문인데<br>왜 다를까요?",          img:"learn_02.jpg", cards:[], ready:true },
-      { id:"wrong",  n:6, q:"자신 있게 틀립니다",             sub:"약 · 돈 · 법 · 병원은<br>꼭 다시 확인",   img:"learn_06.jpg", cards:[], ready:true },
-      { id:"safe",   n:7, q:"넣지 말아야 할 것",              sub:"주민번호 · 계좌번호<br>· 비밀번호",      img:"learn_07.jpg", cards:[], ready:true }
+      { id:"used",   n:1, q:"오늘 아침부터 내가 쓴 AI",      sub:"나는 AI를<br>안 쓴다고요?",             img:"learn_t1.jpg", cards:[], ready:true },
+      { id:"search", n:2, q:"검색과 무엇이 다를까요?",        sub:"찾아 주는 것과<br>만들어 주는 것",       img:"learn_t2.jpg", cards:[], ready:true },
+      { id:"how",    n:3, q:"AI는 어떻게 답할까요?",          sub:"모으기 · 익히기<br>· 답하기",            img:"learn_t3.jpg", cards:[], ready:true },
+      { id:"ask",    n:4, q:"AI가 내 말을 안 듣는 이유",      sub:"빈칸을 AI가<br>알아서 채웁니다",         img:"learn_t4.jpg", cards:[], ready:true },
+      { id:"vary",   n:5, q:"왜 답이 매번 다를까요?",         sub:"같은 질문인데<br>왜 다를까요?",          img:"learn_t5.jpg", cards:[], ready:true },
+      { id:"wrong",  n:6, q:"자신 있게 틀립니다",             sub:"약 · 돈 · 법 · 병원은<br>꼭 다시 확인",   img:"learn_t6.jpg", cards:[], ready:true },
+      { id:"safe",   n:7, q:"넣지 말아야 할 것",              sub:"주민번호 · 계좌번호<br>· 비밀번호",      img:"learn_t7.jpg", cards:[], ready:true }
     ]
   },
   

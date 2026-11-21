@@ -944,5 +944,22 @@ a.play-pic:active { outline: 2.5px solid var(--navy); }
   color:var(--lmuted);margin-top:3px;line-height:1.5}
 .lrn-stepb[disabled]{opacity:.45;cursor:default}
 .lrn-hero{margin:20px 0 0;border-radius:12px;overflow:hidden;background:#24354e}
-.lrn-hero img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;opacity:.92}
+.lrn-hero img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;opacity:.94}
 @media(max-width:899px){.lrn-hero{display:none}}
+
+/* 정답/오답이 아닌 활동의 결과 띠 */
+.lrn-show{background:#fbf7ef;border:1px solid #e3d8c2;border-left:5px solid var(--lbrass);
+  border-radius:12px;padding:18px 20px}
+.lrn-show>b{display:block;font-size:clamp(17px,1.7vw,22px);font-weight:600;color:var(--lnavy)}
+.lrn-show>span{display:block;font-size:clamp(15px,1.45vw,18px);color:#4a3a1c;margin-top:6px;line-height:1.6}
+.lrn-show span b{font-weight:700;color:#3c2e14}
+.lrn-kind{font-size:14px;font-weight:700;color:var(--lbrass);letter-spacing:.02em}
+.lrn-fine{font-size:14px;color:var(--lmuted);margin:10px 0 0;line-height:1.55}
+.lrn-check{background:var(--lpaper);border:1px solid var(--lline);border-radius:12px;padding:16px 18px;margin:0}
+.lrn-check b{display:block;font-size:16px;color:var(--lnavy);margin:0 0 8px}
+.lrn-check ol{margin:0;padding-left:20px;font-size:clamp(15px,1.4vw,17px);line-height:1.75;color:#1b2a40}
+.lrn-tile.has-pic{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}
+.lrn-tile.has-pic img{width:60px;height:60px;border-radius:10px;object-fit:cover;background:#f1ece2}
+.lrn-tile-t{display:block}
+.lrn-check li b{display:inline;font-weight:700;color:var(--lnavy)}
+.lrn-check li{margin:0 0 4px}
